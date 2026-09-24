@@ -4,21 +4,22 @@ Dernière mise à jour : 2026-09-24
 
 ## En cours
 
-Rien pour l'instant.
+Dernière section de `docs/tp/seance-1/REVIEW.md` à écrire : « Ce que je retiens du travail
+avec l'agent ».
 
 ## Prochaine étape
 
-TP 1 (séance 1), étape 5 : déplacer les routes `items` dans `app/routers/items.py`.
-Puis étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`.
+Séance 2 : tests pytest sur `items` et `reservations`. Lire
+`../cours/seances/seance-2-tests/cours/README.md` et `.../tp/README.md` avant de commencer.
 
 ## Avancement des séances
 
 - [ ] Séance 0 · Docker (optionnelle)
-- [ ] Séance 1 · API FastAPI
+- [x] Séance 1 · API FastAPI
   - [x] Projet initialisé à partir du `projet-demo`
   - [x] Étapes 1 à 4 : path/query params, schémas, CRUD `items`
-  - [ ] Étape 5 : découpage en routers
-  - [ ] Étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`
+  - [x] Étape 5 : découpage en routers
+  - [x] Étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`
 - [ ] Séance 2 · Tests pytest
 - [ ] Séance 3 · PostgreSQL (support pas encore publié)
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
@@ -40,7 +41,9 @@ Puis étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `RE
 - 2026-09-23 : Rémy fait les commits lui-même après relecture du diff.
 - 2026-09-24 : `PUT /items/{item_id}` réutilise `ItemCreate` plutôt qu'un schéma dédié,
   puisque le contrat d'un remplacement complet est celui d'une création.
-- 2026-09-24 : stockage `FAKE_DB` en mémoire dans `main.py`, provisoire jusqu'à la séance 3.
+- 2026-09-24 : stockage `FAKE_DB` en mémoire, un par router, provisoire jusqu'à la séance 3.
+- 2026-09-24 : pas de schéma `ReservationUpdate` ni de `skip` sur `GET /reservations`,
+  la spec ne les prévoit pas. Écarts assumés avec le gabarit d'`items`, notés dans `REVIEW.md`.
 
 ## Questions ouvertes
 

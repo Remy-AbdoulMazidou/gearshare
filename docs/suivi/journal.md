@@ -25,3 +25,28 @@ Une entrée par session de travail, la plus récente en bas.
   la `description` était bien écrasée à `null`, puis remis en place.
 - Corrections de Rémy : aucune sur le code, l'arbre de travail committé est identique à ce qui
   a été produit. Seul le message du commit de l'étape 1 a été reformulé.
+
+## 2026-09-24 · TP séance 1, étapes 5 et 6
+
+- Fait par : Rémy pour les tests, les décisions et les commits ; Claude Code pour le code.
+  Review : vérifications, tests et décisions faits par Rémy, texte mis en forme avec l'aide
+  de Claude.
+- Étape 5 : routes `items` déplacées dans `app/routers/items.py` derrière un
+  `APIRouter(prefix="/items", tags=["items"])`, avec `FAKE_DB` et `_next_id`. `main.py` réduit
+  à la création de l'app, `include_router` et `/health`. Refactoring vérifié en comparant
+  `/openapi.json` avant et après : chemins, paramètres et codes identiques, seuls les `tags`
+  changent.
+- Étape 6 : `docs/tp/seance-1/SPEC-reservations.md` reprend le modèle donné dans le TP, relue
+  et validée par Rémy ; puis ressource `reservations` générée par Claude Code en mode Plan
+  (schéma, router, branchement).
+  Validation croisée des dates par `model_validator(mode="after")`, 409 sur double annulation.
+- Traces du TP : `plan-agent.md`, `prompts.md` et `REVIEW.md` dans `docs/tp/seance-1/`.
+- L'agent a posé deux questions avant de coder (`ReservationUpdate`, `skip`) plutôt que de
+  trancher seul. Réponses de Rémy : ne pas créer le schéma, ne pas ajouter `skip`.
+- Points relevés, non corrigés car hors spec : 404 et 409 n'apparaissent pas dans `/docs`
+  faute de `responses=` sur les routes ; l'erreur de dates renvoie `loc: ["body"]` sans nom de
+  champ, à prendre en compte pour les tests de la séance 2.
+- Corrections de Rémy : aucune sur le code, d'après `REVIEW.md`. Le `ge=1` ajouté par l'agent sur
+  le filtre `item_id` de la liste a été gardé, bien que la spec ne le demandait pas.
+- Correction faite pendant la clôture : la ligne « Décisions » du 2026-09-24 disait que
+  `FAKE_DB` était dans `main.py`, ce qui n'est plus vrai depuis l'étape 5.
