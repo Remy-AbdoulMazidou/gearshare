@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query, Response
 
-from app.schemas.item import ItemCreate, ItemRead
+from app.schemas.item import ItemCreate, ItemRead, ItemUpdate
 
 app = FastAPI(title="GearShare API", version="0.1.0")
 
@@ -13,14 +13,19 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/items")
+@app.get("/items", response_model=list[ItemRead])
 def list_items(
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=20, ge=1, le=100),
     q: str | None = None,
     disponible: bool | None = None,
 ):
-    return {"skip": skip, "limit": limit, "q": q, "disponible": disponible}
+    items = list(FAKE_DB.values())
+    if q is not None:
+        items = [item for item in items if q.lower() in item["titre"].lower()]
+    if disponible is not None:
+        items = [item for item in items if item["disponible"] is disponible]
+    return items[skip : skip + limit]
 
 
 @app.post("/items", response_model=ItemRead, status_code=201)
@@ -32,6 +37,34 @@ def create_item(payload: ItemCreate):
     return item
 
 
-@app.get("/items/{item_id}")
+@app.get("/items/{item_id}", response_model=ItemRead)
 def get_item(item_id: int = Path(ge=1)):
-    return {"item_id": item_id}
+    item = FAKE_DB.get(item_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} introuvable")
+    return item
+
+
+@app.put("/items/{item_id}", response_model=ItemRead)
+def replace_item(payload: ItemCreate, item_id: int = Path(ge=1)):
+    if item_id not in FAKE_DB:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} introuvable")
+    item = {"id": item_id, **payload.model_dump()}
+    FAKE_DB[item_id] = item
+    return item
+
+
+@app.patch("/items/{item_id}", response_model=ItemRead)
+def update_item(payload: ItemUpdate, item_id: int = Path(ge=1)):
+    item = FAKE_DB.get(item_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} introuvable")
+    item.update(payload.model_dump(exclude_unset=True))
+    return item
+
+
+@app.delete("/items/{item_id}", status_code=204, response_class=Response)
+def delete_item(item_id: int = Path(ge=1)):
+    if item_id not in FAKE_DB:
+        raise HTTPException(status_code=404, detail=f"Item {item_id} introuvable")
+    del FAKE_DB[item_id]
