@@ -1,6 +1,11 @@
 from fastapi import FastAPI, Path, Query
 
+from app.schemas.item import ItemCreate, ItemRead
+
 app = FastAPI(title="GearShare API", version="0.1.0")
+
+FAKE_DB: dict[int, dict] = {}
+_next_id = 1
 
 
 @app.get("/health", tags=["monitoring"])
@@ -16,6 +21,15 @@ def list_items(
     disponible: bool | None = None,
 ):
     return {"skip": skip, "limit": limit, "q": q, "disponible": disponible}
+
+
+@app.post("/items", response_model=ItemRead, status_code=201)
+def create_item(payload: ItemCreate):
+    global _next_id
+    item = {"id": _next_id, **payload.model_dump()}
+    FAKE_DB[_next_id] = item
+    _next_id += 1
+    return item
 
 
 @app.get("/items/{item_id}")
