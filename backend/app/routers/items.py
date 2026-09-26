@@ -5,7 +5,10 @@ from app.schemas.item import ItemCreate, ItemRead, ItemUpdate
 router = APIRouter(prefix="/items", tags=["items"])
 
 FAKE_DB: dict[int, dict] = {}
-_next_id = 1
+
+
+def _next_id() -> int:
+    return max(FAKE_DB, default=0) + 1
 
 
 @router.get("", response_model=list[ItemRead])
@@ -25,10 +28,9 @@ def list_items(
 
 @router.post("", response_model=ItemRead, status_code=201)
 def create_item(payload: ItemCreate):
-    global _next_id
-    item = {"id": _next_id, **payload.model_dump()}
-    FAKE_DB[_next_id] = item
-    _next_id += 1
+    new_id = _next_id()
+    item = {"id": new_id, **payload.model_dump()}
+    FAKE_DB[new_id] = item
     return item
 
 

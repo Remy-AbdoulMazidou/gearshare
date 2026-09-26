@@ -1,16 +1,18 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-09-24
+Dernière mise à jour : 2026-09-26
 
 ## En cours
 
-Dernière section de `docs/tp/seance-1/REVIEW.md` à écrire : « Ce que je retiens du travail
-avec l'agent ».
+TP séance 2, étape 1 faite (pytest dans le conteneur, `_next_id()` calculé depuis `FAKE_DB`),
+en attente de relecture et de commit par Rémy.
+Reste aussi la dernière section de `docs/tp/seance-1/REVIEW.md` : « Ce que je retiens du
+travail avec l'agent ».
 
 ## Prochaine étape
 
-Séance 2 : tests pytest sur `items` et `reservations`. Lire
-`../cours/seances/seance-2-tests/cours/README.md` et `.../tp/README.md` avant de commencer.
+Séance 2, suite : `tests/conftest.py` avec `Storage`, fixtures `storage` et `client`
+(cours section 3.4), puis tests de `items` et `reservations`.
 
 ## Avancement des séances
 
@@ -21,6 +23,7 @@ Séance 2 : tests pytest sur `items` et `reservations`. Lire
   - [x] Étape 5 : découpage en routers
   - [x] Étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`
 - [ ] Séance 2 · Tests pytest
+  - [x] Étape 1 : pytest dans le conteneur, `test_health.py`, compteurs globaux supprimés
 - [ ] Séance 3 · PostgreSQL (support pas encore publié)
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
@@ -44,6 +47,11 @@ Séance 2 : tests pytest sur `items` et `reservations`. Lire
 - 2026-09-24 : stockage `FAKE_DB` en mémoire, un par router, provisoire jusqu'à la séance 3.
 - 2026-09-24 : pas de schéma `ReservationUpdate` ni de `skip` sur `GET /reservations`,
   la spec ne les prévoit pas. Écarts assumés avec le gabarit d'`items`, notés dans `REVIEW.md`.
+- 2026-09-26 : `_next_id()` vaut `max(FAKE_DB) + 1`. Changement de comportement assumé :
+  supprimer l'item d'id le plus grand libère son id, réattribué au `POST` suivant
+  (1, 2, 3, suppression du 3, le prochain vaut 3 et non plus 4). Disparaît en séance 3.
+- 2026-09-26 : `tests/` et `pytest.ini` copiés dans l'image et montés en volume.
+  On garde `dict[int, dict]` pour `FAKE_DB`.
 
 ## Questions ouvertes
 

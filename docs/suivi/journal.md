@@ -50,3 +50,19 @@ Une entrée par session de travail, la plus récente en bas.
   le filtre `item_id` de la liste a été gardé, bien que la spec ne le demandait pas.
 - Correction faite pendant la clôture : la ligne « Décisions » du 2026-09-24 disait que
   `FAKE_DB` était dans `main.py`, ce qui n'est plus vrai depuis l'étape 5.
+
+## 2026-09-26 · TP séance 2, étape 1
+
+- Fait par : Claude Code pour le code, Rémy pour la validation du plan et les décisions.
+- `pytest==8.3.3`, `pytest-cov==5.0.0` et `httpx==0.27.2` ajoutés à `requirements.txt`, avec les
+  mêmes versions que le projet-demo.
+- `pytest.ini`, `tests/__init__.py` et `tests/test_health.py` copiés du projet-demo.
+- `Dockerfile` : `COPY tests` et `COPY pytest.ini`. `docker-compose.yml` : volumes sur `tests/`
+  et `pytest.ini`, pour que les tests soient pris en compte sans refaire le build.
+  Le Dockerfile du demo ne copie pas `tests/`, d'où l'adaptation.
+- `_next_id` global remplacé par une fonction `_next_id()` dans les deux routers.
+- Vérifié : `docker compose run --rm api pytest` donne 1 test vert ; API démarrée, ids 1, 2, 3,
+  suppression du 3, le `POST` suivant redonne 3.
+- Problème relevé, non corrigé : avertissement de dépréciation `anyio.abc.BlockingPortal`, qui
+  vient de `starlette`, car `anyio` n'est pas épinglé. Sans effet sur les tests.
+- Prompt copié dans `docs/tp/seance-2/prompts.md`.

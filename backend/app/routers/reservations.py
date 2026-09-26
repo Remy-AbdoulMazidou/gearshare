@@ -5,7 +5,10 @@ from app.schemas.reservation import ReservationCreate, ReservationRead
 router = APIRouter(prefix="/reservations", tags=["reservations"])
 
 FAKE_DB: dict[int, dict] = {}
-_next_id = 1
+
+
+def _next_id() -> int:
+    return max(FAKE_DB, default=0) + 1
 
 
 @router.get("", response_model=list[ReservationRead])
@@ -25,10 +28,9 @@ def list_reservations(
 
 @router.post("", response_model=ReservationRead, status_code=201)
 def create_reservation(payload: ReservationCreate):
-    global _next_id
-    reservation = {"id": _next_id, **payload.model_dump(), "statut": "active"}
-    FAKE_DB[_next_id] = reservation
-    _next_id += 1
+    new_id = _next_id()
+    reservation = {"id": new_id, **payload.model_dump(), "statut": "active"}
+    FAKE_DB[new_id] = reservation
     return reservation
 
 
