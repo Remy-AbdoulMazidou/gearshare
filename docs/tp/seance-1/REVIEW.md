@@ -33,3 +33,6 @@ Aucune correction dans le code. Je pense que c'est en partie parce que mon `CLAU
 
 ## Ce que je retiens du travail avec l'agent
 
+Relire le plan avant d'accepter m'a permis de comparer chaque point à la spec avant qu'une seule ligne soit écrite. En validant les fichiers un par un, j'ai vérifié moi-même les points de contrôle du TP : le model_validator dans le schéma, les deux FAKE_DB séparés, l'ordre 404 puis 409 dans la route d'annulation.
+
+Je retiens qu'un code qui marche n'est pas forcément conforme. Le ge=1 ajouté sur le filtre fonctionne très bien, mais il sortait de la spec, et je ne l'aurais pas remarqué sans relire le code ligne par ligne. La prochaine fois, je mettrai les limites connues (item inexistant, créneaux qui se chevauchent) directement dans la spec, pour qu'elles soient traitées ou assumées dès le départ.

@@ -22,3 +22,6 @@ Couverture avant et après : 100 %. Elle ne changeait rien à ces résultats, pu
 
 ## Ce que j'en retiens
 
+Avoir 100 % de couverture ne prouvait pas que mes tests étaient bons. Ce sont les mutations qui m'ont montré quelles règles étaient vraiment protégées.
+
+La mutation 2 est celle qui m'a le plus appris : si je n'avais testé que des dates inversées, le bug sur les dates égales serait passé. Je teste maintenant la valeur juste à la limite (dates égales, limit=101) en plus d'un cas évident. Je garderai cette méthode pour les prochaines séances, en cassant au moins les règles les plus importantes de chaque nouvelle ressource.
