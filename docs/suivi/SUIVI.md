@@ -4,15 +4,15 @@ Dernière mise à jour : 2026-09-26
 
 ## En cours
 
-TP séance 2, étape 1 faite (pytest dans le conteneur, `_next_id()` calculé depuis `FAKE_DB`),
+TP séance 2, étape 2 faite (`conftest.py`, `test_items.py`, 30 tests verts),
 en attente de relecture et de commit par Rémy.
 Reste aussi la dernière section de `docs/tp/seance-1/REVIEW.md` : « Ce que je retiens du
 travail avec l'agent ».
 
 ## Prochaine étape
 
-Séance 2, suite : `tests/conftest.py` avec `Storage`, fixtures `storage` et `client`
-(cours section 3.4), puis tests de `items` et `reservations`.
+Séance 2, suite : `tests/test_reservations.py` (création, dates en 422, 404, 409 sur
+double annulation, filtre `item_id`). `routers/reservations.py` n'est couvert qu'à 39 %.
 
 ## Avancement des séances
 
@@ -24,6 +24,7 @@ Séance 2, suite : `tests/conftest.py` avec `Storage`, fixtures `storage` et `cl
   - [x] Étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`
 - [ ] Séance 2 · Tests pytest
   - [x] Étape 1 : pytest dans le conteneur, `test_health.py`, compteurs globaux supprimés
+  - [x] Étape 2 : `conftest.py` (`Storage`, `storage`, `client`, `item_velo`), `test_items.py`
 - [ ] Séance 3 · PostgreSQL (support pas encore publié)
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
@@ -52,6 +53,9 @@ Séance 2, suite : `tests/conftest.py` avec `Storage`, fixtures `storage` et `cl
   (1, 2, 3, suppression du 3, le prochain vaut 3 et non plus 4). Disparaît en séance 3.
 - 2026-09-26 : `tests/` et `pytest.ini` copiés dans l'image et montés en volume.
   On garde `dict[int, dict]` pour `FAKE_DB`.
+- 2026-09-26 : tests en plus de la grille demandée : validations `PATCH`, query et path.
+  Pas de test sur `/items/abc` (conversion faite par FastAPI). Un test par 404 plutôt qu'un
+  `parametrize` sur la méthode, pour qu'un `raise` corresponde à un test nommé.
 
 ## Questions ouvertes
 

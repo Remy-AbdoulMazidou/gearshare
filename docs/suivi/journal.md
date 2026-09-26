@@ -66,3 +66,18 @@ Une entrée par session de travail, la plus récente en bas.
 - Problème relevé, non corrigé : avertissement de dépréciation `anyio.abc.BlockingPortal`, qui
   vient de `starlette`, car `anyio` n'est pas épinglé. Sans effet sur les tests.
 - Prompt copié dans `docs/tp/seance-2/prompts.md`.
+
+## 2026-09-26 · TP séance 2, étape 2
+
+- Fait par : Claude Code pour le code, Rémy pour la validation du plan et des deux choix.
+- `tests/conftest.py` : dataclass `Storage` avec `reset_all()`, fixtures `storage`, `client`
+  (qui dépend de `storage`) et `item_velo`, sans `autouse`, comme dans les sections 3.4 et 3.5.
+- `test_health.py` passe par la fixture `client`.
+- `tests/test_items.py` : 29 tests (dont 13 cas en `parametrize`). Cas nominaux, 422 avec
+  `loc[-1]` sur création, `PATCH`, query et path, un 404 par `raise` du router, `PATCH` partiel,
+  `DELETE` puis `GET`, filtres `q` et `disponible`, pagination préparée par `storage`.
+- Vérifié : 30 tests verts ; un test seul passe aussi avec `-k` ; couverture totale 81 %,
+  `routers/items.py` à 100 %, `routers/reservations.py` à 39 % (pas encore testé).
+- Contrôle : retrait de `exclude_unset=True` sur une copie dans le conteneur, le test
+  `test_patch_partiel_conserve_les_autres_champs` passe au rouge comme attendu.
+- Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 2).
