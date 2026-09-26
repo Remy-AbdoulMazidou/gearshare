@@ -81,3 +81,20 @@ Une entrée par session de travail, la plus récente en bas.
 - Contrôle : retrait de `exclude_unset=True` sur une copie dans le conteneur, le test
   `test_patch_partiel_conserve_les_autres_champs` passe au rouge comme attendu.
 - Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 2).
+
+## 2026-09-26 · TP séance 2, étape 3
+
+- Fait par : Claude Code pour le code, Rémy pour la validation du plan.
+- `conftest.py` : fixture `reservation_active`, qui dépend de `item_velo`.
+- `tests/test_reservations.py` : 12 tests (création 201, lecture, dates inversées et égales en
+  422, `item_id` à 0 et `statut` envoyé en 422, `limit=101` en 422, filtre `item_id`, 404 sur
+  `GET` et sur `annuler`, annulation 200, seconde annulation 409 avec statut resté `annulee`).
+- `tests/test_schemas.py` : 3 tests unitaires sans HTTP.
+- Erreur de dates : `loc` vaut `["body"]` sans nom de champ. Assertion retenue :
+  `loc == ["body"]` et `"date_fin" in msg` (mot de notre message, pas le préfixe Pydantic).
+- Vérifié : 45 tests verts, couverture 100 %. Mutations sur une copie dans le conteneur :
+  `<=` remplacé par `<` fait échouer le cas des dates égales ; sans la branche 409, le test
+  de double annulation échoue.
+- Problème relevé, non corrigé : `POST /reservations` avec un `item_id` inexistant renvoie 201.
+  La spec ne l'interdit pas. Noté dans les questions ouvertes.
+- Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 3).

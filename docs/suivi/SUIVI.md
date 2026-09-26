@@ -4,15 +4,15 @@ Dernière mise à jour : 2026-09-26
 
 ## En cours
 
-TP séance 2, étape 2 faite (`conftest.py`, `test_items.py`, 30 tests verts),
-en attente de relecture et de commit par Rémy.
+TP séance 2, étape 3 faite (`reservation_active`, `test_reservations.py`, `test_schemas.py`,
+45 tests verts, couverture 100 %), en attente de relecture et de commit par Rémy.
 Reste aussi la dernière section de `docs/tp/seance-1/REVIEW.md` : « Ce que je retiens du
 travail avec l'agent ».
 
 ## Prochaine étape
 
-Séance 2, suite : `tests/test_reservations.py` (création, dates en 422, 404, 409 sur
-double annulation, filtre `item_id`). `routers/reservations.py` n'est couvert qu'à 39 %.
+Séance 2, suite du TP : étapes suivantes du TP (section 6 du cours : `monkeypatch`, mock
+d'une notification à l'annulation), à vérifier dans `../cours/seances/seance-2-tests/tp/`.
 
 ## Avancement des séances
 
@@ -25,6 +25,7 @@ double annulation, filtre `item_id`). `routers/reservations.py` n'est couvert qu
 - [ ] Séance 2 · Tests pytest
   - [x] Étape 1 : pytest dans le conteneur, `test_health.py`, compteurs globaux supprimés
   - [x] Étape 2 : `conftest.py` (`Storage`, `storage`, `client`, `item_velo`), `test_items.py`
+  - [x] Étape 3 : `reservation_active`, `test_reservations.py`, `test_schemas.py`
 - [ ] Séance 3 · PostgreSQL (support pas encore publié)
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
@@ -56,9 +57,13 @@ double annulation, filtre `item_id`). `routers/reservations.py` n'est couvert qu
 - 2026-09-26 : tests en plus de la grille demandée : validations `PATCH`, query et path.
   Pas de test sur `/items/abc` (conversion faite par FastAPI). Un test par 404 plutôt qu'un
   `parametrize` sur la méthode, pour qu'un `raise` corresponde à un test nommé.
+- 2026-09-26 : erreur de dates testée par `loc == ["body"]` et `"date_fin" in msg`, car le
+  `model_validator` rattache l'erreur au corps entier et non à un champ.
 
 ## Questions ouvertes
 
+- `POST /reservations` accepte un `item_id` qui n'existe pas (201). Hors spec, non testé.
+  À revoir en séance 4 avec les clés étrangères.
 - Binôme ou seul : à préciser.
 - Date de rendu : à confirmer (document de synthèse annoncé par l'enseignant).
 - Pas encore de `.env.example` à la racine, alors que le lancement en une commande est

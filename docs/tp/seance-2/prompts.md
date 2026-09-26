@@ -36,3 +36,19 @@ Un test par cas, noms en français explicites, Given/When/Then quand ce n'est pa
 
 Copie ce message tel quel dans docs/tp/seance-2/prompts.md sous « Prompt 2 ».
 Propose ton plan avant de coder, avec la liste des noms de tests. Lance pytest à la fin. Termine par « À savoir expliquer » et un message de commit. Ne commite pas.
+
+## Prompt 3
+
+TP 2, étape 3.
+
+1. Ajoute dans conftest.py une fixture reservation_active, sur le modèle de item_velo (cours section 4.1).
+2. tests/test_reservations.py, qui couvre la grille de la section 5 :
+   - création nominale en 201 avec statut "active" ;
+   - validations en 422 : dates inversées, dates égales, item_id à 0, statut envoyé par le client (extra="forbid"). Attention, l'erreur de dates a loc ["body"] sans nom de champ : choisis une assertion adaptée et explique-la ;
+   - filtre item_id et limit à 101 ;
+   - 404 sur GET et sur annuler ;
+   - annulation en 200, puis seconde annulation en 409, et la réservation reste "annulee".
+3. tests/test_schemas.py, des tests unitaires sans HTTP (section 4.4) : ReservationCreate valide, ReservationCreate avec dates inversées (pytest.raises ValidationError), ItemUpdate() vide avec exclude_unset.
+
+Copie ce message tel quel dans docs/tp/seance-2/prompts.md sous « Prompt 3 ».
+Plan avec la liste des noms de tests avant de coder. Lance pytest et la couverture à la fin (pytest --cov=app --cov-report=term-missing). « À savoir expliquer » et message de commit. Ne commite pas.

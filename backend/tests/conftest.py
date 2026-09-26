@@ -42,3 +42,13 @@ def item_velo(client: TestClient) -> dict[str, Any]:
     })
     assert response.status_code == 201
     return response.json()
+
+
+@pytest.fixture
+def reservation_active(client: TestClient, item_velo: dict[str, Any]) -> dict[str, Any]:
+    """Une réservation active sur item_velo, renvoyée telle que l'API l'expose."""
+    response = client.post("/reservations", json={
+        "item_id": item_velo["id"], "date_debut": "2026-10-01", "date_fin": "2026-10-05",
+    })
+    assert response.status_code == 201
+    return response.json()
