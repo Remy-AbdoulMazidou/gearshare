@@ -4,15 +4,15 @@ Dernière mise à jour : 2026-09-26
 
 ## En cours
 
-TP séance 2, étape 3 faite (`reservation_active`, `test_reservations.py`, `test_schemas.py`,
-45 tests verts, couverture 100 %), en attente de relecture et de commit par Rémy.
+TP séance 2, étape 4 faite (notification d'annulation mockée, 48 tests verts,
+couverture 100 %), en attente de relecture et de commit par Rémy.
 Reste aussi la dernière section de `docs/tp/seance-1/REVIEW.md` : « Ce que je retiens du
 travail avec l'agent ».
 
 ## Prochaine étape
 
-Séance 2, suite du TP : étapes suivantes du TP (section 6 du cours : `monkeypatch`, mock
-d'une notification à l'annulation), à vérifier dans `../cours/seances/seance-2-tests/tp/`.
+Séance 2 : vérifier dans `../cours/seances/seance-2-tests/tp/` s'il reste des étapes
+(sections 7 et 8 du cours : couverture, tests qui ne testent rien).
 
 ## Avancement des séances
 
@@ -26,6 +26,7 @@ d'une notification à l'annulation), à vérifier dans `../cours/seances/seance-
   - [x] Étape 1 : pytest dans le conteneur, `test_health.py`, compteurs globaux supprimés
   - [x] Étape 2 : `conftest.py` (`Storage`, `storage`, `client`, `item_velo`), `test_items.py`
   - [x] Étape 3 : `reservation_active`, `test_reservations.py`, `test_schemas.py`
+  - [x] Étape 4 : notification d'annulation, tests avec `monkeypatch` et `Mock`
 - [ ] Séance 3 · PostgreSQL (support pas encore publié)
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
@@ -59,6 +60,10 @@ d'une notification à l'annulation), à vérifier dans `../cours/seances/seance-
   `parametrize` sur la méthode, pour qu'un `raise` corresponde à un test nommé.
 - 2026-09-26 : erreur de dates testée par `loc == ["body"]` et `"date_fin" in msg`, car le
   `model_validator` rattache l'erreur au corps entier et non à un champ.
+- 2026-09-26 (décision de Rémy) : si la notification d'annulation échoue, l'annulation reste
+  acquise et la route renvoie 200. On attrape `(ConnectionError, TimeoutError)`, pas
+  `Exception` : un délai dépassé ne doit pas donner un 500 alors que l'annulation est faite.
+  L'échec est journalisé en `warning`, sans détail pour le client.
 
 ## Questions ouvertes
 

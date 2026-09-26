@@ -52,3 +52,17 @@ TP 2, étape 3.
 
 Copie ce message tel quel dans docs/tp/seance-2/prompts.md sous « Prompt 3 ».
 Plan avec la liste des noms de tests avant de coder. Lance pytest et la couverture à la fin (pytest --cov=app --cov-report=term-missing). « À savoir expliquer » et message de commit. Ne commite pas.
+
+## Prompt 4
+
+TP 2, étape 4, cours section 6.
+
+1. Dans routers/reservations.py, ajoute une fonction envoyer_notification_annulation(reservation_id) qui simule l'envoi (un simple log suffit), appelée par la route annuler après le changement de statut.
+2. Ma décision : si la notification échoue, l'annulation reste acquise et la route renvoie quand même 200. Attrape une exception précise, pas un except Exception.
+3. Dans test_reservations.py, avec monkeypatch et Mock :
+   - un test qui vérifie que la notification est appelée une fois avec le bon reservation_id ;
+   - un test où la notification lève ConnectionError (side_effect) et où l'annulation renvoie quand même 200 avec statut "annulee".
+4. Note ma décision dans les « Décisions » de SUIVI.md.
+
+Copie ce message tel quel dans docs/tp/seance-2/prompts.md sous « Prompt 4 ».
+Plan avant de coder. Relance pytest et la couverture à la fin. « À savoir expliquer » et message de commit. Ne commite pas.

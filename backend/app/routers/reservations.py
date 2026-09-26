@@ -1,14 +1,22 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Path, Query
 
 from app.schemas.reservation import ReservationCreate, ReservationRead
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
+logger = logging.getLogger(__name__)
 
 FAKE_DB: dict[int, dict] = {}
 
 
 def _next_id() -> int:
     return max(FAKE_DB, default=0) + 1
+
+
+def envoyer_notification_annulation(reservation_id: int) -> None:
+    # Simule l'envoi : un vrai service (mail, HTTP) pourrait lever ConnectionError ou TimeoutError.
+    logger.info("Notification d'annulation envoyée pour la réservation %s", reservation_id)
 
 
 @router.get("", response_model=list[ReservationRead])
@@ -56,4 +64,10 @@ def annuler_reservation(reservation_id: int = Path(ge=1)):
             status_code=409, detail=f"Réservation {reservation_id} déjà annulée"
         )
     reservation["statut"] = "annulee"
+    try:
+        envoyer_notification_annulation(reservation_id=reservation_id)
+    except (ConnectionError, TimeoutError):
+        logger.warning(
+            "Notification d'annulation non envoyée pour la réservation %s", reservation_id
+        )
     return reservation

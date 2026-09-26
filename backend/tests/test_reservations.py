@@ -1,7 +1,10 @@
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+
+from app.routers import reservations
 
 
 # Cas nominaux
@@ -144,3 +147,42 @@ def test_annuler_reservation_deja_annulee_renvoie_409(
     # Then : l'API refuse avec un conflit, et la réservation reste annulée.
     assert response.status_code == 409
     assert client.get(f"/reservations/{reservation_id}").json()["statut"] == "annulee"
+
+
+# Notification
+
+
+def test_annulation_envoie_une_notification(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, reservation_active: dict[str, Any]
+) -> None:
+    notifier = Mock()
+    monkeypatch.setattr(reservations, "envoyer_notification_annulation", notifier)
+
+    response = client.post(f"/reservations/{reservation_active['id']}/annuler")
+
+    assert response.status_code == 200
+    notifier.assert_called_once_with(reservation_id=reservation_active["id"])
+
+
+@pytest.mark.parametrize(
+    "erreur",
+    [ConnectionError("serveur mail injoignable"), TimeoutError("délai dépassé")],
+    ids=["connexion", "delai"],
+)
+def test_annulation_reussit_meme_si_la_notification_echoue(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    reservation_active: dict[str, Any],
+    erreur: Exception,
+) -> None:
+    # Given : la notification échoue.
+    notifier = Mock(side_effect=erreur)
+    monkeypatch.setattr(reservations, "envoyer_notification_annulation", notifier)
+
+    # When : on annule la réservation.
+    response = client.post(f"/reservations/{reservation_active['id']}/annuler")
+
+    # Then : l'annulation est acquise malgré l'échec.
+    assert response.status_code == 200
+    assert response.json()["statut"] == "annulee"
+    notifier.assert_called_once()

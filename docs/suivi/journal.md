@@ -98,3 +98,19 @@ Une entrée par session de travail, la plus récente en bas.
 - Problème relevé, non corrigé : `POST /reservations` avec un `item_id` inexistant renvoie 201.
   La spec ne l'interdit pas. Noté dans les questions ouvertes.
 - Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 3).
+
+## 2026-09-26 · TP séance 2, étape 4
+
+- Fait par : Claude Code pour le code, Rémy pour la décision et la correction du plan.
+- `routers/reservations.py` : fonction `envoyer_notification_annulation(reservation_id)` qui
+  simule l'envoi par un log, appelée par mot-clé après le passage à `annulee`.
+- Décision de Rémy : l'annulation reste acquise si la notification échoue (200).
+- Correction de Rémy sur le plan : le plan n'attrapait que `ConnectionError`. Rémy a demandé
+  `(ConnectionError, TimeoutError)`, pour qu'un délai dépassé ne donne pas un 500, et un
+  `parametrize` sur les deux exceptions.
+- `test_reservations.py` : `test_annulation_envoie_une_notification` (`assert_called_once_with`)
+  et `test_annulation_reussit_meme_si_la_notification_echoue` en `parametrize`
+  (`connexion`, `delai`), avec `monkeypatch.setattr` et `Mock(side_effect=...)`.
+- Vérifié : 48 tests verts, couverture 100 %. Mutation sur une copie : sans `TimeoutError`
+  dans le `except`, le cas `delai` échoue.
+- Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 4).
