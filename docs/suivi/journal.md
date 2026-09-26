@@ -114,3 +114,24 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : 48 tests verts, couverture 100 %. Mutation sur une copie : sans `TimeoutError`
   dans le `except`, le cas `delai` échoue.
 - Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 4).
+
+## 2026-09-26 · Clôture de la session (TP séance 2)
+
+- Fait par : Claude Code pour le code et les traces des étapes 1 à 4 ; Rémy pour la
+  validation des plans, les décisions, les tests de mutation (lancés et observés par lui)
+  et les six commits. `MUTATIONS.md` et la dernière section de `docs/tp/seance-1/REVIEW.md`
+  ont été mis en forme avec l'aide de Claude (chat) à partir des résultats de Rémy, comme
+  indiqué en tête de ces fichiers.
+- Bilan : TP séance 2 terminé. 48 tests verts (`test_health`, `test_items`,
+  `test_reservations`, `test_schemas`), couverture 100 %. Prompts 1 à 4 dans
+  `docs/tp/seance-2/prompts.md`.
+- Mutations lancées et observées par Rémy (`MUTATIONS.md`) : double annulation, dates égales,
+  `extra="forbid"`, plafond de pagination. Les quatre sont détectées. Constat : seul le cas
+  des dates égales détecte `<=` remplacé par `<`.
+- Problèmes rencontrés : avertissement de dépréciation `anyio` (non épinglé), sans effet ;
+  une commande de vérification mal écrite par l'agent à l'étape 1 (variable zsh non découpée),
+  relancée aussitôt ; `tp/README.md` de la séance 2 incomplet côté enseignant.
+- Corrections de Rémy : au plan de l'étape 4, ajout de `TimeoutError` dans le `except` et d'un
+  `parametrize` sur les deux exceptions. Aucune modification du code produit constatée dans les
+  commits. Trois messages de commit reformulés (étapes 2, 3 et 4).
+- Clôture : `SUIVI.md` raccourci (décisions de la séance 2 regroupées).
