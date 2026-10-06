@@ -1,12 +1,12 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-09-30
+Dernière mise à jour : 2026-10-06
 
 ## En cours
 
 TP séance 3 (PostgreSQL), dans `tp-db/`. Étapes 0 à 4 faites. SQL préparé avec l'aide de
 Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rien écrit dans
-`tp-db/`. Quatre commits locaux pas encore poussés.
+`tp-db/`. Commits poussés, dépôt public.
 
 ## Prochaine étape
 
@@ -21,6 +21,7 @@ Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rie
   - [x] Étapes 1 à 4 : path/query params, schémas, CRUD `items`
   - [x] Étape 5 : découpage en routers
   - [x] Étape 6 : `reservations` générée par agent, `SPEC-reservations.md`, `REVIEW.md`
+  - [x] Seconde review avec GitHub Copilot (`review-copilot.md`, comparaison dans `REVIEW.md`)
 - [x] Séance 2 · Tests pytest
   - [x] Étape 1 : pytest dans le conteneur, `test_health.py`, compteurs globaux supprimés
   - [x] Étape 2 : `conftest.py` (`Storage`, `storage`, `client`, `item_velo`), `test_items.py`
@@ -73,7 +74,6 @@ Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rie
 
 - `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives
   sur le même créneau. Hors spec, non testé, noté dans `REVIEW.md`. À revoir avec la base.
-- Binôme ou seul : à préciser.
-- Date de rendu : à confirmer (document de synthèse annoncé par l'enseignant).
+- Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
 - Pas encore de `.env.example` à la racine, alors que le lancement en une commande est
   un critère bloquant du rendu. À traiter au plus tard en séance 4.

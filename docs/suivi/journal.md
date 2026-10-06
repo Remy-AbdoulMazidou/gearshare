@@ -161,3 +161,15 @@ Une entrée par session de travail, la plus récente en bas.
 - Non vérifié par Claude Code : le SQL n'a été ni relu ni exécuté par l'agent. Les résultats
   des étapes 2 et 4 sont rapportés par Rémy.
 - Reste : étape 5 (index, `MESURES.md`) et étape 6 (schéma v2, `REVIEW-schema.md`).
+
+## 2026-10-06 · Seconde review de reservations, dépôt public
+
+- Fait par : Rémy. Claude Code : mise à jour du suivi seulement.
+- Seconde review de `reservations` faite par Rémy avec GitHub Copilot Chat, même grille que la
+  première. Réponse complète dans `docs/tp/seance-1/review-copilot.md`, comparaison des deux
+  reviews dans `REVIEW.md` (commit `429ba3f`).
+- Les commits de la séance 3 sont poussés : `main` à jour avec `origin/main`, vérifié par
+  Claude Code après `git fetch`.
+- Dépôt rendu public par Rémy. Non vérifié par Claude Code (`gh` non installé).
+- Problèmes rencontrés : aucun.
+- Reste : étapes 5 et 6 du TP séance 3.
