@@ -135,3 +135,29 @@ Une entrée par session de travail, la plus récente en bas.
   `parametrize` sur les deux exceptions. Aucune modification du code produit constatée dans les
   commits. Trois messages de commit reformulés (étapes 2, 3 et 4).
 - Clôture : `SUIVI.md` raccourci (décisions de la séance 2 regroupées).
+
+## 2026-09-30 · TP séance 3, étapes 0 à 4
+
+- Fait par : Rémy pour tout le contenu de `tp-db/`. SQL préparé avec l'aide de Claude (chat),
+  exécuté et vérifié par Rémy dans `psql`. Claude Code : reprise de session, `git pull` du
+  support de cours, lecture du cours et du TP, puis ce suivi. Claude Code n'a créé ni modifié
+  aucun fichier de `tp-db/`.
+- Support : séance 3 publiée par l'enseignant (commit `29870a2`), récupérée dans `../cours/`.
+  Le `tp/README.md` de la séance 2 n'a pas été complété.
+- Étapes 0 et 1 : `docker-compose.yml` PostgreSQL 16 (volume nommé, init, healthcheck),
+  `sql/init/01-schema.sql` (`users`, `items`, `reservations`).
+- Étape 2 : `sql/init/02-seed.sql`. Les 5 insertions qui doivent échouer échouent, avec les
+  contraintes `users_email_key`, `items_owner_id_fkey`, `items_tarif_jour_check`,
+  `dates_coherentes` et `statut_valide`. Suppression de Bob testée avec et sans cascade.
+- Étape 3 : les 8 requêtes dans `sql/requetes.sql`, avec leurs résultats.
+- Étape 4 : transactions, isolation et atomicité.
+- Décision de Rémy : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour
+  garder l'historique des autres utilisateurs.
+- Problèmes rencontrés : `requetes.sql` abîmé lors d'un collage, corrigé par Rémy dans un
+  commit séparé (`64e8bf0`). Claude Code avait d'abord proposé un plan où il écrivait le
+  `docker-compose.yml` et des trames de fichiers.
+- Corrections de Rémy : plan de l'agent refusé. Règle posée pour la séance 3 : aucun fichier
+  SQL ni compose de `tp-db/` créé ou modifié par l'agent, rôle limité au suivi sur demande.
+- Non vérifié par Claude Code : le SQL n'a été ni relu ni exécuté par l'agent. Les résultats
+  des étapes 2 et 4 sont rapportés par Rémy.
+- Reste : étape 5 (index, `MESURES.md`) et étape 6 (schéma v2, `REVIEW-schema.md`).

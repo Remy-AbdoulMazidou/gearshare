@@ -1,17 +1,17 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-09-26
+Dernière mise à jour : 2026-09-30
 
 ## En cours
 
-Rien. TP séance 2 terminé et commité : 48 tests verts, couverture 100 %, mutations
-lancées et observées par Rémy, résultats dans `docs/tp/seance-2/MUTATIONS.md` (mis en forme
-avec Claude chat). `REVIEW.md` de la séance 1 complet.
+TP séance 3 (PostgreSQL), dans `tp-db/`. Étapes 0 à 4 faites. SQL préparé avec l'aide de
+Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rien écrit dans
+`tp-db/`. Quatre commits locaux pas encore poussés.
 
 ## Prochaine étape
 
-Séance 3 (PostgreSQL) dès que le support est publié. Le `tp/README.md` de la séance 2
-s'arrête au milieu de la liste des objectifs : le relire s'il est complété.
+Étape 5 (index, `MESURES.md`), puis étape 6 (`03-schema-v2.sql`, `tests-contraintes.sql`,
+`REVIEW-schema.md`, où reporter la décision sur la suppression d'un compte).
 
 ## Avancement des séances
 
@@ -27,7 +27,13 @@ s'arrête au milieu de la liste des objectifs : le relire s'il est complété.
   - [x] Étape 3 : `reservation_active`, `test_reservations.py`, `test_schemas.py`
   - [x] Étape 4 : notification d'annulation, tests avec `monkeypatch` et `Mock`
   - [x] Mutations (cours section 8) : lancées par Rémy, `MUTATIONS.md` mis en forme avec Claude chat
-- [ ] Séance 3 · PostgreSQL (support pas encore publié)
+- [ ] Séance 3 · PostgreSQL (SQL préparé avec Claude chat, exécuté et vérifié par Rémy)
+  - [x] Étapes 0 et 1 : `tp-db/docker-compose.yml` (`postgres:16`), `sql/init/01-schema.sql`
+  - [x] Étape 2 : `02-seed.sql`, 5 insertions refusées, suppression de Bob avec et sans cascade
+  - [x] Étape 3 : `sql/requetes.sql`, 8 requêtes avec résultats
+  - [x] Étape 4 : transactions (isolation et atomicité)
+  - [ ] Étape 5 : index, `MESURES.md`
+  - [ ] Étape 6 : `03-schema-v2.sql`, `tests-contraintes.sql`, `REVIEW-schema.md`
 - [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
@@ -58,6 +64,10 @@ s'arrête au milieu de la liste des objectifs : le relire s'il est complété.
   et `"date_fin" in msg`, le `model_validator` portant sur tout le corps.
 - 2026-09-26 (Rémy) : si la notification d'annulation échoue, l'annulation reste acquise
   (200). On attrape `(ConnectionError, TimeoutError)`, pas `Exception`.
+- 2026-09-30 (Rémy) : séance 3, l'agent ne crée ni ne modifie aucun fichier de `tp-db/`.
+  Suivi seulement, sur demande. Image `postgres:16` (consigne du TP ; projet prévu en 17).
+- 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour
+  garder l'historique des autres utilisateurs.
 
 ## Questions ouvertes
 
