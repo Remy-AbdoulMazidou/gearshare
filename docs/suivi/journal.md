@@ -272,3 +272,13 @@ Une entrée par session de travail, la plus récente en bas.
   seule réservation après rechargement, dates à l'envers avec message lisible et dates
   conservées, annulation, puis double annulation via le bouton Précédent qui affiche
   « Cette réservation est déjà annulée. ».
+
+## 2026-10-22 · TP séance 4, étape 6
+
+- Fait par : Rémy.
+- Backend arrêté avec `docker compose stop backend` : la liste affiche la page « Le service est
+  momentanément indisponible », avec un statut 503 visible dans l'onglet Network, sans stack trace.
+- Backend relancé avec `docker compose start backend` : la liste est vide. Le stockage du backend
+  est en mémoire et a été vidé au redémarrage. Le frontend ne stocke rien, il n'a rien perdu.
+- TP 1 de la séance 4 terminé. Reste : TP 2, brancher le backend sur PostgreSQL sans modifier le
+  frontend.

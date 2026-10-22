@@ -4,11 +4,11 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étape 5 terminée : réservations et annulation branchées ; il reste l'étape 6.
+TP 1 de la séance 4 terminé : frontend complet (liste, détail, création, réservation, annulation).
 
 ## Prochaine étape
 
-Étape 6 du TP frontend.
+TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) sans modifier le frontend.
 
 ## Avancement des séances
 
@@ -37,8 +37,7 @@ TP séance 4 (frontend). Étape 5 terminée : réservations et annulation branch
   - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
   - [x] TP frontend, étape 3 : liste et détail des objets
   - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
-  - [x] TP frontend, étape 5 : réservation et annulation depuis la page de détail
-  - [ ] TP frontend, étape 6
+  - [x] TP frontend, étapes 5 et 6 : réservations, annulation, limites observées
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)
