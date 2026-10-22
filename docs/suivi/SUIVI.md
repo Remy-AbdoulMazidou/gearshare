@@ -4,11 +4,12 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étapes 0 et 1 faites : compose à la racine avec les services backend et frontend, squelette du frontend écrit par GitHub Copilot (mode Agent).
+TP séance 4 (frontend). Étapes 0 à 2 faites : compose à la racine avec les services backend et
+frontend, squelette du frontend et client d'API.
 
 ## Prochaine étape
 
-Étape 2 du TP frontend : client d'API (api_client.py).
+Étape 3 du TP frontend : page « liste du matériel ».
 
 ## Avancement des séances
 
@@ -34,7 +35,8 @@ TP séance 4 (frontend). Étapes 0 et 1 faites : compose à la racine avec les s
   - [x] Étape 6 : `03-schema-v2.sql`, `tests-contraintes.sql`, `REVIEW-schema.md`
 - [ ] Séance 4 · Application en couches, Compose 3 services
   - [x] TP frontend, étape 1 : squelette et service Compose
-  - [ ] TP frontend, étapes 2 à 6
+  - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
+  - [ ] TP frontend, étapes 3 à 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

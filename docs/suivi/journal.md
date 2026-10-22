@@ -198,3 +198,16 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : 48 tests verts après le déplacement. Deux services `Up`, `/` répond 307 vers
   `/items`, CSS en 200.
 - Reste : étapes 2 à 6 du TP frontend.
+
+## 2026-10-22 · TP séance 4, étape 2
+
+- Fait par : Rémy pour l'observation des erreurs dans `/docs` et l'expérience `localhost`.
+  GitHub Copilot (mode Agent) pour le code, plan validé par Rémy.
+- `frontend/app/api_client.py` : `ApiClient` avec `list_items`, `get_item` et `create_item`,
+  erreurs HTTP et réseau traduites en `ApiError`, instance unique configurée par `API_BASE_URL`.
+- `ApiError.messages()` : un `detail` en chaîne (404) ou en liste d'erreurs (422) devient une
+  liste de messages affichables.
+- `frontend/app/main.py` : gestionnaire global d'`ApiError` qui rend `erreur.html`.
+- Vérifié : `messages()` testé dans le conteneur frontend. `list_items()` depuis le conteneur
+  renvoie les objets créés dans `/docs`. Avec `http://localhost:8000`, `ApiError 503`, car
+  `localhost` désigne le conteneur frontend lui-même. Remis à `http://backend:8000`.

@@ -19,3 +19,17 @@ Ne crée pas encore api_client.py, routers/items.py ni les templates items : ce 
 Remarque : Copilot a aussi mis à jour `SUIVI.md` et `journal.md`, en suivant les règles de
 `CLAUDE.md`. Il a écrit « Claude Code » dans le journal et oublié les étapes 5 et 6 de la
 séance 3. J'ai corrigé ces deux fichiers à la main.
+
+## TP 1, étape 2 : client d'API
+
+Outil : GitHub Copilot, mode Agent, dans VS Code.
+
+```text
+Étape 2 du TP ../cours/seances/seance-4-webapp/tp/tp1-frontend.md : écris frontend/app/api_client.py en partant de la section 2.5 du cours ../cours/seances/seance-4-webapp/cours/cours1-frontend.md.
+
+- Classe ApiClient avec seulement list_items, get_item et create_item (pas encore les réservations), et l'instance unique api_client en fin de module.
+- Ajoute à ApiError une méthode messages() qui renvoie une liste de messages affichables : si detail est une chaîne, une liste avec cette chaîne ; si c'est une liste d'erreurs 422 de FastAPI, un message par erreur sous la forme "nom du champ : msg", le nom du champ étant le dernier élément de loc.
+- Dans frontend/app/main.py, ajoute le gestionnaire d'exceptions ApiError de la section 2.6.
+
+Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit.
+```

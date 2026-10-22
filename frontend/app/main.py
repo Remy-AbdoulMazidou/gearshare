@@ -1,11 +1,26 @@
 from fastapi import FastAPI
+from fastapi import Request
+from fastapi.responses import HTMLResponse
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.templating import BASE_DIR
+from app.api_client import ApiError
+from app.templating import BASE_DIR, templates
 
 app = FastAPI(title="GearShare — frontend")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+
+
+@app.exception_handler(ApiError)
+def api_error_page(request: Request, exc: ApiError) -> HTMLResponse:
+    messages = {
+        404: "Cette page n'existe pas ou plus.",
+        503: "Le service est momentanément indisponible. Réessayez dans un instant.",
+    }
+    message = messages.get(exc.status_code, "Une erreur est survenue.")
+    return templates.TemplateResponse(
+        request, "erreur.html", {"message": message}, status_code=exc.status_code
+    )
 
 
 @app.get("/", include_in_schema=False)
