@@ -64,3 +64,45 @@ Pas de |safe, pas de JavaScript, pas de commentaires inutiles. Ne touche pas au 
 ```
 
 
+
+## TP 1, étape 5 : réserver et annuler
+
+Outil : GitHub Copilot, mode Agent. Deux prompts : d'abord le backend, puis le frontend.
+
+### Partie A : backend
+
+Le TP impose `PATCH /reservations/{id}`, alors que mon API avait `POST /reservations/{id}/annuler`.
+Comme les tests de la séance 2 doivent passer sans modification, j'ai choisi d'ajouter `PATCH` en
+gardant l'ancienne route, avec une logique commune.
+
+```text
+Étape 5 du TP ../cours/seances/seance-4-webapp/tp/tp1-frontend.md : le frontend annulera une réservation avec PATCH /reservations/{reservation_id} et le corps {"statut": "annulee"}. Prépare le backend (backend/app/routers/reservations.py et backend/app/schemas/reservation.py) :
+
+- Ajoute PATCH /reservations/{reservation_id} avec un schéma ReservationUpdate (extra="forbid", statut: Literal["annulee"]). Même comportement que POST /reservations/{reservation_id}/annuler : 404 si la réservation n'existe pas, 409 si elle est déjà annulée, envoi de la notification. Factorise la logique commune au lieu de la dupliquer.
+- Garde POST /reservations/{reservation_id}/annuler : les tests de la séance 2 doivent passer sans modification.
+- Vérifie que GET /reservations accepte un filtre item_id. Ajoute-le seulement s'il manque.
+- Ajoute des tests pytest pour PATCH dans backend/tests/test_reservations.py, sans modifier les tests existants : succès, 404, 409, et 422 si statut vaut autre chose que "annulee".
+
+Lance docker compose run --rm backend pytest. Pas de commentaires inutiles, ne touche pas au frontend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
+```
+
+Résultat : 52 tests verts. Copilot avait réécrit une décision du 24/09 dans `SUIVI.md`, je l'ai
+remise et j'ai ajouté une nouvelle décision datée du 22/10.
+
+### Partie B : frontend
+
+```text
+Étape 5 du TP ../cours/seances/seance-4-webapp/tp/tp1-frontend.md, partie frontend, en suivant les sections 2.5 et 2.7 du cours ../cours/seances/seance-4-webapp/cours/cours1-frontend.md. Le backend expose déjà GET /reservations?item_id=..., POST /reservations et PATCH /reservations/{reservation_id} (404, et 409 si déjà annulée).
+
+- api_client.py : ajoute list_reservations(item_id), create_reservation(item_id, date_debut, date_fin) et update_reservation_statut(reservation_id, statut).
+- Nouveau router frontend/app/routers/reservations.py, inclus dans main.py :
+  - POST /items/{item_id}/reservations : appelle create_reservation puis redirige en 303 vers /items/{item_id}?reservation=ok. En cas de 409 ou 422, réaffiche detail.html avec le même code, les messages de exc.messages() et les dates saisies. Les autres erreurs remontent au gestionnaire global.
+  - POST /reservations/{reservation_id} : lit les champs cachés statut et item_id, appelle update_reservation_statut puis redirige en 303 vers /items/{item_id}. Si le backend répond 409, redirige en 303 vers /items/{item_id}?annulation=deja.
+- GET /items/{item_id} charge aussi les réservations de l'item.
+- detail.html : liste des réservations (dates et statut), pour chaque réservation active un formulaire POST « Annuler » avec les champs cachés statut=annulee et item_id, le formulaire « Réserver » avec deux champs date obligatoires, le message « Votre réservation est enregistrée. », les messages d'erreur, et « Cette réservation est déjà annulée. » quand annulation=deja.
+
+Contraintes du TP : aucun httpx en dehors de api_client.py, aucune vérification de dates en Python, pas de JavaScript, pas de |safe, aucune adresse de backend en dur. Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
+```
+
+Ensuite, correction de `ApiError.messages()` par moi : le message affichait
+« body : Value error, date_fin doit être postérieure à date_debut ».

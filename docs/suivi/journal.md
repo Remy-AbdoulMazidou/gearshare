@@ -252,3 +252,23 @@ Une entrée par session de travail, la plus récente en bas.
 - Ajout de quatre tests PATCH : succès, réservation inexistante, réservation déjà annulée et
   statut invalide.
 - Le filtre `item_id` de `GET /reservations` était déjà présent.
+
+## 2026-10-22 · TP séance 4, étape 5 frontend
+
+- Fait par : GitHub Copilot (mode Agent), plan validé par Rémy.
+- `frontend/app/api_client.py` : ajout des appels de liste, création et mise à jour du statut
+  des réservations.
+- `frontend/app/routers/reservations.py` : ajout des routes frontend de réservation et
+  d'annulation, avec redirections PRG et réaffichage des erreurs 409/422.
+- `frontend/app/routers/items.py` et `detail.html` : chargement et affichage des réservations,
+  formulaire de réservation et boutons d'annulation.
+- Vérifié : syntaxe Python, diagnostics Pylance, `git diff --check`, construction Compose,
+  démarrage des deux services, redirections 303, erreur 422 avec message backend, et second
+  appel d'annulation redirigé vers `annulation=deja`.
+- Fait par Rémy : correction de `ApiError.messages()`. Une erreur du `model_validator` a
+  `loc = ["body"]` et Pydantic préfixe le message par « Value error, ». Le message affiché
+  devient « date_fin doit être postérieure à date_debut ».
+- Vérifié par Rémy dans le navigateur : réservation valide avec message de confirmation et une
+  seule réservation après rechargement, dates à l'envers avec message lisible et dates
+  conservées, annulation, puis double annulation via le bouton Précédent qui affiche
+  « Cette réservation est déjà annulée. ».

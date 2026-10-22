@@ -4,12 +4,11 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étape 5 en cours : contrat backend d'annulation d'une réservation
-préparé ; il reste le branchement dans le frontend.
+TP séance 4 (frontend). Étape 5 terminée : réservations et annulation branchées ; il reste l'étape 6.
 
 ## Prochaine étape
 
-Étape 5 du TP frontend : appeler PATCH depuis la page de détail, puis réaliser l'étape 6.
+Étape 6 du TP frontend.
 
 ## Avancement des séances
 
@@ -38,7 +37,7 @@ préparé ; il reste le branchement dans le frontend.
   - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
   - [x] TP frontend, étape 3 : liste et détail des objets
   - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
-  - [ ] TP frontend, étape 5 : annulation ; contrat PATCH backend préparé
+  - [x] TP frontend, étape 5 : réservation et annulation depuis la page de détail
   - [ ] TP frontend, étape 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
@@ -59,28 +58,18 @@ préparé ; il reste le branchement dans le frontend.
 - 2026-09-24 : `PUT /items/{item_id}` réutilise `ItemCreate` plutôt qu'un schéma dédié,
   puisque le contrat d'un remplacement complet est celui d'une création.
 - 2026-09-24 : stockage `FAKE_DB` en mémoire, un par router, provisoire jusqu'à la séance 3.
-- 2026-09-24 : pas de `skip` sur `GET /reservations`, la spec ne le prévoit pas.
-  Écart assumé avec le gabarit d'`items`, noté dans `REVIEW.md`.
-- 2026-09-24 : pas de schéma `ReservationUpdate` ni de `skip` sur `GET /reservations`,
-  la spec ne les prévoit pas. Écarts assumés avec le gabarit d'`items`, notés dans `REVIEW.md`.
-- 2026-09-26 : `_next_id()` vaut `max(FAKE_DB) + 1`. Changement assumé : supprimer l'id le
-  plus grand le libère pour le `POST` suivant (1, 2, 3, suppression du 3, le suivant vaut 3).
+- 2026-09-24 : pas de `skip` sur `GET /reservations` ni de schéma `ReservationUpdate`, écarts assumés avec le gabarit d'`items`, notés dans `REVIEW.md`.
+- 2026-09-26 : `_next_id()` vaut `max(FAKE_DB) + 1` ; supprimer l'id le plus grand le libère pour le `POST` suivant.
 - 2026-09-26 : `tests/` et `pytest.ini` copiés dans l'image et montés en volume.
-- 2026-09-26 : un test par `raise` (pas de `parametrize` sur les 404), pas de test sur
-  `/items/abc` (conversion faite par FastAPI). Erreur de dates testée par `loc == ["body"]`
-  et `"date_fin" in msg`, le `model_validator` portant sur tout le corps.
-- 2026-09-26 (Rémy) : si la notification d'annulation échoue, l'annulation reste acquise
-  (200). On attrape `(ConnectionError, TimeoutError)`, pas `Exception`.
-- 2026-09-30 (Rémy) : séance 3, l'agent ne crée ni ne modifie aucun fichier de `tp-db/`.
-  Suivi seulement, sur demande. Image `postgres:16` (consigne du TP ; projet prévu en 17).
-- 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour
-  garder l'historique des autres utilisateurs.
+- 2026-09-26 : un test par `raise`, pas de test sur `/items/abc` (conversion FastAPI) ; erreur de dates testée par `loc == ["body"]` et `"date_fin" in msg`.
+- 2026-09-26 (Rémy) : si la notification échoue, l'annulation reste acquise (200) ; on attrape `(ConnectionError, TimeoutError)`.
+- 2026-09-30 (Rémy) : l'agent ne crée ni ne modifie aucun fichier de `tp-db/` ; suivi seulement, image `postgres:16`.
+- 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour garder l'historique.
 - 2026-10-22 : ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}`, contrat imposé par le TP frontend de la séance 4. Seul `{"statut": "annulee"}` est accepté. La logique est partagée avec `POST /reservations/{reservation_id}/annuler`, gardé pour que les tests de la séance 2 passent sans modification.
+- 2026-10-22 : le frontend appelle `GET /reservations`, `POST /reservations` et `PATCH /reservations/{reservation_id}` ; la page de détail permet de réserver et d'annuler avec PRG.
 
 ## Questions ouvertes
 
-- `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives
-  sur le même créneau. Hors spec, non testé, noté dans `REVIEW.md`. À revoir avec la base.
+- `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Hors spec, non testé, noté dans `REVIEW.md`.
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
-- Pas encore de `.env.example` à la racine, alors que le lancement en une commande est
-  un critère bloquant du rendu. À traiter au plus tard en séance 4.
+- Pas encore de `.env.example` à la racine, alors que le lancement en une commande est un critère bloquant du rendu. À traiter au plus tard en séance 4.

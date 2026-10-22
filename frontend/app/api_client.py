@@ -1,4 +1,5 @@
 import os
+from datetime import date
 from typing import Any
 
 import httpx
@@ -16,11 +17,14 @@ class ApiError(Exception):
         if isinstance(self.detail, str):
             return [self.detail]
         if isinstance(self.detail, list):
-            return [
-                f"{error['loc'][-1]} : {error['msg']}"
-                for error in self.detail
-            ]
+            return [self._message(error) for error in self.detail]
         return [str(self.detail)]
+
+    @staticmethod
+    def _message(error: dict[str, Any]) -> str:
+        msg = error["msg"].removeprefix("Value error, ")
+        champ = error["loc"][-1]
+        return msg if champ == "body" else f"{champ} : {msg}"
 
 
 class ApiClient:
@@ -50,6 +54,31 @@ class ApiClient:
 
     def create_item(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self._send("POST", "/items", json=payload)
+
+    def list_reservations(self, item_id: int) -> list[dict[str, Any]]:
+        return self._send("GET", "/reservations", params={"item_id": item_id})
+
+    def create_reservation(
+        self, item_id: int, date_debut: date, date_fin: date
+    ) -> dict[str, Any]:
+        return self._send(
+            "POST",
+            "/reservations",
+            json={
+                "item_id": item_id,
+                "date_debut": date_debut.isoformat(),
+                "date_fin": date_fin.isoformat(),
+            },
+        )
+
+    def update_reservation_statut(
+        self, reservation_id: int, statut: str
+    ) -> dict[str, Any]:
+        return self._send(
+            "PATCH",
+            f"/reservations/{reservation_id}",
+            json={"statut": statut},
+        )
 
 
 api_client = ApiClient(base_url=os.environ["API_BASE_URL"])
