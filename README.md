@@ -52,7 +52,7 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 |---|---|---|
 | 1 · API FastAPI | Terminé | `backend/`, `docs/tp/seance-1/` (spec, review, prompts, plan de l'agent, review Copilot) |
 | 2 · Tests | Terminé | `backend/tests/` (48 tests, couverture 100 %), `docs/tp/seance-2/` (mutations, prompts) |
-| 3 · PostgreSQL | En cours (étapes 0 à 4 faites) | `tp-db/` |
+| 3 · PostgreSQL | Terminé | `tp-db/` (schéma, requêtes, `MESURES.md`, schéma v2, `REVIEW-schema.md`, tests de contraintes), `docs/tp/seance-3/` (prompts Copilot) |
 
 Le détail de l'avancement et des décisions est dans `docs/suivi/SUIVI.md`, et l'historique des
 sessions dans `docs/suivi/journal.md`.
@@ -65,7 +65,9 @@ sessions dans `docs/suivi/journal.md`.
 - **Prompts** préparés avec Claude (chat), puis exécutés par Claude Code. Ils sont copiés tels
   quels dans `docs/tp/seance-N/prompts.md`.
 - **GitHub Copilot** : seconde review de la ressource `reservations`, comparée à la mienne
-  (`docs/tp/seance-1/review-copilot.md` et `REVIEW.md`).
+  (`docs/tp/seance-1/review-copilot.md` et `REVIEW.md`). En séance 3, Copilot en mode Agent a
+  écrit le DDL du schéma v2, que j'ai relu avec la grille du prof puis testé
+  (`tp-db/REVIEW-schema.md`).
 - **De mon côté** : validation des specs et des plans, décisions de conception, relecture du
   code, tests manuels avec curl, tests de mutation, commits. Pour la séance 3, le SQL a été
   préparé avec Claude (chat), puis exécuté et vérifié par moi dans `psql`.
