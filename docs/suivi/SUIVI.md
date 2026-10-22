@@ -4,12 +4,12 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étapes 0 à 2 faites : compose à la racine avec les services backend et
-frontend, squelette du frontend et client d'API.
+TP séance 4 (frontend). Étape 3 faite : pages de liste et de détail des objets, branchées sur le
+client d'API.
 
 ## Prochaine étape
 
-Étape 3 du TP frontend : page « liste du matériel ».
+Étape 4 du TP frontend : formulaire de création d'un objet.
 
 ## Avancement des séances
 
@@ -36,7 +36,8 @@ frontend, squelette du frontend et client d'API.
 - [ ] Séance 4 · Application en couches, Compose 3 services
   - [x] TP frontend, étape 1 : squelette et service Compose
   - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
-  - [ ] TP frontend, étapes 3 à 6
+  - [x] TP frontend, étape 3 : liste et détail des objets
+  - [ ] TP frontend, étapes 4 à 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

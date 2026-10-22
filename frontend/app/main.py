@@ -5,10 +5,12 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api_client import ApiError
+from app.routers import items
 from app.templating import BASE_DIR, templates
 
 app = FastAPI(title="GearShare — frontend")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+app.include_router(items.router)
 
 
 @app.exception_handler(ApiError)

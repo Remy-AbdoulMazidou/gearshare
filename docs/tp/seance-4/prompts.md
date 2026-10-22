@@ -32,4 +32,19 @@ Outil : GitHub Copilot, mode Agent, dans VS Code.
 - Dans frontend/app/main.py, ajoute le gestionnaire d'exceptions ApiError de la section 2.6.
 
 Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit.
+
+
+## TP 1, étape 3 : pages liste et détail
+
+Outil : GitHub Copilot, mode Agent.
+
+```text
+Étape 3 du TP ../cours/seances/seance-4-webapp/tp/tp1-frontend.md, en suivant les sections 2.4 et 2.6 du cours ../cours/seances/seance-4-webapp/cours/cours1-frontend.md.
+
+- frontend/app/routers/items.py : routes GET /items et GET /items/{item_id}, qui passent uniquement par api_client. Inclus le router dans main.py.
+- templates/items/list.html : le tableau du cours, avec au-dessus un lien « Proposer un objet » vers /items/new.
+- templates/items/detail.html : titre, description, tarif, statut et un lien de retour vers la liste.
+
+Pas de |safe, pas de JavaScript, pas de commentaires inutiles. Ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
+```
 ```

@@ -211,3 +211,17 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : `messages()` testé dans le conteneur frontend. `list_items()` depuis le conteneur
   renvoie les objets créés dans `/docs`. Avec `http://localhost:8000`, `ApiError 503`, car
   `localhost` désigne le conteneur frontend lui-même. Remis à `http://backend:8000`.
+
+## 2026-10-22 · TP séance 4, étape 3
+
+- Fait par : GitHub Copilot (mode Agent), plan validé par Rémy.
+- `frontend/app/routers/items.py` : routes `GET /items` et `GET /items/{item_id}` qui passent
+  uniquement par `api_client`, puis rendent les templates correspondants.
+- `frontend/app/main.py` : router des pages d'objets inclus.
+- `frontend/app/templates/items/list.html` : tableau des objets et lien « Proposer un objet ».
+  `detail.html` affiche le titre, la description, le tarif, le statut et le retour à la liste.
+- Vérifié : Compose démarre ; `/` répond 307 vers `/items`, la liste et le détail répondent 200,
+  un objet inexistant répond 404 avec la page d'erreur, l'échappement de `<b>Test XSS</b>` est
+  actif, `git diff --check` réussit et les 48 tests backend passent.
+- Vérifié par Rémy dans le navigateur : 404 visible dans l'onglet Network sur `/items/9999`,
+  titre `<b>Test XSS</b>` affiché en texte dans la liste.
