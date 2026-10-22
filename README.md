@@ -7,7 +7,7 @@ Plateforme de prêt de matériel entre étudiants. Projet du module « Fullstack
 
 ```bash
 git clone https://github.com/Remy-AbdoulMazidou/gearshare.git
-cd gearshare/backend
+cd gearshare
 docker compose up --build
 ```
 
@@ -16,11 +16,11 @@ docker compose up --build
 
 ### Lancer les tests
 
-Depuis `backend/` :
+Depuis la racine du dépôt :
 
 ```bash
-docker compose run --rm api pytest
-docker compose run --rm api pytest --cov=app --cov-report=term-missing
+docker compose run --rm backend pytest
+docker compose run --rm backend pytest --cov=app --cov-report=term-missing
 ```
 
 ### Base de données du TP séance 3
@@ -34,8 +34,6 @@ docker compose exec db psql -U gearshare -d gearshare
 Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au premier démarrage.
 `docker compose down -v && docker compose up -d` repart d'une base propre.
 
-> La commande de lancement unique, à la racine du dépôt, arrivera avec le frontend et
-> PostgreSQL branché à l'API (séance 4).
 
 ## Organisation du dépôt
 

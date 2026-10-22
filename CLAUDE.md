@@ -70,7 +70,7 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 - Pour chaque `raise` d'un router ou d'un service, un test.
 - Ne jamais mocker le sujet du test ni le stockage. Mocker l'horloge et les services externes.
 - Couverture visée : 70 à 80 %.
-- Lancer les tests : `docker compose run --rm api pytest` (depuis `backend/`).
+- Lancer les tests : `docker compose run --rm backend pytest` (depuis la racine du dépôt).
 
 ## Façon de travailler
 
