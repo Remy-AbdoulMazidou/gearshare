@@ -1,17 +1,14 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-10-06
+Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 3 (PostgreSQL), dans `tp-db/`. Étapes 0 à 4 faites. SQL préparé avec l'aide de
-Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rien écrit dans
-`tp-db/`. Commits poussés, dépôt public.
+TP séance 4 (frontend). Étapes 0 et 1 faites : compose à la racine avec les services backend et frontend, squelette du frontend écrit par GitHub Copilot (mode Agent).
 
 ## Prochaine étape
 
-Étape 5 (index, `MESURES.md`), puis étape 6 (`03-schema-v2.sql`, `tests-contraintes.sql`,
-`REVIEW-schema.md`, où reporter la décision sur la suppression d'un compte).
+Étape 2 du TP frontend : client d'API (api_client.py).
 
 ## Avancement des séances
 
@@ -28,14 +25,16 @@ Claude (chat), exécuté et vérifié par Rémy dans `psql`. Claude Code n'a rie
   - [x] Étape 3 : `reservation_active`, `test_reservations.py`, `test_schemas.py`
   - [x] Étape 4 : notification d'annulation, tests avec `monkeypatch` et `Mock`
   - [x] Mutations (cours section 8) : lancées par Rémy, `MUTATIONS.md` mis en forme avec Claude chat
-- [ ] Séance 3 · PostgreSQL (SQL préparé avec Claude chat, exécuté et vérifié par Rémy)
+- [x] Séance 3 · PostgreSQL (SQL préparé avec Claude chat, exécuté et vérifié par Rémy)
   - [x] Étapes 0 et 1 : `tp-db/docker-compose.yml` (`postgres:16`), `sql/init/01-schema.sql`
   - [x] Étape 2 : `02-seed.sql`, 5 insertions refusées, suppression de Bob avec et sans cascade
   - [x] Étape 3 : `sql/requetes.sql`, 8 requêtes avec résultats
   - [x] Étape 4 : transactions (isolation et atomicité)
-  - [ ] Étape 5 : index, `MESURES.md`
-  - [ ] Étape 6 : `03-schema-v2.sql`, `tests-contraintes.sql`, `REVIEW-schema.md`
-- [ ] Séance 4 · Application en couches, Compose 3 services (pas encore publié)
+  - [x] Étape 5 : index, `MESURES.md`
+  - [x] Étape 6 : `03-schema-v2.sql`, `tests-contraintes.sql`, `REVIEW-schema.md`
+- [ ] Séance 4 · Application en couches, Compose 3 services
+  - [x] TP frontend, étape 1 : squelette et service Compose
+  - [ ] TP frontend, étapes 2 à 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

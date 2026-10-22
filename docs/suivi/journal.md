@@ -173,3 +173,28 @@ Une entrée par session de travail, la plus récente en bas.
 - Dépôt rendu public par Rémy. Non vérifié par Claude Code (`gh` non installé).
 - Problèmes rencontrés : aucun.
 - Reste : étapes 5 et 6 du TP séance 3.
+
+## 2026-10-22 · TP séance 3, étapes 5 et 6
+
+- Fait par : Rémy pour les mesures dans `psql`, les tests et la correction du trigger. GitHub
+  Copilot (mode Agent) pour le DDL du schéma v2. Review et mise en forme de `MESURES.md` et
+  `REVIEW-schema.md` avec l'aide de Claude (chat).
+- Étape 5 : index sur `titre`, `LIKE '%...'`, index sur `disponible`, question bonus sur la
+  collation `en_US.utf8` et `varchar_pattern_ops`. Résultats dans `tp-db/MESURES.md`.
+- Étape 6 : `03-schema-v2.sql` (avis, tags, `item_tags`, contrainte `EXCLUDE`, trigger), review
+  avec la grille du prof, 7 insertions qui échouent dans `tests-contraintes.sql`.
+- Problèmes rencontrés : condition du trigger inversée après ma première correction
+  (`NOT EXISTS` gardé). Trouvé grâce aux tests, corrigé, base reconstruite avec `down -v`.
+- Vérifié : `docker compose down -v && docker compose up -d` reconstruit la base avec 01, 02 et 03.
+
+## 2026-10-22 · TP séance 4, étapes 0 et 1
+
+- Fait par : Rémy pour l'étape 0, avec l'aide de Claude (chat). GitHub Copilot (mode Agent)
+  pour le squelette du frontend, plan validé par Rémy. Prompt dans `docs/tp/seance-4/prompts.md`.
+- Étape 0 : `docker-compose.yml` déplacé à la racine avec `git mv`, service `api` renommé
+  `backend`, README et `CLAUDE.md` mis à jour.
+- Étape 1 : frontend FastAPI (dépendances, Dockerfile, Jinja2, `/static`, redirection de `/`
+  vers `/items`, templates de base et d'erreur, CSS du cours), service `frontend` dans Compose.
+- Vérifié : 48 tests verts après le déplacement. Deux services `Up`, `/` répond 307 vers
+  `/items`, CSS en 200.
+- Reste : étapes 2 à 6 du TP frontend.
