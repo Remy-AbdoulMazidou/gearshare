@@ -4,12 +4,12 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étape 4 faite : formulaire de création d'un objet avec
-Post/Redirect/Get et affichage des erreurs 422.
+TP séance 4 (frontend). Étape 5 en cours : contrat backend d'annulation d'une réservation
+préparé ; il reste le branchement dans le frontend.
 
 ## Prochaine étape
 
-Étape 5 du TP frontend : réservations depuis la page de détail.
+Étape 5 du TP frontend : appeler PATCH depuis la page de détail, puis réaliser l'étape 6.
 
 ## Avancement des séances
 
@@ -38,7 +38,8 @@ Post/Redirect/Get et affichage des erreurs 422.
   - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
   - [x] TP frontend, étape 3 : liste et détail des objets
   - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
-  - [ ] TP frontend, étapes 5 et 6
+  - [ ] TP frontend, étape 5 : annulation ; contrat PATCH backend préparé
+  - [ ] TP frontend, étape 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)
@@ -58,6 +59,8 @@ Post/Redirect/Get et affichage des erreurs 422.
 - 2026-09-24 : `PUT /items/{item_id}` réutilise `ItemCreate` plutôt qu'un schéma dédié,
   puisque le contrat d'un remplacement complet est celui d'une création.
 - 2026-09-24 : stockage `FAKE_DB` en mémoire, un par router, provisoire jusqu'à la séance 3.
+- 2026-09-24 : pas de `skip` sur `GET /reservations`, la spec ne le prévoit pas.
+  Écart assumé avec le gabarit d'`items`, noté dans `REVIEW.md`.
 - 2026-09-24 : pas de schéma `ReservationUpdate` ni de `skip` sur `GET /reservations`,
   la spec ne les prévoit pas. Écarts assumés avec le gabarit d'`items`, notés dans `REVIEW.md`.
 - 2026-09-26 : `_next_id()` vaut `max(FAKE_DB) + 1`. Changement assumé : supprimer l'id le
@@ -72,6 +75,7 @@ Post/Redirect/Get et affichage des erreurs 422.
   Suivi seulement, sur demande. Image `postgres:16` (consigne du TP ; projet prévu en 17).
 - 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour
   garder l'historique des autres utilisateurs.
+- 2026-10-22 : ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}`, contrat imposé par le TP frontend de la séance 4. Seul `{"statut": "annulee"}` est accepté. La logique est partagée avec `POST /reservations/{reservation_id}/annuler`, gardé pour que les tests de la séance 2 passent sans modification.
 
 ## Questions ouvertes
 

@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Path, Query
 
-from app.schemas.reservation import ReservationCreate, ReservationRead
+from app.schemas.reservation import ReservationCreate, ReservationRead, ReservationUpdate
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
 logger = logging.getLogger(__name__)
@@ -52,8 +52,7 @@ def get_reservation(reservation_id: int = Path(ge=1)):
     return reservation
 
 
-@router.post("/{reservation_id}/annuler", response_model=ReservationRead)
-def annuler_reservation(reservation_id: int = Path(ge=1)):
+def _annuler_reservation(reservation_id: int) -> dict:
     reservation = FAKE_DB.get(reservation_id)
     if reservation is None:
         raise HTTPException(
@@ -71,3 +70,15 @@ def annuler_reservation(reservation_id: int = Path(ge=1)):
             "Notification d'annulation non envoyée pour la réservation %s", reservation_id
         )
     return reservation
+
+
+@router.patch("/{reservation_id}", response_model=ReservationRead)
+def update_reservation(
+    payload: ReservationUpdate, reservation_id: int = Path(ge=1)
+):
+    return _annuler_reservation(reservation_id)
+
+
+@router.post("/{reservation_id}/annuler", response_model=ReservationRead)
+def annuler_reservation(reservation_id: int = Path(ge=1)):
+    return _annuler_reservation(reservation_id)

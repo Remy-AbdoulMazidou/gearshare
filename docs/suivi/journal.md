@@ -78,6 +78,7 @@ Une entrée par session de travail, la plus récente en bas.
   `DELETE` puis `GET`, filtres `q` et `disponible`, pagination préparée par `storage`.
 - Vérifié : 30 tests verts ; un test seul passe aussi avec `-k` ; couverture totale 81 %,
   `routers/items.py` à 100 %, `routers/reservations.py` à 39 % (pas encore testé).
+
 - Contrôle : retrait de `exclude_unset=True` sur une copie dans le conteneur, le test
   `test_patch_partiel_conserve_les_autres_champs` passe au rouge comme attendu.
 - Prompt copié dans `docs/tp/seance-2/prompts.md` (Prompt 2).
@@ -240,3 +241,14 @@ Une entrée par session de travail, la plus récente en bas.
   200 ; une création valide répond 303 vers le détail ; une saisie invalide répond 422 avec
   le message du backend et les champs préremplis. Syntaxe Python et diagnostics Pylance sans
   erreur.
+
+## 2026-10-22 · TP séance 4, étape 5
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}` pour annuler une
+  réservation depuis le frontend.
+- Logique d'annulation factorisée entre PATCH et POST, avec conservation des réponses 404 et 409
+  et de la notification.
+- Ajout de quatre tests PATCH : succès, réservation inexistante, réservation déjà annulée et
+  statut invalide.
+- Le filtre `item_id` de `GET /reservations` était déjà présent.

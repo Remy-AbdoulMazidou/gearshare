@@ -149,6 +149,47 @@ def test_annuler_reservation_deja_annulee_renvoie_409(
     assert client.get(f"/reservations/{reservation_id}").json()["statut"] == "annulee"
 
 
+def test_patch_reservation_active_renvoie_200_avec_statut_annulee(
+    client: TestClient, reservation_active: dict[str, Any]
+) -> None:
+    response = client.patch(
+        f"/reservations/{reservation_active['id']}", json={"statut": "annulee"}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["statut"] == "annulee"
+
+
+def test_patch_reservation_inexistante_renvoie_404(client: TestClient) -> None:
+    response = client.patch("/reservations/999", json={"statut": "annulee"})
+
+    assert response.status_code == 404
+
+
+def test_patch_reservation_deja_annulee_renvoie_409(
+    client: TestClient, reservation_active: dict[str, Any]
+) -> None:
+    reservation_id = reservation_active["id"]
+    client.post(f"/reservations/{reservation_id}/annuler")
+
+    response = client.patch(
+        f"/reservations/{reservation_id}", json={"statut": "annulee"}
+    )
+
+    assert response.status_code == 409
+
+
+def test_patch_reservation_avec_statut_invalide_renvoie_422(
+    client: TestClient, reservation_active: dict[str, Any]
+) -> None:
+    response = client.patch(
+        f"/reservations/{reservation_active['id']}", json={"statut": "active"}
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"][-1] == "statut"
+
+
 # Notification
 
 
