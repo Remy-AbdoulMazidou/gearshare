@@ -4,12 +4,12 @@ Dernière mise à jour : 2026-10-22
 
 ## En cours
 
-TP séance 4 (frontend). Étape 3 faite : pages de liste et de détail des objets, branchées sur le
-client d'API.
+TP séance 4 (frontend). Étape 4 faite : formulaire de création d'un objet avec
+Post/Redirect/Get et affichage des erreurs 422.
 
 ## Prochaine étape
 
-Étape 4 du TP frontend : formulaire de création d'un objet.
+Étape 5 du TP frontend : réservations depuis la page de détail.
 
 ## Avancement des séances
 
@@ -37,7 +37,8 @@ client d'API.
   - [x] TP frontend, étape 1 : squelette et service Compose
   - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
   - [x] TP frontend, étape 3 : liste et détail des objets
-  - [ ] TP frontend, étapes 4 à 6
+  - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
+  - [ ] TP frontend, étapes 5 et 6
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

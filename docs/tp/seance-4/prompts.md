@@ -47,4 +47,20 @@ Outil : GitHub Copilot, mode Agent.
 
 Pas de |safe, pas de JavaScript, pas de commentaires inutiles. Ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
 ```
+
+## TP 1, étape 4 : formulaire de création
+
+Outil : GitHub Copilot, mode Agent.
+
+```text
+Étape 4 du TP ../cours/seances/seance-4-webapp/tp/tp1-frontend.md, en appliquant le schéma Post/Redirect/Get de la section 2.7 du cours ../cours/seances/seance-4-webapp/cours/cours1-frontend.md à la création d'un item.
+
+- Dans frontend/app/routers/items.py : GET /items/new qui affiche templates/items/form.html, déclarée avant GET /items/{item_id}. POST /items qui lit les quatre champs avec Form(), appelle api_client.create_item, puis redirige en 303 vers la page de détail du nouvel item.
+- disponible a False comme valeur par défaut (une case non cochée n'envoie rien). Une description vide est envoyée au backend comme None.
+- En cas d'ApiError 422 : réaffiche le formulaire avec le code 422, les messages de exc.messages() au-dessus du formulaire et les valeurs saisies. Toute autre erreur remonte au gestionnaire global.
+- form.html : titre (required minlength="3"), description (textarea), tarif_jour (number, required min="0.01" step="0.01"), disponible (checkbox), chaque champ prérempli avec la saisie précédente.
+
+Pas de |safe, pas de JavaScript, pas de commentaires inutiles. Ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
 ```
+
+

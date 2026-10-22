@@ -225,3 +225,18 @@ Une entrée par session de travail, la plus récente en bas.
   actif, `git diff --check` réussit et les 48 tests backend passent.
 - Vérifié par Rémy dans le navigateur : 404 visible dans l'onglet Network sur `/items/9999`,
   titre `<b>Test XSS</b>` affiché en texte dans la liste.
+
+## 2026-10-22 · TP séance 4, étape 4
+
+- Fait par : GitHub Copilot (mode Agent), plan validé par Rémy.
+- `frontend/app/routers/items.py` : `GET /items/new` affiche le formulaire ; `POST /items`
+  lit les champs avec `Form()`, transmet la description vide comme `None`, utilise `False`
+  quand la case « disponible » est décochée et redirige en 303 vers le détail après création.
+- En cas d'`ApiError 422`, le formulaire est rendu avec le code 422, les messages de
+  `exc.messages()` et les valeurs saisies ; les autres erreurs remontent au gestionnaire global.
+- `frontend/app/templates/items/form.html` : champs HTML contraints et préremplis, sans
+  JavaScript ni filtre `safe`.
+- Vérifié : `docker compose up -d --build backend frontend` réussit ; `GET /items/new` répond
+  200 ; une création valide répond 303 vers le détail ; une saisie invalide répond 422 avec
+  le message du backend et les champs préremplis. Syntaxe Python et diagnostics Pylance sans
+  erreur.
