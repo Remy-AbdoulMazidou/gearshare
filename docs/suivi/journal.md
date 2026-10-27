@@ -314,3 +314,29 @@ Une entrée par session de travail, la plus récente en bas.
 - Copie et montage d'Alembic dans l'image et le conteneur backend.
 - Aucune migration générée ni appliquée. Aucune modification du frontend, des routers ou de
   `main.py`.
+
+## 2026-10-27 · TP séance 4, étape 4
+
+- Fait par : GitHub Copilot (mode Agent).
+- Création des exceptions métier, des schémas Pydantic avec `owner_id`, du repository et du
+  service `items`.
+- Remplacement de `FAKE_DB` par la chaîne `DbSession`, `ItemRepository` et `ItemService` dans le
+  router, en conservant les routes et les statuts de la séance 1.
+- Ajout de la traduction globale des exceptions métier en réponses HTTP dans `main.py`.
+- Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
+- Vérifié : chaque fichier relu après modification, syntaxe Python du backend valide et `git diff
+  --check` sans erreur.
+
+## 2026-10-27 · TP séance 4, étape 4 · point de contrôle
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de `UserRepository` et vérification de l'existence du propriétaire dans `ItemService`
+  avant création, remplacement et modification de `owner_id`.
+- Un propriétaire inexistant déclenche maintenant `RessourceIntrouvable` avec un message clair,
+  traduit en 404 par le gestionnaire global, avant toute écriture.
+- Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
+- Vérifié par Rémy avec `curl` et `psql` : création d'un item, liste, 404 sur `/items/9999`,
+  ligne présente dans la table `items`, données conservées après `docker compose restart`.
+- Point de contrôle de l'étape 1, testé par Rémy : `POST /items` avec `owner_id: 999` donnait
+  500 et rien n'était écrit en base (`rollback` de `get_db`). Correction demandée à Copilot : le
+  service vérifie le propriétaire, réponse 404 « Utilisateur 999 introuvable ».

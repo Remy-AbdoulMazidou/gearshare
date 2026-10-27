@@ -4,12 +4,11 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 3 terminée : Alembic et PostgreSQL sont branchés dans Compose, sans
-générer ni appliquer de migration.
+TP 2 de la séance 4, étape 4 terminée : la verticale `items` vérifie aussi l'existence du propriétaire avant écriture.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 4 : générer, relire et appliquer la migration initiale.
+TP 2 de la séance 4, étape 5 : mesurer puis corriger le N+1 sur la liste des items.
 
 ## Avancement des séances
 
@@ -71,6 +70,8 @@ TP 2 de la séance 4, étape 4 : générer, relire et appliquer la migration ini
 - 2026-10-22 : ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}`, contrat imposé par le TP frontend de la séance 4. Seul `{"statut": "annulee"}` est accepté. La logique est partagée avec `POST /reservations/{reservation_id}/annuler`, gardé pour que les tests de la séance 2 passent sans modification.
 - 2026-10-22 : le frontend appelle `GET /reservations`, `POST /reservations` et `PATCH /reservations/{reservation_id}` ; la page de détail permet de réserver et d'annuler avec PRG.
 - 2026-10-27 : Alembic lit `settings.database_url`, utilise `Base.metadata` avec tous les modèles importés, et le service backend attend PostgreSQL sain dans Compose ; les migrations restent manuelles jusqu'à l'étape 6.
+- 2026-10-27 : les exceptions métier sont traduites en HTTP par un gestionnaire global dans `main.py` ; les repositories ne font jamais de `commit()`, la transaction reste gérée par `get_db`.
+- 2026-10-27 : `ItemService` vérifie l'existence de `owner_id` avec `UserRepository` avant création, remplacement ou modification du propriétaire.
 
 ## Questions ouvertes
 

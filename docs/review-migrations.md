@@ -71,3 +71,26 @@ modèle et la base.
 
 Une migration autogénérée est un brouillon. Il faut toujours la relire avant de l'appliquer,
 surtout quand une colonne est supprimée : `drop_column` détruit des données.
+
+## 2. Traduction des exceptions métier (étape 4)
+
+Choix : un gestionnaire d'exceptions global dans `main.py`, plutôt qu'un `try`/`except` dans
+chaque route. La correspondance entre exception métier et code HTTP (introuvable → 404, conflit →
+409, accès refusé → 403) est écrite une seule fois, et les routes restent de simples traducteurs
+entre schémas et service.
+
+## 3. Point de contrôle de l'étape 1 : erreur après un ajout
+
+Test : `POST /items` avec `owner_id: 999`, un utilisateur qui n'existe pas.
+
+- Avant correction : `500 Internal Server Error`. L'`IntegrityError` de PostgreSQL (clé
+  étrangère) remontait jusqu'à `get_db`, qui faisait un `rollback`. `SELECT count(*) FROM items`
+  donnait toujours 3 : rien n'avait été écrit.
+- Ce n'était pas le bon code : l'erreur vient du client, pas du serveur. C'est au service de la
+  détecter avant d'écrire en base.
+- Correction : `UserRepository.get` et une vérification dans `ItemService` avant la création, le
+  remplacement ou le changement de propriétaire. Réponse obtenue :
+  `404 {"detail": "Utilisateur 999 introuvable"}`, et toujours 3 items en base.
+
+La base reste le dernier garde-fou (clé étrangère, `rollback` dans `get_db`), mais le message
+clair vient du service.

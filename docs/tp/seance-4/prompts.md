@@ -102,6 +102,8 @@ remise et j'ai ajouté une nouvelle décision datée du 22/10.
 - detail.html : liste des réservations (dates et statut), pour chaque réservation active un formulaire POST « Annuler » avec les champs cachés statut=annulee et item_id, le formulaire « Réserver » avec deux champs date obligatoires, le message « Votre réservation est enregistrée. », les messages d'erreur, et « Cette réservation est déjà annulée. » quand annulation=deja.
 
 Contraintes du TP : aucun httpx en dehors de api_client.py, aucune vérification de dates en Python, pas de JavaScript, pas de |safe, aucune adresse de backend en dur. Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
+
+Contraintes du TP : aucun httpx en dehors de api_client.py, aucune vérification de dates en Python, pas de JavaScript, pas de |safe, aucune adresse de backend en dur. Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
 ```
 
 Ensuite, correction de `ApiError.messages()` par moi : le message affichait
@@ -151,4 +153,32 @@ Ne touche ni aux routers, ni à main.py, ni au frontend. Pas de commentaires inu
 - docker-compose.yml : ajoute un service db (postgres:16, identifiants par substitution depuis le .env, volume nommé, healthcheck pg_isready, pas de port publié). Le service backend reçoit env_file: .env, dépend de db avec condition service_healthy, et monte aussi ./backend/alembic et ./backend/alembic.ini. Le frontend ne change pas.
 
 Ne génère pas de migration : je la lance et je la relis moi-même. N'ajoute pas encore l'application automatique des migrations au démarrage (étape 6). Ne touche ni aux routers, ni à main.py, ni au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 3 : brancher Alembic ».
+```
+
+## TP 2, étape 4 : verticale items
+
+```text
+Étape 4 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, en suivant les sections 1, 4 et 5 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md. Écris la ressource items couche par couche, dans cet ordre, en vérifiant chaque fichier avant de passer au suivant :
+
+1. backend/app/core/exceptions.py : une exception métier de base et trois sous-classes (introuvable, conflit, accès refusé), avec un message lisible. Aucune ne connaît HTTP.
+2. backend/app/schemas/item.py : ItemCreate (ajoute owner_id), ItemUpdate (tous les champs optionnels), ItemRead construit depuis l'objet SQLAlchemy (from_attributes), avec owner_id. Garde extra="forbid" et les validations existantes.
+3. backend/app/repositories/item.py : ItemRepository (get, list avec skip/limit, recherche q sur le titre et filtre disponible, add, delete). Aucun commit().
+4. backend/app/services/item.py : ItemService, qui lève l'exception « introuvable » si l'item n'existe pas. Pas d'autre règle métier.
+5. backend/app/routers/items.py : garde exactement le contrat de la séance 1 (mêmes routes, y compris PUT, mêmes paramètres et mêmes codes de statut). Le router ne fait que traduire : schéma en entrée, appel au service, schéma en sortie. Plus de FAKE_DB pour items.
+
+Dans backend/app/main.py : garde /health et le router reservations tel quel (il reste en mémoire jusqu'à l'étape 7), et traduis les exceptions métier en codes HTTP (404, 409, 403) avec un gestionnaire d'exceptions global, qui renvoie {"detail": message}.
+
+Ne modifie pas les tests : je les remettrai au vert sur une base de test à l'étape suivante. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 4 : verticale items ».
+```
+
+## TP 2, étape 4 : propriétaire inexistant
+
+```text
+Suite de l'étape 4 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md (point de contrôle). Aujourd'hui, POST /items avec un owner_id inexistant renvoie 500 : c'est l'IntegrityError de PostgreSQL qui remonte. Le client doit recevoir un 404 clair, détecté par le service avant l'écriture.
+
+- Crée backend/app/repositories/user.py avec un UserRepository qui sait récupérer un utilisateur par id (même style que ItemRepository, aucun commit()).
+- Dans ItemService, avant de créer ou de remplacer un item, et avant de modifier son owner_id si ItemUpdate le permet, vérifie que le propriétaire existe. Sinon, lève RessourceIntrouvable avec le message "Utilisateur {id} introuvable".
+- Adapte l'injection dans le router si nécessaire, sans mettre de logique dans le router.
+
+Ne modifie pas les tests, ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 4 : propriétaire inexistant ».
 ```
