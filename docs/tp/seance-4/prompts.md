@@ -182,3 +182,14 @@ Suite de l'étape 4 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md 
 
 Ne modifie pas les tests, ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 4 : propriétaire inexistant ».
 ```
+
+## TP 2 : tests sur une base PostgreSQL de test
+
+Remets la suite de tests du backend au vert en suivant les sections 9.1 et 9.2 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md (option A, PostgreSQL de test). La base gearshare_test existe déjà dans le service db.
+
+- Ajoute test_database_url (str | None = None) à Settings, et TEST_DATABASE_URL dans .env.example (même serveur, base gearshare_test). J'ajouterai la ligne à mon .env moi-même.
+- backend/tests/conftest.py : fixtures engine (scope session, create_all/drop_all), db (transaction annulée à la fin de chaque test), client (dependency_overrides sur get_db), et une fixture alice (utilisateur inséré par flush). La fixture item_velo crée l'item avec owner_id=alice.id. Les réservations sont encore en mémoire jusqu'à l'étape 7 : garde la remise à zéro de leur FAKE_DB.
+- Les tests d'items de la séance 2 doivent changer le moins possible. La seule différence de contrat est owner_id, désormais obligatoire dans ItemCreate : ajoute-le là où c'est nécessaire et ne change pas les assertions. Liste dans le journal chaque test modifié et pourquoi.
+- Ajoute un test pour le cas owner_id inexistant (404 « Utilisateur 999 introuvable »).
+
+Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2 : tests sur une base PostgreSQL de test ».

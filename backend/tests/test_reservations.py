@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+from app.models import User
 
 from app.routers import reservations
 
@@ -91,10 +92,12 @@ def test_lister_reservations_avec_limit_101_renvoie_422(client: TestClient) -> N
 
 
 def test_filtre_item_id_ne_garde_que_les_reservations_de_cet_item(
-    client: TestClient, reservation_active: dict[str, Any]
+    client: TestClient, reservation_active: dict[str, Any], alice: User
 ) -> None:
     # Given : une réservation sur le vélo (fixture) et une sur un second item.
-    tente = client.post("/items", json={"titre": "Tente 2 places", "tarif_jour": 12}).json()
+    tente = client.post("/items", json={
+        "owner_id": alice.id, "titre": "Tente 2 places", "tarif_jour": 12,
+    }).json()
     client.post("/reservations", json={
         "item_id": tente["id"], "date_debut": "2026-10-01", "date_fin": "2026-10-05",
     })

@@ -2,20 +2,26 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
-from tests.conftest import Storage
+from app.models import Item, User
 
 
-def _item(item_id: int, titre: str = "Item", disponible: bool = True) -> dict[str, Any]:
-    return {"id": item_id, "titre": titre, "description": None,
-            "tarif_jour": 5.0, "disponible": disponible}
+def _insert_items(db: Session, alice: User, count: int) -> None:
+    db.add_all([
+        Item(owner_id=alice.id, titre=f"Item {i}", tarif_jour=5)
+        for i in range(1, count + 1)
+    ])
+    db.flush()
 
 
 # Cas nominaux
 
 
-def test_creer_item_renvoie_201_avec_un_id(client: TestClient) -> None:
-    response = client.post("/items", json={"titre": "Tente 2 places", "tarif_jour": 12})
+def test_creer_item_renvoie_201_avec_un_id(client: TestClient, alice: User) -> None:
+    response = client.post("/items", json={
+        "owner_id": alice.id, "titre": "Tente 2 places", "tarif_jour": 12,
+    })
 
     assert response.status_code == 201
     corps = response.json()
@@ -43,7 +49,9 @@ def test_remplacer_item_remplace_tous_les_champs(
 ) -> None:
     # When : PUT sans description, alors que l'item en avait une.
     response = client.put(
-        f"/items/{item_velo['id']}", json={"titre": "Vélo pliant", "tarif_jour": 10}
+        f"/items/{item_velo['id']}", json={
+            "owner_id": item_velo["owner_id"], "titre": "Vélo pliant", "tarif_jour": 10,
+        }
     )
 
     # Then : la description repart à sa valeur par défaut, comme à la création.
@@ -68,13 +76,13 @@ def test_supprimer_item_renvoie_204_sans_corps(
 @pytest.mark.parametrize(
     ("payload", "champ_en_erreur"),
     [
-        ({"titre": "ab", "tarif_jour": 8.5}, "titre"),                          # trop court
-        ({"titre": "a" * 121, "tarif_jour": 8.5}, "titre"),                     # trop long
-        ({"titre": "Vélo", "description": "a" * 1001, "tarif_jour": 8.5}, "description"),
-        ({"titre": "Vélo de ville", "tarif_jour": 0}, "tarif_jour"),            # nul
-        ({"titre": "Vélo de ville", "tarif_jour": -3}, "tarif_jour"),           # négatif
-        ({"titre": "Vélo de ville"}, "tarif_jour"),                             # manquant
-        ({"titre": "Vélo de ville", "tarif_jour": 8.5, "couleur": "rouge"}, "couleur"),
+        ({"owner_id": 1, "titre": "ab", "tarif_jour": 8.5}, "titre"),  # trop court
+        ({"owner_id": 1, "titre": "a" * 121, "tarif_jour": 8.5}, "titre"),  # trop long
+        ({"owner_id": 1, "titre": "Vélo", "description": "a" * 1001, "tarif_jour": 8.5}, "description"),
+        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": 0}, "tarif_jour"),  # nul
+        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": -3}, "tarif_jour"),  # négatif
+        ({"owner_id": 1, "titre": "Vélo de ville"}, "tarif_jour"),  # manquant
+        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": 8.5, "couleur": "rouge"}, "couleur"),
     ],
 )
 def test_creer_item_invalide_renvoie_422(
@@ -85,6 +93,15 @@ def test_creer_item_invalide_renvoie_422(
     assert response.status_code == 422
     champs = [erreur["loc"][-1] for erreur in response.json()["detail"]]
     assert champ_en_erreur in champs
+
+
+def test_creer_item_avec_owner_id_inexistant_renvoie_404(client: TestClient) -> None:
+    response = client.post("/items", json={
+        "owner_id": 999, "titre": "Tente 2 places", "tarif_jour": 12,
+    })
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Utilisateur 999 introuvable"
 
 
 @pytest.mark.parametrize(
@@ -139,7 +156,9 @@ def test_lire_item_inexistant_renvoie_404(client: TestClient) -> None:
 
 
 def test_remplacer_item_inexistant_renvoie_404(client: TestClient) -> None:
-    response = client.put("/items/999", json={"titre": "Vélo pliant", "tarif_jour": 10})
+    response = client.put("/items/999", json={
+        "owner_id": 1, "titre": "Vélo pliant", "tarif_jour": 10,
+    })
 
     assert response.status_code == 404
 
@@ -181,10 +200,15 @@ def test_item_supprime_n_est_plus_lisible(client: TestClient, item_velo: dict[st
     assert response.status_code == 404
 
 
-def test_filtre_q_ignore_la_casse(client: TestClient, storage: Storage) -> None:
+def test_filtre_q_ignore_la_casse(
+    client: TestClient, db: Session, alice: User
+) -> None:
     # Given : deux items, un seul contient « vélo » dans son titre.
-    storage.items[1] = _item(1, titre="Vélo de ville")
-    storage.items[2] = _item(2, titre="Tente 2 places")
+    db.add_all([
+        Item(owner_id=alice.id, titre="Vélo de ville", tarif_jour=5),
+        Item(owner_id=alice.id, titre="Tente 2 places", tarif_jour=5),
+    ])
+    db.flush()
 
     # When : on cherche en majuscules.
     response = client.get("/items", params={"q": "VÉLO"})
@@ -194,11 +218,12 @@ def test_filtre_q_ignore_la_casse(client: TestClient, storage: Storage) -> None:
 
 
 def test_filtre_disponible_ne_garde_que_les_items_correspondants(
-    client: TestClient, storage: Storage
+    client: TestClient, db: Session, alice: User
 ) -> None:
     # Given : un item disponible, un item indisponible.
-    storage.items[1] = _item(1, disponible=True)
-    storage.items[2] = _item(2, disponible=False)
+    _insert_items(db, alice, 1)
+    db.add(Item(owner_id=alice.id, titre="Item 2", tarif_jour=5, disponible=False))
+    db.flush()
 
     # When : on ne demande que les indisponibles.
     response = client.get("/items", params={"disponible": False})
@@ -208,21 +233,21 @@ def test_filtre_disponible_ne_garde_que_les_items_correspondants(
 
 
 def test_lister_avec_skip_et_limit_renvoie_la_bonne_tranche(
-    client: TestClient, storage: Storage
+    client: TestClient, db: Session, alice: User
 ) -> None:
     # Given : cinquante items, insérés sans passer par cinquante requêtes HTTP.
-    for i in range(1, 51):
-        storage.items[i] = _item(i, titre=f"Item {i}")
+    _insert_items(db, alice, 50)
 
     response = client.get("/items", params={"skip": 40, "limit": 20})
 
     assert [item["id"] for item in response.json()] == list(range(41, 51))
 
 
-def test_lister_sans_limit_renvoie_20_items_au_plus(client: TestClient, storage: Storage) -> None:
+def test_lister_sans_limit_renvoie_20_items_au_plus(
+    client: TestClient, db: Session, alice: User
+) -> None:
     # Given : trente items.
-    for i in range(1, 31):
-        storage.items[i] = _item(i, titre=f"Item {i}")
+    _insert_items(db, alice, 30)
 
     response = client.get("/items")
 

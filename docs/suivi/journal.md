@@ -340,3 +340,31 @@ Une entrée par session de travail, la plus récente en bas.
 - Point de contrôle de l'étape 1, testé par Rémy : `POST /items` avec `owner_id: 999` donnait
   500 et rien n'était écrit en base (`rollback` de `get_db`). Correction demandée à Copilot : le
   service vérifie le propriétaire, réponse 404 « Utilisateur 999 introuvable ».
+
+## 2026-10-27 · TP séance 4, tests PostgreSQL
+
+- Fait par : GitHub Copilot (mode Agent).
+- `Settings` accepte `test_database_url` et `.env.example` documente `TEST_DATABASE_URL` vers
+  `gearshare_test`.
+- `backend/tests/conftest.py` utilise un engine de session avec `create_all`/`drop_all`, une
+  session par test dans une transaction annulée, un override de `get_db`, une fixture `alice`
+  insérée par `flush()` et une fixture `item_velo` créée avec `owner_id=alice.id`.
+- Les tests d'items modifiés sont :
+  - `test_creer_item_renvoie_201_avec_un_id` : ajout de `owner_id` obligatoire dans la requête.
+  - `test_remplacer_item_remplace_tous_les_champs` et
+    `test_remplacer_item_inexistant_renvoie_404` : ajout de `owner_id` obligatoire dans les
+    payloads `PUT`.
+  - `test_creer_item_invalide_renvoie_422` : ajout de `owner_id` aux payloads pour conserver
+    les mêmes vérifications de validation.
+  - `test_filtre_q_ignore_la_casse`, `test_filtre_disponible_ne_garde_que_les_items_correspondants`,
+    `test_lister_avec_skip_et_limit_renvoie_la_bonne_tranche` et
+    `test_lister_sans_limit_renvoie_20_items_au_plus` : remplacement de l'écriture directe dans
+    `FAKE_DB` par des items SQLAlchemy liés à `alice`, sans changer les assertions.
+  - `test_filtre_item_id_ne_garde_que_les_reservations_de_cet_item` : ajout de `owner_id` à la
+    création du second item.
+  - `test_creer_item_avec_owner_id_inexistant_renvoie_404` : nouveau cas vérifiant le message
+    `Utilisateur 999 introuvable`.
+- Le repository flush désormais une suppression, et la liste des items est ordonnée par id pour
+  préserver le comportement observé par les tests.
+- Vérifié : `docker compose run --rm -e TEST_DATABASE_URL=... backend pytest` : 53 tests verts.
+- Vérifié par Rémy : base gearshare_test créée avec createdb, TEST_DATABASE_URL ajouté à mon .env, puis `docker compose run --rm backend pytest` donne 53 tests verts.

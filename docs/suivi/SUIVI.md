@@ -4,7 +4,7 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 4 terminée : la verticale `items` vérifie aussi l'existence du propriétaire avant écriture.
+TP 2 de la séance 4, étape 4 terminée : la verticale `items` vérifie aussi l'existence du propriétaire avant écriture. Les tests utilisent PostgreSQL de test.
 
 ## Prochaine étape
 
@@ -72,9 +72,10 @@ TP 2 de la séance 4, étape 5 : mesurer puis corriger le N+1 sur la liste des i
 - 2026-10-27 : Alembic lit `settings.database_url`, utilise `Base.metadata` avec tous les modèles importés, et le service backend attend PostgreSQL sain dans Compose ; les migrations restent manuelles jusqu'à l'étape 6.
 - 2026-10-27 : les exceptions métier sont traduites en HTTP par un gestionnaire global dans `main.py` ; les repositories ne font jamais de `commit()`, la transaction reste gérée par `get_db`.
 - 2026-10-27 : `ItemService` vérifie l'existence de `owner_id` avec `UserRepository` avant création, remplacement ou modification du propriétaire.
+- 2026-10-27 : les tests utilisent `TEST_DATABASE_URL`, un schéma créé par `Base.metadata`, une transaction annulée par test et l'override de `get_db`. Les réservations restent en mémoire jusqu'à l'étape 7.
 
 ## Questions ouvertes
 
 - `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Hors spec, non testé, noté dans `REVIEW.md`.
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
-- Pas encore de `.env.example` à la racine, alors que le lancement en une commande est un critère bloquant du rendu. À traiter au plus tard en séance 4.
+- La ligne `TEST_DATABASE_URL` doit encore être ajoutée au `.env` local avant de lancer les tests sans variable temporaire.
