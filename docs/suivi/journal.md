@@ -282,3 +282,13 @@ Une entrée par session de travail, la plus récente en bas.
   est en mémoire et a été vidé au redémarrage. Le frontend ne stocke rien, il n'a rien perdu.
 - TP 1 de la séance 4 terminé. Reste : TP 2, brancher le backend sur PostgreSQL sans modifier le
   frontend.
+
+## 2026-10-27 · TP séance 4, étape 1 backend
+
+- Fait par : GitHub Copilot (mode Agent).
+- Création de `Settings` avec `database_url` obligatoire et `sql_echo` désactivé par défaut.
+- Création de l'engine SQLAlchemy, de `SessionLocal`, de `get_db` et de l'alias `DbSession`.
+- Ajout de `.env.example` avec les variables PostgreSQL et `DATABASE_URL` utilisant l'hôte Docker
+  `db`.
+- Vérifié : syntaxe Python valide, import de la configuration dans une image reconstruite et
+  52 tests backend verts.

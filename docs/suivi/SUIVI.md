@@ -1,10 +1,10 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-10-22
+Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 1 de la séance 4 terminé : frontend complet (liste, détail, création, réservation, annulation).
+TP 2 de la séance 4, étape 1 terminée : configuration SQLAlchemy et session PostgreSQL préparées.
 
 ## Prochaine étape
 
@@ -38,6 +38,7 @@ TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) 
   - [x] TP frontend, étape 3 : liste et détail des objets
   - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
   - [x] TP frontend, étapes 5 et 6 : réservations, annulation, limites observées
+  - [x] TP backend, étape 1 : configuration, engine SQLAlchemy et dépendance de session
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

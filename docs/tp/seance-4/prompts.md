@@ -106,3 +106,19 @@ Contraintes du TP : aucun httpx en dehors de api_client.py, aucune vérification
 
 Ensuite, correction de `ApiError.messages()` par moi : le message affichait
 « body : Value error, date_fin doit être postérieure à date_debut ».
+
+
+## TP 2, étape 1 : configuration et session
+
+Outil : GitHub Copilot, mode Agent.
+
+```text
+Étape 1 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, en suivant les sections 2.1, 3 et 7 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md.
+
+- backend/app/core/config.py : classe Settings (pydantic-settings) avec database_url obligatoire et sql_echo à False par défaut, instance settings créée une seule fois au niveau du module.
+- backend/app/db/session.py : engine SQLAlchemy construit depuis settings, avec pool_pre_ping=True et echo=settings.sql_echo, et la fabrique SessionLocal.
+- backend/app/api/deps.py : get_db qui ouvre une session par requête, commit si tout s'est bien passé, rollback en cas d'exception, close dans tous les cas. Ajoute l'alias DbSession.
+- .env.example à la racine du dépôt : POSTGRES_USER=gearshare, POSTGRES_PASSWORD=gearshare, POSTGRES_DB=gearshare, DATABASE_URL au format postgresql+psycopg://utilisateur:motdepasse@hote:port/base, SQL_ECHO=false.
+
+Ne branche rien dans main.py ni dans les routers, ce sont les étapes suivantes. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
+```
