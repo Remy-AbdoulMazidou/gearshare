@@ -94,3 +94,36 @@ Test : `POST /items` avec `owner_id: 999`, un utilisateur qui n'existe pas.
 
 La base reste le dernier garde-fou (clé étrangère, `rollback` dans `get_db`), mais le message
 clair vient du service.
+
+## 4. Le N+1 sur `GET /items` (étape 5)
+
+`ItemRead` contient maintenant le propriétaire (`OwnerRead` : `id` et `display_name` seulement,
+ni email ni `password_hash`).
+
+Données de test : 20 utilisateurs et 20 items insérés avec `INSERT ... SELECT` et
+`generate_series`, chaque item avec un propriétaire différent. Avec un seul propriétaire, la
+session SQLAlchemy ne le chargerait qu'une fois et le N+1 ne se verrait pas.
+
+Mesure avec `SQL_ECHO=true` :
+
+```bash
+curl -s "http://localhost:8000/items?limit=50" > /dev/null
+docker compose logs --since 30s backend | grep -c "SELECT"
+```
+
+| | Requêtes `SELECT` pour une page de 23 items |
+|---|---|
+| Avant | 22 (1 pour la liste, 21 pour les propriétaires) |
+| Après `selectinload(Item.owner)` | 2 (la liste, puis tous les propriétaires en une fois avec `WHERE users.id IN (...)`) |
+
+Origine : aucune boucle dans le code. C'est la sérialisation de la réponse qui lit `item.owner`
+pour construire chaque `ItemRead`. La relation est chargée à la demande (lazy loading), donc une
+requête par propriétaire différent.
+
+Correction dans `ItemRepository.list` :
+
+```python
+stmt = select(Item).options(selectinload(Item.owner))
+```
+
+`SQL_ECHO` remis à `false` après la mesure.

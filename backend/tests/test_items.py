@@ -30,11 +30,17 @@ def test_creer_item_renvoie_201_avec_un_id(client: TestClient, alice: User) -> N
     assert corps["disponible"] is True
 
 
-def test_lire_item_existant_renvoie_200(client: TestClient, item_velo: dict[str, Any]) -> None:
+def test_lire_item_existant_renvoie_200(
+    client: TestClient, item_velo: dict[str, Any], alice: User
+) -> None:
     response = client.get(f"/items/{item_velo['id']}")
 
     assert response.status_code == 200
     assert response.json() == item_velo
+    assert response.json()["owner"] == {
+        "id": alice.id,
+        "display_name": "Alice",
+    }
 
 
 def test_lister_sans_item_renvoie_liste_vide(client: TestClient) -> None:

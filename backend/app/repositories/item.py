@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.models.item import Item
 
@@ -19,7 +19,7 @@ class ItemRepository:
         q: str | None = None,
         disponible: bool | None = None,
     ) -> list[Item]:
-        stmt = select(Item)
+        stmt = select(Item).options(selectinload(Item.owner))
         if q is not None:
             stmt = stmt.where(Item.titre.ilike(f"%{q}%"))
         if disponible is not None:

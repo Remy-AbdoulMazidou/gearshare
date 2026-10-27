@@ -4,11 +4,12 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 4 terminée : la verticale `items` vérifie aussi l'existence du propriétaire avant écriture. Les tests utilisent PostgreSQL de test.
+TP 2 de la séance 4, étape 5, première partie terminée : `ItemRead` expose un propriétaire limité à
+`id` et `display_name`. La requête de liste n'est pas encore corrigée.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 5 : mesurer puis corriger le N+1 sur la liste des items.
+TP 2 de la séance 4, étape 5, seconde partie : mesurer puis corriger le N+1 sur la liste des items.
 
 ## Avancement des séances
 
@@ -73,6 +74,7 @@ TP 2 de la séance 4, étape 5 : mesurer puis corriger le N+1 sur la liste des i
 - 2026-10-27 : les exceptions métier sont traduites en HTTP par un gestionnaire global dans `main.py` ; les repositories ne font jamais de `commit()`, la transaction reste gérée par `get_db`.
 - 2026-10-27 : `ItemService` vérifie l'existence de `owner_id` avec `UserRepository` avant création, remplacement ou modification du propriétaire.
 - 2026-10-27 : les tests utilisent `TEST_DATABASE_URL`, un schéma créé par `Base.metadata`, une transaction annulée par test et l'override de `get_db`. Les réservations restent en mémoire jusqu'à l'étape 7.
+- 2026-10-27 : `OwnerRead` expose seulement `id` et `display_name` dans `ItemRead`, construit depuis la relation SQLAlchemy `Item.owner`. La requête de liste reste inchangée pour permettre la mesure du N+1.
 
 ## Questions ouvertes
 

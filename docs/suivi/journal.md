@@ -368,3 +368,13 @@ Une entrée par session de travail, la plus récente en bas.
   préserver le comportement observé par les tests.
 - Vérifié : `docker compose run --rm -e TEST_DATABASE_URL=... backend pytest` : 53 tests verts.
 - Vérifié par Rémy : base gearshare_test créée avec createdb, TEST_DATABASE_URL ajouté à mon .env, puis `docker compose run --rm backend pytest` donne 53 tests verts.
+
+## 2026-10-27 · TP séance 4, étape 5 · propriétaire dans les items
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de `OwnerRead`, limité à `id` et `display_name`, puis ajout du champ `owner` à `ItemRead`.
+- La relation SQLAlchemy `Item.owner` est utilisée par Pydantic grâce à `from_attributes=True`.
+- La requête de liste de `ItemRepository` n'a pas été modifiée : la mesure du N+1 est réservée à la suite de l'étape.
+- Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
+- Vérifié : `docker compose run --rm backend pytest` donne 53 tests verts.
+- Fait par Rémy : mesure du N+1 avec SQL_ECHO=true (22 requêtes SELECT pour une page de 23 items, 20 propriétaires différents insérés avec generate_series), correction avec selectinload(Item.owner) dans ItemRepository.list, puis 2 requêtes. SQL_ECHO remis à false.

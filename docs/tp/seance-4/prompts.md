@@ -193,3 +193,15 @@ Remets la suite de tests du backend au vert en suivant les sections 9.1 et 9.2 d
 - Ajoute un test pour le cas owner_id inexistant (404 « Utilisateur 999 introuvable »).
 
 Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2 : tests sur une base PostgreSQL de test ».
+
+## TP 2, étape 5 : propriétaire dans les items
+
+```text
+Étape 5 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, première partie seulement.
+
+- Crée un petit schéma de lecture du propriétaire (OwnerRead : id et display_name uniquement, ni email ni password_hash), construit depuis l'objet SQLAlchemy.
+- Ajoute un champ owner de type OwnerRead à ItemRead, pour que GET /items et GET /items/{id} renvoient le propriétaire.
+- Ne change PAS la requête de liste de ItemRepository : je dois d'abord observer et compter les requêtes SQL avant de corriger.
+
+Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 5 : propriétaire dans les items ».
+```

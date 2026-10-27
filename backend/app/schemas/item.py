@@ -1,6 +1,13 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class OwnerRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    display_name: str
+
+
 class ItemCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -26,6 +33,7 @@ class ItemRead(BaseModel):
 
     id: int
     owner_id: int
+    owner: OwnerRead
     titre: str
     description: str | None
     tarif_jour: float
