@@ -4,7 +4,7 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 1 terminée : configuration SQLAlchemy et session PostgreSQL préparées.
+TP 2 de la séance 4, étape 2 terminée : modèles SQLAlchemy correspondant au schéma SQL initial.
 
 ## Prochaine étape
 
@@ -39,6 +39,7 @@ TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) 
   - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
   - [x] TP frontend, étapes 5 et 6 : réservations, annulation, limites observées
   - [x] TP backend, étape 1 : configuration, engine SQLAlchemy et dépendance de session
+  - [x] TP backend, étape 2 : modèles SQLAlchemy et relations
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)

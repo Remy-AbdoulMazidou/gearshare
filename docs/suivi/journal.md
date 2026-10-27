@@ -292,3 +292,14 @@ Une entrée par session de travail, la plus récente en bas.
   `db`.
 - Vérifié : syntaxe Python valide, import de la configuration dans une image reconstruite et
   52 tests backend verts.
+
+## 2026-10-27 · TP séance 4, étape 2
+
+- Fait par : GitHub Copilot (mode Agent).
+- Création de la base déclarative et des modèles SQLAlchemy `User`, `Item` et `Reservation`
+  à partir de `tp-db/sql/init/01-schema.sql`.
+- Ajout des clés étrangères indexées, des contraintes `CHECK` nommées, des valeurs par défaut
+  côté serveur et des relations bidirectionnelles.
+- Import des modèles dans `app/models/__init__.py`.
+- Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
+- Vérifié : validation ciblée des métadonnées et 52 tests backend verts.

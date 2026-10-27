@@ -1,0 +1,49 @@
+from datetime import datetime
+from decimal import Decimal
+from typing import TYPE_CHECKING
+
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    func,
+    true,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.base import Base
+
+if TYPE_CHECKING:
+    from app.models.reservation import Reservation
+    from app.models.user import User
+
+
+class Item(Base):
+    __tablename__ = "items"
+    __table_args__ = (
+        CheckConstraint("tarif_jour > 0", name="tarif_jour_positif"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    owner_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    titre: Mapped[str] = mapped_column(String(120), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text)
+    tarif_jour: Mapped[Decimal] = mapped_column(Numeric(8, 2), nullable=False)
+    disponible: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=true()
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    owner: Mapped["User"] = relationship(back_populates="items")
+    reservations: Mapped[list["Reservation"]] = relationship(
+        back_populates="item", cascade="all, delete-orphan"
+    )

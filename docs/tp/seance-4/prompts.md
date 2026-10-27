@@ -122,3 +122,20 @@ Outil : GitHub Copilot, mode Agent.
 
 Ne branche rien dans main.py ni dans les routers, ce sont les étapes suivantes. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal.
 ```
+
+## TP 2, étape 2 : les modèles
+
+```text
+Étape 2 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, en suivant les sections 2.2 et 2.3 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md.
+
+Écris backend/app/models/base.py, user.py, item.py et reservation.py en traduisant exactement les tables users, items et reservations de tp-db/sql/init/01-schema.sql (pas 03-schema-v2.sql) :
+- index=True sur toutes les clés étrangères, avec le même ondelete que le SQL ;
+- Numeric(8, 2) pour tarif_jour ;
+- DateTime(timezone=True) avec server_default=func.now() pour created_at ;
+- User.email unique ;
+- les CHECK dans __table_args__, nommés : tarif positif, dates_coherentes, statut_valide ;
+- relationship(back_populates=...) des deux côtés de chaque lien.
+backend/app/models/__init__.py importe Base et les trois modèles.
+
+Ne touche ni aux routers, ni à main.py, ni au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 2 : les modèles ».
+```
