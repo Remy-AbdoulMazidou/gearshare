@@ -139,3 +139,16 @@ backend/app/models/__init__.py importe Base et les trois modèles.
 
 Ne touche ni aux routers, ni à main.py, ni au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 2 : les modèles ».
 ```
+
+## TP 2, étape 3 : brancher Alembic
+
+```text
+Étape 3 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, en suivant la section 6 et la section 8 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md. J'ai déjà lancé alembic init alembic dans backend/.
+
+- backend/alembic/env.py : l'URL de connexion vient de settings.database_url (app.core.config), pas de alembic.ini. target_metadata = Base.metadata, avec les modèles importés via app.models.
+- backend/alembic.ini : laisse sqlalchemy.url vide.
+- backend/Dockerfile : copie aussi alembic/ et alembic.ini dans l'image.
+- docker-compose.yml : ajoute un service db (postgres:16, identifiants par substitution depuis le .env, volume nommé, healthcheck pg_isready, pas de port publié). Le service backend reçoit env_file: .env, dépend de db avec condition service_healthy, et monte aussi ./backend/alembic et ./backend/alembic.ini. Le frontend ne change pas.
+
+Ne génère pas de migration : je la lance et je la relis moi-même. N'ajoute pas encore l'application automatique des migrations au démarrage (étape 6). Ne touche ni aux routers, ni à main.py, ni au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 3 : brancher Alembic ».
+```

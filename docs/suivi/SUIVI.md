@@ -4,11 +4,12 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 2 terminée : modèles SQLAlchemy correspondant au schéma SQL initial.
+TP 2 de la séance 4, étape 3 terminée : Alembic et PostgreSQL sont branchés dans Compose, sans
+générer ni appliquer de migration.
 
 ## Prochaine étape
 
-TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) sans modifier le frontend.
+TP 2 de la séance 4, étape 4 : générer, relire et appliquer la migration initiale.
 
 ## Avancement des séances
 
@@ -40,6 +41,7 @@ TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) 
   - [x] TP frontend, étapes 5 et 6 : réservations, annulation, limites observées
   - [x] TP backend, étape 1 : configuration, engine SQLAlchemy et dépendance de session
   - [x] TP backend, étape 2 : modèles SQLAlchemy et relations
+  - [x] TP backend, étape 3 : branchement d'Alembic et service PostgreSQL dans Compose
 - [ ] Séance 5 · Authentification JWT (pas encore publié)
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)
@@ -68,6 +70,7 @@ TP 2 de la séance 4 : brancher le backend sur PostgreSQL (SQLAlchemy, Alembic) 
 - 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour garder l'historique.
 - 2026-10-22 : ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}`, contrat imposé par le TP frontend de la séance 4. Seul `{"statut": "annulee"}` est accepté. La logique est partagée avec `POST /reservations/{reservation_id}/annuler`, gardé pour que les tests de la séance 2 passent sans modification.
 - 2026-10-22 : le frontend appelle `GET /reservations`, `POST /reservations` et `PATCH /reservations/{reservation_id}` ; la page de détail permet de réserver et d'annuler avec PRG.
+- 2026-10-27 : Alembic lit `settings.database_url`, utilise `Base.metadata` avec tous les modèles importés, et le service backend attend PostgreSQL sain dans Compose ; les migrations restent manuelles jusqu'à l'étape 6.
 
 ## Questions ouvertes
 

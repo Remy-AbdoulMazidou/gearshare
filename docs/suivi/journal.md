@@ -303,3 +303,14 @@ Une entrée par session de travail, la plus récente en bas.
 - Import des modèles dans `app/models/__init__.py`.
 - Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
 - Vérifié : validation ciblée des métadonnées et 52 tests backend verts.
+
+## 2026-10-27 · TP séance 4, étape 3
+
+- Fait par : GitHub Copilot (mode Agent).
+- Branchement d'Alembic sur `settings.database_url` et `Base.metadata`, avec import des trois
+  modules de modèles.
+- Ajout du service PostgreSQL avec volume nommé et healthcheck, et attente de sa disponibilité
+  par le backend dans Compose.
+- Copie et montage d'Alembic dans l'image et le conteneur backend.
+- Aucune migration générée ni appliquée. Aucune modification du frontend, des routers ou de
+  `main.py`.
