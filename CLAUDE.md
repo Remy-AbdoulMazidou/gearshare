@@ -15,14 +15,14 @@ Historique détaillé des sessions : `docs/suivi/journal.md` (à consulter seule
 ## Support de cours
 
 Le dépôt de l'enseignant est cloné en lecture seule dans `../cours/`. Ne jamais le modifier.
-Avant une tâche liée à une séance, lire `../cours/seances/<séance>/cours/README.md` et
-`../cours/seances/<séance>/tp/README.md`, et suivre ce qu'ils demandent. Le sujet et la grille
+Avant une tâche liée à une séance, lire les fichiers de `../cours/seances/<séance>/cours/` et
+`../cours/seances/<séance>/tp/`, et suivre ce qu'ils demandent. Le sujet et la grille
 d'évaluation seront publiés plus tard dans ce dépôt.
 
 ## Stack imposée
 
 - Backend : Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2.0, Alembic
-- Base : PostgreSQL 17
+- Base : PostgreSQL 16 (image `postgres:16` imposée par les TP)
 - Frontend : application Python séparée, qui passe uniquement par l'API REST
 - Docker Compose, au moins 3 services (frontend, backend, base) à partir de la séance 4
 - Auth : utilisateurs, JWT, mots de passe hachés
@@ -63,8 +63,9 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 ## Tests
 
 - `TestClient`, fixtures dans `tests/conftest.py`, scope `function`.
-- Avant PostgreSQL : dataclass `Storage` qui référence les dictionnaires des routers,
-  fixture `storage`, et `client` qui dépend de `storage` (pas d'`autouse`).
+- Base de test PostgreSQL `gearshare_test` (`TEST_DATABASE_URL`) : schéma créé par
+  `Base.metadata`, une transaction annulée par test, `get_db` remplacé par la session de test.
+- Les ressources encore en mémoire gardent la fixture `storage` (pas d'`autouse`).
 - Noms de tests en français et explicites. Given / When / Then quand ce n'est pas évident.
 - `parametrize` pour les cas de validation, en vérifiant le champ en erreur (`loc[-1]`).
 - Pour chaque `raise` d'un router ou d'un service, un test.
@@ -93,7 +94,8 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 - Un document rédigé par l'agent le dit en première ligne :
   « Rédigé avec Claude Code, relu et corrigé par Rémy. »
 - Les fichiers de review (`REVIEW.md`, `review.md`) et `docs/retour-experience.md` sont écrits
-  par Rémy. L'agent peut proposer une trame ou des questions, jamais le contenu.
+  par Rémy. L'agent peut proposer une trame ou des questions, jamais le contenu. Quand Rémy
+  s'aide de Claude (chat) pour la mise en forme, le fichier le dit en tête.
 - Style des docs : français simple, phrases courtes, pas de formules marketing, pas d'emojis.
 
 ## Mise à jour de la mémoire (obligatoire)
