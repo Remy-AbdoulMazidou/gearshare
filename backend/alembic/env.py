@@ -6,8 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.core.config import settings
-from app.models import item, reservation, user  # noqa: F401
-from app.models.base import Base
+from app.models import Base
 
 
 config = context.config

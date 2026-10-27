@@ -32,7 +32,7 @@ Outil : GitHub Copilot, mode Agent, dans VS Code.
 - Dans frontend/app/main.py, ajoute le gestionnaire d'exceptions ApiError de la section 2.6.
 
 Pas de commentaires inutiles, ne touche pas au backend, ne fais pas de commit.
-
+```
 
 ## TP 1, étape 3 : pages liste et détail
 
@@ -185,6 +185,9 @@ Ne modifie pas les tests, ne touche pas au frontend. Pas de commentaires inutile
 
 ## TP 2 : tests sur une base PostgreSQL de test
 
+Outil : GitHub Copilot, mode Agent.
+
+```text
 Remets la suite de tests du backend au vert en suivant les sections 9.1 et 9.2 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md (option A, PostgreSQL de test). La base gearshare_test existe déjà dans le service db.
 
 - Ajoute test_database_url (str | None = None) à Settings, et TEST_DATABASE_URL dans .env.example (même serveur, base gearshare_test). J'ajouterai la ligne à mon .env moi-même.
@@ -193,6 +196,7 @@ Remets la suite de tests du backend au vert en suivant les sections 9.1 et 9.2 d
 - Ajoute un test pour le cas owner_id inexistant (404 « Utilisateur 999 introuvable »).
 
 Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2 : tests sur une base PostgreSQL de test ».
+```
 
 ## TP 2, étape 5 : propriétaire dans les items
 

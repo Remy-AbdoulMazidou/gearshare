@@ -14,6 +14,3 @@ class ConflitMetier(DomainError):
 
 class AccesRefuse(DomainError):
     pass
-
-
-ConflitReservation = ConflitMetier

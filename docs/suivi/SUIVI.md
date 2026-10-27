@@ -4,12 +4,13 @@ Dernière mise à jour : 2026-10-27
 
 ## En cours
 
-TP 2 de la séance 4, étape 5, première partie terminée : `ItemRead` expose un propriétaire limité à
-`id` et `display_name`. La requête de liste n'est pas encore corrigée.
+TP 2 de la séance 4, étapes 0 à 5 terminées : backend en couches pour `items`, PostgreSQL et
+Alembic, tests sur une base PostgreSQL de test (53 tests verts), N+1 corrigé.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 5, seconde partie : mesurer puis corriger le N+1 sur la liste des items.
+TP 2 de la séance 4, étape 6 : Compose à trois services, migrations appliquées au démarrage
+(`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Avancement des séances
 
@@ -42,7 +43,13 @@ TP 2 de la séance 4, étape 5, seconde partie : mesurer puis corriger le N+1 su
   - [x] TP backend, étape 1 : configuration, engine SQLAlchemy et dépendance de session
   - [x] TP backend, étape 2 : modèles SQLAlchemy et relations
   - [x] TP backend, étape 3 : branchement d'Alembic et service PostgreSQL dans Compose
-- [ ] Séance 5 · Authentification JWT (pas encore publié)
+  - [x] TP backend, étape 3bis : piège du renommage (`docs/review-migrations.md`)
+  - [x] TP backend, étape 4 : verticale `items` en couches, propriétaire vérifié par le service
+  - [x] TP backend, tests : base `gearshare_test`, 53 tests verts
+  - [x] TP backend, étape 5 : N+1 mesuré (22 requêtes) et corrigé avec `selectinload` (2 requêtes)
+  - [ ] TP backend, étape 6 : Compose à trois services et migrations au démarrage
+  - [ ] TP backend, étape 7 : verticale `reservations`
+- [ ] Séance 5 · Authentification JWT
 - [ ] Séance 6 · Fondations agentic (pas encore publié)
 - [ ] Séance 7 · Flow complet d'une feature (pas encore publié)
 
@@ -67,6 +74,8 @@ TP 2 de la séance 4, étape 5, seconde partie : mesurer puis corriger le N+1 su
 - 2026-09-26 : un test par `raise`, pas de test sur `/items/abc` (conversion FastAPI) ; erreur de dates testée par `loc == ["body"]` et `"date_fin" in msg`.
 - 2026-09-26 (Rémy) : si la notification échoue, l'annulation reste acquise (200) ; on attrape `(ConnectionError, TimeoutError)`.
 - 2026-09-30 (Rémy) : l'agent ne crée ni ne modifie aucun fichier de `tp-db/` ; suivi seulement, image `postgres:16`.
+- 2026-10-22 (Rémy) : exception pour l'étape 6 de la séance 3, le DDL de `03-schema-v2.sql` est écrit
+  par GitHub Copilot (mode Agent), puis relu et testé par Rémy (`tp-db/REVIEW-schema.md`).
 - 2026-09-30 (Rémy) : un compte supprimé sera désactivé et anonymisé plutôt qu'effacé, pour garder l'historique.
 - 2026-10-22 : ajout de `ReservationUpdate` et de `PATCH /reservations/{reservation_id}`, contrat imposé par le TP frontend de la séance 4. Seul `{"statut": "annulee"}` est accepté. La logique est partagée avec `POST /reservations/{reservation_id}/annuler`, gardé pour que les tests de la séance 2 passent sans modification.
 - 2026-10-22 : le frontend appelle `GET /reservations`, `POST /reservations` et `PATCH /reservations/{reservation_id}` ; la page de détail permet de réserver et d'annuler avec PRG.
@@ -75,9 +84,10 @@ TP 2 de la séance 4, étape 5, seconde partie : mesurer puis corriger le N+1 su
 - 2026-10-27 : `ItemService` vérifie l'existence de `owner_id` avec `UserRepository` avant création, remplacement ou modification du propriétaire.
 - 2026-10-27 : les tests utilisent `TEST_DATABASE_URL`, un schéma créé par `Base.metadata`, une transaction annulée par test et l'override de `get_db`. Les réservations restent en mémoire jusqu'à l'étape 7.
 - 2026-10-27 : `OwnerRead` expose seulement `id` et `display_name` dans `ItemRead`, construit depuis la relation SQLAlchemy `Item.owner`. La requête de liste reste inchangée pour permettre la mesure du N+1.
+- 2026-10-27 (Rémy) : `ItemRepository.list` charge les propriétaires avec `selectinload(Item.owner)`,
+  ce qui ramène `GET /items` de 22 à 2 requêtes.
 
 ## Questions ouvertes
 
-- `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Hors spec, non testé, noté dans `REVIEW.md`.
+- `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Réglé à l'étape 7 du TP 2 (verticale `reservations` en couches).
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
-- La ligne `TEST_DATABASE_URL` doit encore être ajoutée au `.env` local avant de lancer les tests sans variable temporaire.

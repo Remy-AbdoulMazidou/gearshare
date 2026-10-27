@@ -1,24 +1,17 @@
-# Projet démo — TP séance 1
+# Backend GearShare
 
-Ce dossier est le point de départ du [TP de la séance 1](../README.md). Il contient une API
-FastAPI exécutable, avec une seule route `GET /health`, ainsi que les dossiers qui accueilleront
-les routes et schémas du TP.
+API FastAPI organisée en couches :
 
-Vous allez y construire une API en mémoire pour la ressource `items`, puis faire produire et
-reviewer la ressource `reservations` par GitHub Copilot. Ce n'est ni le projet GearShare complet,
-ni son architecture finale : PostgreSQL, les couches applicatives, l'authentification et le
-frontend seront introduits dans les séances suivantes.
+| Dossier | Rôle |
+|---|---|
+| `app/routers/` | Routes HTTP : schéma en entrée, appel au service, schéma en sortie |
+| `app/services/` | Règles métier, exceptions métier (`app/core/exceptions.py`) |
+| `app/repositories/` | Requêtes SQLAlchemy, jamais de `commit()` |
+| `app/models/` | Modèles SQLAlchemy (`users`, `items`, `reservations`) |
+| `app/schemas/` | Schémas Pydantic de création, de modification et de lecture |
+| `app/core/`, `app/db/`, `app/api/` | Configuration, session SQLAlchemy, dépendance `get_db` |
+| `alembic/` | Migrations du schéma |
+| `tests/` | Tests pytest sur la base `gearshare_test` |
 
-## Démarrer
-
-Depuis ce dossier :
-
-```bash
-docker compose up --build
-```
-
-L'API répond sur [http://localhost:8000/health](http://localhost:8000/health) et sa documentation
-interactive est disponible sur [http://localhost:8000/docs](http://localhost:8000/docs).
-
-Le montage de volume et `--reload` sont réservés au développement : le code est rechargé à chaque
-sauvegarde sans reconstruction de l'image.
+Le lancement, les migrations et les tests se font depuis la racine du dépôt : voir le
+[README principal](../README.md).
