@@ -18,7 +18,9 @@ def create_reservation(
     date_fin: Annotated[date, Form()],
 ) -> Response:
     try:
-        api_client.create_reservation(item_id, date_debut, date_fin)
+        borrower_id = 1  # TODO séance 5 : remplacé par l'utilisateur connecté, déduit du jeton
+        api_client.create_reservation(item_id, borrower_id, date_debut, date_fin)
+        
     except ApiError as exc:
         if exc.status_code not in (409, 422):
             raise

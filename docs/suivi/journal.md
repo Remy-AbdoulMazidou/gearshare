@@ -424,3 +424,9 @@ Une entrée par session de travail, la plus récente en bas.
   Ajout de tests de service pour les ressources absentes, l'item indisponible et l'annulation
   d'une réservation non active.
 - Vérifié : `docker compose run --rm backend pytest` donne 62 tests verts.
+- Fait par Rémy : `borrower_id` ajouté dans `frontend/app/api_client.py` et fixé à 1 dans
+  `frontend/app/routers/reservations.py` (`# TODO séance 5`). Vérifié dans le navigateur :
+  réservation acceptée, chevauchement refusé avec « Le créneau demandé est déjà réservé », cas
+  jointif accepté. Cas de chevauchement rejoués avec `curl` (`docs/cas-tests-chevauchement.md`),
+  review de la verticale avec la grille du prof (`docs/review-couches.md`), avec l'aide de Claude
+  pour la mise en forme.

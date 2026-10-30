@@ -10,8 +10,8 @@ service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie b
 
 ## Prochaine étape
 
-Relecture documentaire de la verticale `reservations` (`docs/review-couches.md` et
-`docs/cas-tests-chevauchement.md`).
+Séance 5 : authentification (inscription, connexion, JWT, routes protégées). `owner_id` et
+`borrower_id` fixés à 1 dans le frontend disparaîtront.
 
 ## Avancement des séances
 
@@ -20,21 +20,10 @@ Relecture documentaire de la verticale `reservations` (`docs/review-couches.md` 
 - [x] Séance 2 · Tests pytest : 48 tests, notification mockée, mutations (`MUTATIONS.md`)
 - [x] Séance 3 · PostgreSQL : schéma, requêtes, transactions, `MESURES.md`, schéma v2 et
   `REVIEW-schema.md` (SQL préparé avec Claude chat, exécuté et vérifié par Rémy)
-- [ ] Séance 4 · Application en couches, Compose 3 services
-  - [x] TP frontend, étape 1 : squelette et service Compose
-  - [x] TP frontend, étape 2 : client d'API et gestionnaire d'erreurs
-  - [x] TP frontend, étape 3 : liste et détail des objets
-  - [x] TP frontend, étape 4 : création d'un objet avec formulaire et PRG
-  - [x] TP frontend, étapes 5 et 6 : réservations, annulation, limites observées
-  - [x] TP backend, étape 1 : configuration, engine SQLAlchemy et dépendance de session
-  - [x] TP backend, étape 2 : modèles SQLAlchemy et relations
-  - [x] TP backend, étape 3 : branchement d'Alembic et service PostgreSQL dans Compose
-  - [x] TP backend, étape 3bis : piège du renommage (`docs/review-migrations.md`)
-  - [x] TP backend, étape 4 : verticale `items` en couches, propriétaire vérifié par le service
-  - [x] TP backend, tests : base `gearshare_test`, 53 tests verts
-  - [x] TP backend, étape 5 : N+1 mesuré (22 requêtes) et corrigé avec `selectinload` (2 requêtes)
-  - [x] TP backend, étape 6 : service `migrate`, vérification depuis zéro, frontend sur la vraie base
-  - [x] TP backend, étape 7 : verticale `reservations`
+- [x] Séance 4 · Application en couches, Compose 3 services
+  - [x] TP 1 frontend : liste, détail, création, réservation et annulation (PRG, 422, 409)
+  - [x] TP 2 backend : couches `items` et `reservations` sur PostgreSQL, Alembic, piège du renommage,
+    N+1 (22 → 2 requêtes), service `migrate`, 62 tests sur `gearshare_test`, docs de review
 - [ ] Séance 5 · Authentification JWT
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
@@ -67,8 +56,9 @@ Relecture documentaire de la verticale `reservations` (`docs/review-couches.md` 
 - 2026-10-27 : gestionnaire global des exceptions métier dans `main.py` ; aucun `commit()` dans les
   repositories, la transaction est gérée par `get_db`.
 - 2026-10-27 : `ItemService` vérifie le propriétaire avec `UserRepository` (404 au lieu d'un 500).
-- 2026-10-27 : tests sur `gearshare_test`, une transaction annulée par test ; réservations en mémoire
-  jusqu'à l'étape 7.
+- 2026-10-27 : tests sur `gearshare_test`, une transaction annulée par test.
+- 2026-10-30 (Rémy) : service `migrate` pour appliquer les migrations au démarrage
+  (`docs/choix-migrations.md`). Deux réservations jointives ne sont pas en conflit.
 - 2026-10-27 (Rémy) : `OwnerRead` (`id`, `display_name`) dans `ItemRead`, chargé avec
   `selectinload(Item.owner)` : `GET /items` passe de 22 à 2 requêtes.
 - 2026-10-30 : choix de l'option 2 pour les migrations : service Compose `migrate` dédié, attendu
@@ -78,7 +68,7 @@ Relecture documentaire de la verticale `reservations` (`docs/review-couches.md` 
 
 ## Questions ouvertes
 
-- `owner_id` fixé à 1 (utilisateur de démo) dans le frontend, `# TODO séance 5` : remplacé par
-  l'utilisateur connecté en séance 5.
-- Le frontend de réservation devra afficher les conflits 409 à l'étape de relecture du TP 2.
+- `owner_id` et `borrower_id` fixés à 1 (utilisateur de démo) dans le frontend, `# TODO séance 5`.
+- Chevauchement vérifié par le service mais pas encore par la base : ajouter la contrainte
+  `EXCLUDE` de la séance 3 dans une migration (`docs/review-couches.md`).
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).

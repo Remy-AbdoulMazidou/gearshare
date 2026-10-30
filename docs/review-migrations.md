@@ -151,3 +151,16 @@ provisoire : en séance 5, le backend déduira le propriétaire du jeton et ce c
 Vérifié : création de deux objets depuis le frontend, puis `docker compose restart`. Les objets
 sont toujours dans la liste, contrairement à l'étape 6 du TP 1 où le stockage en mémoire était
 vidé au redémarrage.
+
+## 6. La verticale `reservations` et le frontend (étape 7.5)
+
+Changement de contrat : `POST /reservations` exige maintenant `borrower_id`, comme `owner_id`
+pour les items. Modifications dans `frontend/` :
+
+- `frontend/app/api_client.py` : `create_reservation` reçoit `borrower_id` et l'envoie dans le
+  corps de la requête ;
+- `frontend/app/routers/reservations.py` : `borrower_id = 1`, avec un `# TODO séance 5`.
+
+Le `409` était déjà géré par le formulaire de réservation depuis le TP 1 (réaffichage de la page
+de détail avec les messages du backend). Vérifié dans le navigateur : un chevauchement affiche
+« Le créneau demandé est déjà réservé », le cas jointif est accepté.
