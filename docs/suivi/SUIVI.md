@@ -4,13 +4,14 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
+Étape 1 de la séance 5 terminée : hachage des mots de passe avec PBKDF2-HMAC-SHA256.
 TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
-`reservations` sur PostgreSQL, tests sur `gearshare_test` (62 tests verts), N+1 corrigé,
+`reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
 service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-Séance 5 : authentification (inscription, connexion, JWT, routes protégées). `owner_id` et
+Séance 5, étape 2 : inscription et lecture des utilisateurs. `owner_id` et
 `borrower_id` fixés à 1 dans le frontend disparaîtront.
 
 ## Avancement des séances
@@ -23,8 +24,9 @@ Séance 5 : authentification (inscription, connexion, JWT, routes protégées). 
 - [x] Séance 4 · Application en couches, Compose 3 services
   - [x] TP 1 frontend : liste, détail, création, réservation et annulation (PRG, 422, 409)
   - [x] TP 2 backend : couches `items` et `reservations` sur PostgreSQL, Alembic, piège du renommage,
-    N+1 (22 → 2 requêtes), service `migrate`, 62 tests sur `gearshare_test`, docs de review
+    N+1 (22 → 2 requêtes), service `migrate`, 66 tests sur `gearshare_test`, docs de review
 - [ ] Séance 5 · Authentification JWT
+  - [x] Étape 1 : hachage des mots de passe
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final

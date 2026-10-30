@@ -435,3 +435,13 @@ Une entrée par session de travail, la plus récente en bas.
 
 - Fait par Rémy : PyJWT, pydantic[email] et python-multipart ajoutés au backend, JWT_SECRET (factice) et JWT_EXPIRE_MINUTES dans .env.example, vrai secret généré avec openssl rand -hex 32 dans mon .env, jwt_secret obligatoire dans Settings, COOKIE_SECURE dans le service frontend.
 - Vérifié : aucune variable JWT dans le conteneur frontend, .env absent de git status.
+
+## 2026-10-30 · TP séance 5, étape 1
+
+- Fait par : GitHub Copilot (mode Agent).
+- Création de `backend/app/core/security.py` avec PBKDF2-HMAC-SHA256, sel aléatoire,
+  coût inclus dans le condensat et comparaison en temps constant.
+- Ajout de tests unitaires sans base ni client HTTP, ainsi que du prompt de l'étape dans
+  `docs/tp/seance-5/prompts.md`.
+- Vérifié : les tests ciblés et les 66 tests de la suite backend passent.
+- Fait par Rémy : questions de compréhension de l'étape 1 vérifiées dans le conteneur. Un hachage prend 0,050 s sur mon Mac (coût voulu contre la force brute), deux hachages du même mot de passe diffèrent grâce au sel stocké dans la chaîne pbkdf2_sha256$600000$sel$condensat.
