@@ -1,5 +1,7 @@
 # Plan — ressource `reservations` (étape 6, TP séance 1)
 
+Plan produit par Claude Code en mode Plan, validé par Rémy avant l'écriture du code.
+
 ## Contexte
 
 L'étape 6 du TP est l'exercice agentic : la ressource `reservations` doit être produite par

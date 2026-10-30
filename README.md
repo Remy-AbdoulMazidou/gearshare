@@ -32,7 +32,6 @@ Dans `.env`, remplacez la valeur factice de `JWT_SECRET` par un secret aléatoir
 openssl rand -hex 32
 ```
 
-
 ### Lancer les tests
 
 Depuis la racine du dépôt. Les tests tournent sur la base PostgreSQL `gearshare_test`
@@ -60,9 +59,10 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 |---|---|
 | `backend/` | API FastAPI en couches (routers, services, repositories, models, schemas), migrations Alembic, tests pytest |
 | `frontend/` | Application FastAPI qui sert les pages HTML (Jinja2) et appelle l'API |
-| `docker-compose.yml` | Services `db`, `backend` et `frontend` |
+| `docker-compose.yml` | Services `db`, `migrate` (migrations Alembic), `backend` et `frontend` |
+| `db/init/` | Création de la base de test `gearshare_test` au premier démarrage |
 | `tp-db/` | TP séance 3 : PostgreSQL, schéma, données, requêtes |
-| `docs/` | Livrables des TP, suivi du projet, futures fonctionnalités |
+| `docs/` | Livrables des TP, fonctionnalités ajoutées, suivi du projet (index dans `docs/README.md`) |
 | `CLAUDE.md`, `.claude/` | Instructions projet pour l'agent de code |
 | `.github/copilot-instructions.md` | Instructions pour GitHub Copilot |
 
@@ -76,25 +76,29 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 | 4 · Webapp | Terminé (TP 1 et TP 2) | `frontend/`, backend en couches sur PostgreSQL, `backend/alembic/`, 62 tests, `docs/review-migrations.md`, `docs/choix-migrations.md`, `docs/review-couches.md`, `docs/cas-tests-chevauchement.md`, `docs/tp/seance-4/` (prompts Copilot) |
 | 5 · Authentification | Terminé | Inscription, connexion JWT, routes protégées, propriété (403), 100 tests, connexion dans le frontend, `docs/tp/seance-5/` (prompts Copilot, relecture finale) |
 
+| Fonctionnalité ajoutée | État | Livrables |
+|---|---|---|
+| 01 · Pas de double réservation | Contrainte en base faite | Vérification dans le service (séance 4) et contrainte `EXCLUDE` en migration Alembic, 104 tests, course testée entre deux sessions `psql`, `docs/features/01-pas-de-double-reservation/` |
+
 Le détail de l'avancement et des décisions est dans `docs/suivi/SUIVI.md`, et l'historique des
 sessions dans `docs/suivi/journal.md`.
 
 ## Méthode de travail
 
-- **Agent de code : Claude Code.** `CLAUDE.md` contient les instructions projet et les
-  conventions du cours, l'équivalent du `.github/copilot-instructions.md` vu en cours. L'agent
-  propose un plan avant de coder, et je valide chaque fichier avant qu'il soit écrit.
-- **Prompts** préparés avec Claude (chat), puis exécutés par l'agent. Ils sont copiés tels
-  quels dans `docs/tp/seance-N/prompts.md`.
-- **GitHub Copilot** : seconde review de la ressource `reservations`, comparée à la mienne
-  (`docs/tp/seance-1/review-copilot.md` et `REVIEW.md`). En séance 3, Copilot en mode Agent a
-  écrit le DDL du schéma v2, que j'ai relu avec la grille du prof puis testé
-  (`tp-db/REVIEW-schema.md`). En séance 4, Copilot en mode Agent a écrit le frontend étape par
-  étape à partir de mes prompts (`docs/tp/seance-4/prompts.md`). J'ai validé chaque plan,
-  vérifié chaque étape dans le navigateur et corrigé les traces.
-- **De mon côté** : validation des specs et des plans, décisions de conception, relecture du
-  code, tests manuels avec curl et dans le navigateur, tests de mutation, commits. Pour la
-  séance 3, le SQL a été préparé avec Claude (chat), puis exécuté et vérifié par moi dans `psql`.
+- **Agents de code.** Séances 1 et 2 : Claude Code, avec les instructions projet de `CLAUDE.md`
+  et les commandes `/reprendre` et `/cloturer` de `.claude/`. À partir de la séance 3 : GitHub
+  Copilot en mode Agent, avec `.github/copilot-instructions.md` qui renvoie aux mêmes conventions.
+- **Prompts** préparés avec Claude (chat), puis donnés à l'agent. Ils sont copiés tels quels dans
+  `docs/tp/seance-N/prompts.md` et `docs/features/*/prompts.md`.
+- **Reviews.** En séance 1, review de la ressource `reservations` par moi puis par Copilot, et
+  comparaison (`docs/tp/seance-1/REVIEW.md` et `review-copilot.md`). Ensuite, chaque étape écrite
+  par l'agent est relue et testée avant le commit. Mes corrections sont notées dans
+  `docs/suivi/journal.md` (« Fait par Rémy »).
+- **De mon côté** : décisions de conception, relecture du code généré, tests manuels avec curl,
+  le navigateur et `psql`, tests de mutation, expériences (migrations, failles JWT, course entre
+  deux transactions), commits. Pour la séance 3, le SQL a été préparé avec Claude (chat), puis
+  exécuté et vérifié par moi dans `psql`. Les documents mis en forme avec Claude le disent en
+  première ligne.
 
 ## Stack
 

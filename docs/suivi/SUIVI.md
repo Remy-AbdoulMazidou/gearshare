@@ -4,13 +4,13 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Séance 5 terminée : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT, routes protégées,
-propriété vérifiée dans les services (403), 100 tests verts, connexion côté frontend, failles
-exploitées (étape 8) et relecture finale (`docs/tp/seance-5/relecture-finale.md`).
+Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
+dans une migration Alembic, l'API répond 409 en cas de course, 104 tests verts.
 
 ## Prochaine étape
 
-Séance 6 : fondations agentic (support à venir).
+Séance 6 : fondations agentic (support à venir). En attendant : attaque temporelle sur le login,
+fiches des fonctionnalités 02 et 03, `docs/retour-experience.md`.
 
 ## Avancement des séances
 
@@ -46,29 +46,24 @@ Séance 6 : fondations agentic (support à venir).
 ## Décisions
 
 - 2026-09-23 à 2026-09-30 : dépôt en `backend/` + `docs/`, frontend ajouté en séance 4,
-  commits faits par Rémy ; stockage mémoire et `tp-db/` provisoires jusqu'à PostgreSQL.
+  commits faits par Rémy. Stockage mémoire et `tp-db/` provisoires jusqu'à PostgreSQL.
 - 2026-09-24 à 2026-09-26 : `PUT` réutilise `ItemCreate`, pas de `skip` sur les réservations,
   validation par `loc[-1]`, notification d'annulation tolérante à `ConnectionError` et `TimeoutError`.
-- 2026-10-22 : DDL v2 préparé par GitHub Copilot (mode Agent), relu et testé par Rémy ;
+- 2026-10-22 : DDL v2 préparé par GitHub Copilot (mode Agent), relu et testé par Rémy.
   `PATCH` d'annulation ajouté au frontend, avec l'ancienne route conservée pour les tests.
 - 2026-10-27 : Alembic lit la configuration, les repositories ne font pas de `commit`, et
   les tests utilisent `gearshare_test` avec une transaction annulée par test.
 - 2026-10-27 : `OwnerRead` et `selectinload(Item.owner)` font passer `GET /items` de 22 à 2 requêtes.
-- 2026-10-30 : migrations via un service Compose `migrate` ; inscription et connexion JWT en couches.
+- 2026-10-30 : migrations via un service Compose `migrate`. Inscription et connexion JWT en couches.
 - 2026-10-30 : `get_current_user` utilise `OAuth2PasswordBearer`, relit l'utilisateur par
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
-- 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;
-  les vérifications de propriété sont reportées à l'étape 5.
-- 2026-10-30 : `ItemService` vérifie la propriété avant PUT, PATCH et DELETE ; `ReservationService`
-  autorise l'annulation à l'emprunteur ou au propriétaire de l'item, dans l'ordre 404, 403, 409.
+- 2026-10-30 : `owner_id` et `borrower_id` viennent du jeton. `ItemService` vérifie la propriété
+  avant PUT, PATCH et DELETE. `ReservationService` autorise l'annulation à l'emprunteur ou au
+  propriétaire de l'item, dans l'ordre 404, 403, 409.
 - 2026-10-30 : les fixtures `client_alice` et `client_bob` utilisent des instances distinctes
-  de `TestClient` ; la matrice couvre les accès anonymes, propriétaires et autres utilisateurs.
+  de `TestClient`. La matrice couvre les accès anonymes, propriétaires et autres utilisateurs.
 - 2026-10-30 : le frontend lit le JWT dans le cookie `access_token`, le transmet en paramètre à
   `ApiClient`, et redirige les `401` vers `/connexion` sans stocker le jeton dans le client partagé.
-- 2026-10-30 : `get_current_user` utilise `OAuth2PasswordBearer`, relit l'utilisateur par
-  `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
-- 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;
-  les vérifications de propriété sont reportées à l'étape 5.
 - 2026-10-30 : contrainte `EXCLUDE` des réservations ajoutée par une migration écrite à la main
   (autogenerate ne la détecte pas). Le service garde sa vérification, la base est le dernier
   garde-fou et l'API répond 409 en cas de course (`docs/features/01-pas-de-double-reservation/`).

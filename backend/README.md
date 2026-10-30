@@ -9,7 +9,7 @@ API FastAPI organisée en couches :
 | `app/repositories/` | Requêtes SQLAlchemy, jamais de `commit()` |
 | `app/models/` | Modèles SQLAlchemy (`users`, `items`, `reservations`) |
 | `app/schemas/` | Schémas Pydantic de création, de modification et de lecture |
-| `app/core/`, `app/db/`, `app/api/` | Configuration, session SQLAlchemy, dépendance `get_db` |
+| `app/core/`, `app/db/`, `app/api/` | Configuration, sécurité (hachage, JWT), session SQLAlchemy, dépendances `get_db` et `get_current_user` |
 | `alembic/` | Migrations du schéma |
 | `tests/` | Tests pytest sur la base `gearshare_test` |
 

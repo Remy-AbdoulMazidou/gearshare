@@ -1,1 +1,1 @@
-"""Application FastAPI du TP de la séance 2."""
+"""API FastAPI de GearShare."""

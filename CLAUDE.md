@@ -41,6 +41,9 @@ backend/app/
   services/       logique métier
   repositories/   accès aux données
   models/         modèles SQLAlchemy
+  core/           configuration, exceptions métier, sécurité (hachage, JWT)
+  api/, db/       dépendances (get_db, get_current_user), session SQLAlchemy
+backend/alembic/  migrations
 backend/tests/
 ```
 
@@ -65,7 +68,8 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 - `TestClient`, fixtures dans `tests/conftest.py`, scope `function`.
 - Base de test PostgreSQL `gearshare_test` (`TEST_DATABASE_URL`) : schéma créé par
   `Base.metadata`, une transaction annulée par test, `get_db` remplacé par la session de test.
-- Les ressources encore en mémoire gardent la fixture `storage` (pas d'`autouse`).
+- Utilisateurs de test `alice` et `bob`, avec un client authentifié chacun (`client_alice`,
+  `client_bob`).
 - Noms de tests en français et explicites. Given / When / Then quand ce n'est pas évident.
 - `parametrize` pour les cas de validation, en vérifiant le champ en erreur (`loc[-1]`).
 - Pour chaque `raise` d'un router ou d'un service, un test.
@@ -91,8 +95,8 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 - Chaque fonctionnalité ajoutée : `docs/features/NN-nom/` avec
   `presentation.md` (parcours utilisateur, critères d'acceptation), `plan.md`,
   `prompts.md` (prompts réellement utilisés, copiés tels quels) et `review.md`.
-- Un document rédigé par l'agent le dit en première ligne :
-  « Rédigé avec Claude Code, relu et corrigé par Rémy. »
+- Un document rédigé par l'agent le dit en première ligne, avec le nom de l'agent :
+  « Rédigé avec <agent>, relu et corrigé par Rémy. »
 - Les fichiers de review (`REVIEW.md`, `review.md`) et `docs/retour-experience.md` sont écrits
   par Rémy. L'agent peut proposer une trame ou des questions, jamais le contenu. Quand Rémy
   s'aide de Claude (chat) pour la mise en forme, le fichier le dit en tête.
@@ -105,4 +109,4 @@ Les routers n'accèdent jamais directement aux données : ils passent par les se
 1. Mettre à jour `docs/suivi/SUIVI.md` : cocher ce qui est fait, mettre à jour « En cours »,
    « Prochaine étape » et « Décisions ». Ce fichier reste court (moins de 80 lignes).
 2. Ajouter une entrée à la fin de `docs/suivi/journal.md` : date, ce qui a été fait,
-   par qui (Rémy ou Claude Code), problèmes rencontrés, corrections apportées par Rémy.
+   par qui (Rémy ou l'agent, nommé), problèmes rencontrés, corrections apportées par Rémy.
