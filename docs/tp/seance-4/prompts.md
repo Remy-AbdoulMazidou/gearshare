@@ -219,3 +219,18 @@ Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de 
 - Vérifie seulement avec docker compose config. Je lance moi-même la vérification depuis zéro (étape 6.3).
 
 Ne modifie pas le frontend (c'est l'étape 6.4) et n'écris pas docs/choix-migrations.md, c'est moi qui l'écris. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 6 : service migrate ».
+
+## TP 2, étape 7 : verticale reservations
+
+```text
+Étape 7 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md : la verticale reservations, avec exactement la même architecture que items (mêmes conventions, mêmes exceptions métier). Le modèle Reservation existe déjà.
+
+- Schémas : ReservationCreate reçoit aussi borrower_id (comme owner_id pour items, en attendant la séance 5). Garde le model_validator sur les dates et extra="forbid". ReservationRead construit depuis l'objet SQLAlchemy.
+- ReservationRepository : get, list (filtre item_id, skip/limit), add, et has_active_overlap(item_id, date_debut, date_fin) qui cherche une réservation active du même item avec la condition existante.date_debut < date_fin demandée ET existante.date_fin > date_debut demandée (deux réservations jointives ne sont pas en conflit). Aucun commit().
+- ReservationService, seul endroit des règles métier : item inexistant → RessourceIntrouvable, emprunteur inexistant → RessourceIntrouvable, item non disponible → ConflitMetier, chevauchement avec une réservation active → ConflitMetier, annuler une réservation qui n'est pas active → ConflitMetier. Garde l'envoi de la notification d'annulation et son comportement actuel si elle échoue.
+- Router : POST /reservations (201), GET /reservations (filtre item_id, skip/limit), GET /reservations/{id}, PATCH /reservations/{id} avec {"statut": "annulee"}, et garde POST /reservations/{id}/annuler. response_model partout. Plus de FAKE_DB.
+- Tests : passe les tests de réservations sur la base de test (supprime la fixture storage), avec une fixture d'emprunteur. Ne change pas les assertions existantes, sauf ce qu'impose borrower_id ou le nouvel emplacement de la notification. Ajoute un test paramétré sur ReservationService pour les cas avant, après, partiel au début, partiel à la fin, englobant et jointif. Liste dans le journal chaque test modifié et pourquoi.
+- Si le modèle change, génère une migration et relis-la. Sinon, n'en crée pas.
+
+Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 7 : verticale reservations ».
+```

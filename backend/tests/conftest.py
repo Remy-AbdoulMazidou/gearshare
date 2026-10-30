@@ -1,5 +1,4 @@
 from collections.abc import Iterator
-from dataclasses import dataclass
 from typing import Any
 
 import pytest
@@ -11,15 +10,6 @@ from app.api.deps import get_db
 from app.core.config import settings
 from app.main import app
 from app.models import Base, User
-from app.routers import reservations
-
-
-@dataclass
-class Storage:
-    reservations: dict[int, dict[str, Any]]
-
-    def reset_all(self) -> None:
-        self.reservations.clear()
 
 
 @pytest.fixture(scope="session")
@@ -53,15 +43,7 @@ def db(engine: Engine) -> Iterator[Session]:
 
 
 @pytest.fixture
-def storage() -> Iterator[Storage]:
-    storage = Storage(reservations=reservations.FAKE_DB)
-    storage.reset_all()
-    yield storage
-    storage.reset_all()
-
-
-@pytest.fixture
-def client(db: Session, storage: Storage) -> Iterator[TestClient]:
+def client(db: Session) -> Iterator[TestClient]:
     app.dependency_overrides[get_db] = lambda: db
     with TestClient(app) as test_client:
         yield test_client
@@ -73,6 +55,18 @@ def alice(db: Session) -> User:
     user = User(
         email="alice@esiee.fr",
         display_name="Alice",
+        password_hash="x",
+    )
+    db.add(user)
+    db.flush()
+    return user
+
+
+@pytest.fixture
+def borrower(db: Session) -> User:
+    user = User(
+        email="bob@esiee.fr",
+        display_name="Bob",
         password_hash="x",
     )
     db.add(user)
@@ -95,11 +89,12 @@ def item_velo(client: TestClient, alice: User) -> dict[str, Any]:
 
 @pytest.fixture
 def reservation_active(
-    client: TestClient, item_velo: dict[str, Any]
+    client: TestClient, item_velo: dict[str, Any], borrower: User
 ) -> dict[str, Any]:
     """Une réservation active sur item_velo, renvoyée telle que l'API l'expose."""
     response = client.post("/reservations", json={
-        "item_id": item_velo["id"], "date_debut": "2026-10-01", "date_fin": "2026-10-05",
+        "item_id": item_velo["id"], "borrower_id": borrower.id,
+        "date_debut": "2026-10-01", "date_fin": "2026-10-05",
     })
     assert response.status_code == 201
     return response.json()

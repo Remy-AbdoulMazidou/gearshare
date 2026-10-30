@@ -390,3 +390,37 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : `docker compose config`.
 - Fait par Rémy : vérification depuis zéro (down -v puis un seul up : migrate en Exited (0), backend démarré après, gearshare_test créée), puis expériences pour docs/choix-migrations.md : second up sans nouvelle migration, migration cassée volontairement (migrate en Exited (1), backend jamais démarré, base intacte), --reload toujours actif et docker compose run --rm migrate.
 - Fait par Rémy : étape 6.4. Erreur « owner_id : Field required » observée dans le frontend, utilisateur de démo inséré, owner_id fixé à 1 dans frontend/app/routers/items.py avec un TODO séance 5, deux objets créés depuis le frontend et toujours présents après docker compose restart.
+
+## 2026-10-30 · TP séance 4, étape 7
+
+- Fait par : GitHub Copilot (mode Agent).
+- Création de `ReservationRepository` (`get`, `list` avec filtre et pagination, `add`,
+  `has_active_overlap`) et de `ReservationService` pour centraliser les règles métier :
+  item ou emprunteur inexistant, item indisponible, chevauchement actif et annulation non
+  active.
+- `ReservationCreate` reçoit `borrower_id` et `ReservationRead` est construit depuis
+  l'objet SQLAlchemy. Le router utilise les dépendances de base de données, conserve les
+  quatre routes attendues et la route historique d'annulation, sans `FAKE_DB`.
+- Le modèle n'ayant pas changé et la migration initiale contenant déjà `borrower_id`, aucune
+  migration n'a été créée.
+- `tests/conftest.py` : suppression de `Storage`, ajout de la fixture `borrower`, et création
+  des réservations de test avec `borrower_id`.
+- Tests modifiés et raisons :
+  - `test_creer_reservation_renvoie_201_avec_statut_active` : ajout de l'emprunteur requis et
+    vérification de `borrower_id`.
+  - `test_creer_reservation_avec_dates_invalides_renvoie_422` : ajout de l'emprunteur requis
+    sans changer l'assertion de validation des dates.
+  - `test_creer_reservation_avec_champ_invalide_renvoie_422` : ajout de `borrower_id` pour
+    conserver les cas de validation ciblés.
+  - `test_filtre_item_id_ne_garde_que_les_reservations_de_cet_item` : ajout de
+    la fixture `borrower` et de `borrower_id` à la seconde réservation.
+  - `test_annulation_envoie_une_notification` et
+    `test_annulation_reussit_meme_si_la_notification_echoue` : déplacement du monkeypatch
+    vers le service, où se trouve désormais la notification.
+  - `test_reservation_valide_est_acceptee` et `test_dates_inversees_sont_refusees_par_le_schema` :
+    ajout de `borrower_id` au contrat du schéma.
+- Ajout de `test_service_refuse_les_chevauchements_et_accepte_les_autres`, paramétré sur avant,
+  après, chevauchement partiel au début, chevauchement partiel à la fin, englobant et jointif.
+  Ajout de tests de service pour les ressources absentes, l'item indisponible et l'annulation
+  d'une réservation non active.
+- Vérifié : `docker compose run --rm backend pytest` donne 62 tests verts.

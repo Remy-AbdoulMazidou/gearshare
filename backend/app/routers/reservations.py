@@ -1,84 +1,65 @@
-import logging
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, Path, Query
 
+from app.api.deps import DbSession
+from app.repositories.item import ItemRepository
+from app.repositories.reservation import ReservationRepository
+from app.repositories.user import UserRepository
 from app.schemas.reservation import ReservationCreate, ReservationRead, ReservationUpdate
+from app.services.reservation import ReservationService
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
-logger = logging.getLogger(__name__)
-
-FAKE_DB: dict[int, dict] = {}
 
 
-def _next_id() -> int:
-    return max(FAKE_DB, default=0) + 1
+def get_reservation_service(db: DbSession) -> ReservationService:
+    return ReservationService(
+        ReservationRepository(db), ItemRepository(db), UserRepository(db)
+    )
 
 
-def envoyer_notification_annulation(reservation_id: int) -> None:
-    # Simule l'envoi : un vrai service (mail, HTTP) pourrait lever ConnectionError ou TimeoutError.
-    logger.info("Notification d'annulation envoyée pour la réservation %s", reservation_id)
+ReservationServiceDependency = Annotated[
+    ReservationService, Depends(get_reservation_service)
+]
 
 
 @router.get("", response_model=list[ReservationRead])
 def list_reservations(
+    service: ReservationServiceDependency,
     item_id: int | None = Query(default=None, ge=1),
+    skip: int = Query(default=0, ge=0),
     limit: int = Query(default=20, ge=1, le=100),
 ):
-    reservations = list(FAKE_DB.values())
-    if item_id is not None:
-        reservations = [
-            reservation
-            for reservation in reservations
-            if reservation["item_id"] == item_id
-        ]
-    return reservations[:limit]
+    return service.list(item_id=item_id, skip=skip, limit=limit)
 
 
 @router.post("", response_model=ReservationRead, status_code=201)
-def create_reservation(payload: ReservationCreate):
-    new_id = _next_id()
-    reservation = {"id": new_id, **payload.model_dump(), "statut": "active"}
-    FAKE_DB[new_id] = reservation
-    return reservation
+def create_reservation(
+    payload: ReservationCreate, service: ReservationServiceDependency
+):
+    return service.create(payload)
 
 
 @router.get("/{reservation_id}", response_model=ReservationRead)
-def get_reservation(reservation_id: int = Path(ge=1)):
-    reservation = FAKE_DB.get(reservation_id)
-    if reservation is None:
-        raise HTTPException(
-            status_code=404, detail=f"Réservation {reservation_id} introuvable"
-        )
-    return reservation
-
-
-def _annuler_reservation(reservation_id: int) -> dict:
-    reservation = FAKE_DB.get(reservation_id)
-    if reservation is None:
-        raise HTTPException(
-            status_code=404, detail=f"Réservation {reservation_id} introuvable"
-        )
-    if reservation["statut"] == "annulee":
-        raise HTTPException(
-            status_code=409, detail=f"Réservation {reservation_id} déjà annulée"
-        )
-    reservation["statut"] = "annulee"
-    try:
-        envoyer_notification_annulation(reservation_id=reservation_id)
-    except (ConnectionError, TimeoutError):
-        logger.warning(
-            "Notification d'annulation non envoyée pour la réservation %s", reservation_id
-        )
-    return reservation
+def get_reservation(
+    service: ReservationServiceDependency,
+    reservation_id: int = Path(ge=1),
+):
+    return service.get(reservation_id)
 
 
 @router.patch("/{reservation_id}", response_model=ReservationRead)
 def update_reservation(
-    payload: ReservationUpdate, reservation_id: int = Path(ge=1)
+    payload: ReservationUpdate,
+    service: ReservationServiceDependency,
+    reservation_id: int = Path(ge=1),
 ):
-    return _annuler_reservation(reservation_id)
+    return service.cancel(reservation_id)
 
 
 @router.post("/{reservation_id}/annuler", response_model=ReservationRead)
-def annuler_reservation(reservation_id: int = Path(ge=1)):
-    return _annuler_reservation(reservation_id)
+def annuler_reservation(
+    service: ReservationServiceDependency,
+    reservation_id: int = Path(ge=1),
+):
+    return service.cancel(reservation_id)

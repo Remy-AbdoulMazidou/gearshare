@@ -4,13 +4,14 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-TP 2 de la séance 4, étapes 0 à 6 terminées : backend en couches pour `items` sur PostgreSQL,
-tests sur `gearshare_test` (53 tests verts), N+1 corrigé, service `migrate`
-(`docs/choix-migrations.md`), frontend branché sur la vraie base.
+TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
+`reservations` sur PostgreSQL, tests sur `gearshare_test` (62 tests verts), N+1 corrigé,
+service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 7 : verticale `reservations` en couches, chevauchement, review.
+Relecture documentaire de la verticale `reservations` (`docs/review-couches.md` et
+`docs/cas-tests-chevauchement.md`).
 
 ## Avancement des séances
 
@@ -33,7 +34,7 @@ TP 2 de la séance 4, étape 7 : verticale `reservations` en couches, chevauchem
   - [x] TP backend, tests : base `gearshare_test`, 53 tests verts
   - [x] TP backend, étape 5 : N+1 mesuré (22 requêtes) et corrigé avec `selectinload` (2 requêtes)
   - [x] TP backend, étape 6 : service `migrate`, vérification depuis zéro, frontend sur la vraie base
-  - [ ] TP backend, étape 7 : verticale `reservations`
+  - [x] TP backend, étape 7 : verticale `reservations`
 - [ ] Séance 5 · Authentification JWT
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
@@ -72,10 +73,12 @@ TP 2 de la séance 4, étape 7 : verticale `reservations` en couches, chevauchem
   `selectinload(Item.owner)` : `GET /items` passe de 22 à 2 requêtes.
 - 2026-10-30 : choix de l'option 2 pour les migrations : service Compose `migrate` dédié, attendu
   par le backend après la disponibilité de PostgreSQL.
+- 2026-10-30 : la verticale `reservations` utilise `borrower_id` jusqu'à l'authentification,
+  vérifie l'item, l'emprunteur, la disponibilité et les chevauchements dans le service.
 
 ## Questions ouvertes
 
 - `owner_id` fixé à 1 (utilisateur de démo) dans le frontend, `# TODO séance 5` : remplacé par
   l'utilisateur connecté en séance 5.
-- `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Réglé à l'étape 7 du TP 2 (verticale `reservations` en couches).
+- Le frontend de réservation devra afficher les conflits 409 à l'étape de relecture du TP 2.
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
