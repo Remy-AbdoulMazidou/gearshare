@@ -18,6 +18,8 @@ def engine() -> Iterator[Engine]:
     if settings.test_database_url is None:
         raise RuntimeError("TEST_DATABASE_URL doit être défini pour les tests")
     engine = create_engine(settings.test_database_url)
+    with engine.begin() as connection:
+        connection.execute(text("CREATE EXTENSION IF NOT EXISTS btree_gist"))
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     yield engine

@@ -4,10 +4,11 @@ from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ConflitMetier, RessourceIntrouvable
-from app.models import Item, User
+from app.models import Item, Reservation, User
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
 from app.schemas.reservation import ReservationCreate
@@ -402,3 +403,92 @@ def test_service_refuse_annulation_d_une_reservation_non_active(
 
     with pytest.raises(ConflitMetier, match="non active"):
         service.cancel(reservation.id, bob)
+
+
+# Contrainte EXCLUDE en base
+
+
+def test_base_refuse_une_reservation_active_chevauchante(
+    db: Session,
+    reservation_active: dict[str, Any],
+    bob: User,
+) -> None:
+    reservation = Reservation(
+        item_id=reservation_active["item_id"],
+        borrower_id=bob.id,
+        date_debut=date(2026, 10, 3),
+        date_fin=date(2026, 10, 7),
+    )
+
+    with pytest.raises(IntegrityError, match="reservations_active_no_overlap"):
+        with db.begin_nested():
+            db.add(reservation)
+            db.flush()
+
+
+def test_base_accepte_un_chevauchement_apres_annulation(
+    db: Session,
+    reservation_active: dict[str, Any],
+    bob: User,
+) -> None:
+    active = db.get(Reservation, reservation_active["id"])
+    assert active is not None
+    active.statut = "annulee"
+
+    reservation = Reservation(
+        item_id=reservation_active["item_id"],
+        borrower_id=bob.id,
+        date_debut=date(2026, 10, 3),
+        date_fin=date(2026, 10, 7),
+    )
+    with db.begin_nested():
+        db.add(reservation)
+        db.flush()
+
+    assert reservation.id is not None
+
+
+def test_base_accepte_une_reservation_jointive(
+    db: Session,
+    reservation_active: dict[str, Any],
+    bob: User,
+) -> None:
+    reservation = Reservation(
+        item_id=reservation_active["item_id"],
+        borrower_id=bob.id,
+        date_debut=date(2026, 10, 5),
+        date_fin=date(2026, 10, 8),
+    )
+    with db.begin_nested():
+        db.add(reservation)
+        db.flush()
+
+    assert reservation.id is not None
+
+
+def test_course_sur_la_contrainte_exclude_renvoie_409(
+    client_bob: TestClient,
+    reservation_active: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        ReservationRepository,
+        "has_active_overlap",
+        lambda self, item_id, date_debut, date_fin: False,
+    )
+
+    response = client_bob.post("/reservations", json={
+        "item_id": reservation_active["item_id"],
+        "date_debut": "2026-10-03",
+        "date_fin": "2026-10-07",
+    })
+
+    assert response.status_code == 409
+    assert response.json() == {
+        "detail": "Le créneau demandé est déjà réservé"
+    }
+    reservations = client_bob.get(
+        "/reservations", params={"item_id": reservation_active["item_id"]}
+    )
+    assert reservations.status_code == 200
+    assert len(reservations.json()) == 1

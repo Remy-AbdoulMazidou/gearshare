@@ -1,9 +1,14 @@
 from datetime import date
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import ConflitMetier
 from app.models.reservation import Reservation
+
+
+EXCLUDE_CONSTRAINT_NAME = "reservations_active_no_overlap"
 
 
 class ReservationRepository:
@@ -27,8 +32,16 @@ class ReservationRepository:
         return list(self.db.scalars(stmt).all())
 
     def add(self, reservation: Reservation) -> Reservation:
-        self.db.add(reservation)
-        self.db.flush()
+        try:
+            with self.db.begin_nested():
+                self.db.add(reservation)
+                self.db.flush()
+        except IntegrityError as exc:
+            if exc.orig.diag.constraint_name == EXCLUDE_CONSTRAINT_NAME:
+                raise ConflitMetier(
+                    "Le créneau demandé est déjà réservé"
+                ) from exc
+            raise
         self.db.refresh(reservation)
         return reservation
 

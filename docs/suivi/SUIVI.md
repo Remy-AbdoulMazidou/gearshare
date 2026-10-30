@@ -69,9 +69,10 @@ Séance 6 : fondations agentic (support à venir).
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
 - 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;
   les vérifications de propriété sont reportées à l'étape 5.
+- 2026-10-30 : contrainte `EXCLUDE` des réservations ajoutée par une migration écrite à la main
+  (autogenerate ne la détecte pas). Le service garde sa vérification, la base est le dernier
+  garde-fou et l'API répond 409 en cas de course (`docs/features/01-pas-de-double-reservation/`).
 
 ## Questions ouvertes
 
-- Chevauchement vérifié par le service mais pas encore par la base : ajouter la contrainte
-  `EXCLUDE` de la séance 3 dans une migration (`docs/review-couches.md`).
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).

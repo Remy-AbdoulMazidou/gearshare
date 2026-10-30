@@ -543,3 +543,11 @@ Une entrée par session de travail, la plus récente en bas.
 
 - Fait par Rémy : 8.1 avec JWT_SECRET=secret, jeton forgé à la main (sub de Bob, signé avec « secret ») accepté par /auth/me, qui répond Bob. Avec le vrai secret remis, le même jeton donne 401. 8.2 avec JWT_EXPIRE_MINUTES=1, /auth/me répond 200 puis 401 après 70 secondes, et le cookie expire en même temps dans le navigateur (max_age = expires_in). 8.3 compte carol@esiee.fr supprimé en base, son ancien jeton donne 401. Secret et expiration remis à leur valeur, .env sauvegardé hors du dépôt pendant les expériences.
 - Fait par Rémy : relecture finale avec la liste du prof (21 points OK) et recherche de secrets oubliés, lignes restantes expliquées dans docs/tp/seance-5/relecture-finale.md (mis en forme avec l'aide de Claude). .env absent de l'historique.
+
+## 2026-10-30 · Contrainte EXCLUDE sur les réservations
+
+- Fait par Rémy : `ExcludeConstraint` ajoutée au modèle `Reservation`. `alembic revision --autogenerate` a produit une migration vide (Alembic ne détecte pas les contraintes EXCLUDE), migration 282ac4d65b77 écrite à la main en SQL avec `op.execute` (btree_gist + reservations_active_no_overlap).
+- Vérifié par Rémy : aucun chevauchement actif en base avant la migration (0 rows), upgrade puis downgrade puis upgrade, contrainte visible dans `\d reservations`, `alembic check` sans opération. Tests en échec avant la correction (bigint has no default operator class for access method "gist", la base de test est créée par create_all).
+- Fait par GitHub Copilot (mode Agent), prompt dans docs/features/01-pas-de-double-reservation/prompts.md : btree_gist dans la fixture engine, traduction de la contrainte en ConflitMetier (409) dans un savepoint du repository, 4 tests (chevauchement direct refusé, accepté si l'autre est annulée, jointif accepté, course simulée qui renvoie 409).
+- Fait par Rémy : review du code de Copilot, condition sur `constraint_name` simplifiée. Mutation avec un faux nom de contrainte, test_course_sur_la_contrainte_exclude_renvoie_409 en échec, puis 104 tests verts.
+- Fait par Rémy : vraie course entre deux sessions psql. B reste bloqué tant que A n'a pas validé, puis il est refusé par reservations_active_no_overlap. Détails dans docs/features/01-pas-de-double-reservation/contrainte-exclude.md (mis en forme avec l'aide de Claude).

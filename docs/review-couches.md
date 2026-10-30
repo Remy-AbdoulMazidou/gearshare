@@ -21,10 +21,11 @@ Copilot (mode Agent), prompt dans `docs/tp/seance-4/prompts.md`.
 
 - **Deux requêtes simultanées.** Le service vérifie le chevauchement, puis insère. Si deux
   réservations du même créneau arrivent exactement en même temps, les deux vérifications peuvent
-  passer avant l'insertion. La base ne l'empêche pas encore : la contrainte `EXCLUDE` de la
-  séance 3 n'existe que dans `tp-db/`, pas dans les migrations Alembic. Correction possible : une
-  migration qui ajoute `btree_gist` et la même contrainte `EXCLUDE`. Le service garderait sa
-  vérification pour renvoyer un message clair, et la base deviendrait le dernier garde-fou.
+  passer avant l'insertion. La contrainte `EXCLUDE` de la séance 3 n'existait que dans `tp-db/`.
+  **Corrigé ensuite** : migration `282ac4d65b77` qui ajoute `btree_gist` et la contrainte
+  `reservations_active_no_overlap`. Le service garde sa vérification pour le message clair, la base
+  est le dernier garde-fou et l'API répond 409. Détails et course testée entre deux sessions `psql`
+  dans `docs/features/01-pas-de-double-reservation/contrainte-exclude.md`.
 - **Notification avant le commit.** L'annulation envoie la notification dans le service, avant le
   `commit()` fait par `get_db` en fin de requête. Si le commit échouait, la notification serait
   partie pour une annulation non enregistrée. Acceptable tant que la notification ne fait qu'un

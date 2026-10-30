@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
     text,
 )
+from sqlalchemy.dialects.postgresql import ExcludeConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -24,6 +25,13 @@ class Reservation(Base):
         CheckConstraint("date_fin > date_debut", name="dates_coherentes"),
         CheckConstraint(
             "statut IN ('active', 'annulee', 'terminee')", name="statut_valide"
+        ),
+        ExcludeConstraint(
+            ("item_id", "="),
+            (text("daterange(date_debut, date_fin, '[)')"), "&&"),
+            using="gist",
+            where=text("statut = 'active'"),
+            name="reservations_active_no_overlap",
         ),
     )
 
