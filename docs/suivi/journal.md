@@ -536,3 +536,5 @@ Une entrée par session de travail, la plus récente en bas.
 - Les créations d'items, réservations, lectures de réservations et annulations transmettent le
   jeton ; les identifiants provisoires ont été supprimés.
 - Vérifié : compilation Python, contrôle d'espaces et recherche d'adresses backend en dur.
+- Vérifié par Rémy dans le navigateur : cookie access_token HttpOnly et SameSite=Lax, réservation déconnecté renvoyée vers la connexion, /connexion?suivant=https://example.com reste sur le site, Alice (fenêtre normale) et Bob (navigation privée) créent chacun un item avec le bon owner_id en base.
+- Corrigé par Rémy : la page de détail d'un item ne charge les réservations que si l'utilisateur est connecté (GET /items/{id} reste public), et après un 401 sur un formulaire POST, suivant pointe vers la page d'origine (en-tête Referer) au lieu de la route POST, qui donnait une 405 après connexion.

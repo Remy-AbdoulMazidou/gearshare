@@ -61,7 +61,7 @@ def create_item(
 @router.get("/items/{item_id}", response_class=HTMLResponse)
 def item_detail_page(request: Request, item_id: int, token: Token) -> HTMLResponse:
     item = api_client.get_item(item_id)
-    reservations = api_client.list_reservations(token, item_id)
+    reservations = api_client.list_reservations(token, item_id) if token else []
     return templates.TemplateResponse(
         request,
         "items/detail.html",
