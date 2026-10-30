@@ -25,3 +25,16 @@ Lance docker compose run --rm backend pytest tests/test_security.py -v, puis tou
 
 Ne protège encore aucune route (étape 4). Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 2 : inscription ».
 ```
+
+## Étape 3 : connexion et JWT
+
+```text
+Étape 3 du TP ../cours/seances/seance-5-authentification/tp/README.md, en suivant le cours ../cours/seances/seance-5-authentification/cours/README.md.
+
+- backend/app/core/security.py : create_access_token et decode_access_token avec PyJWT. HS256, settings.jwt_secret, sub sous forme de chaîne, iat et exp (settings.jwt_expire_minutes), et rien d'autre dans le payload. Au décodage, liste explicite d'algorithmes (["HS256"]) et exp vérifié.
+- AuthService.authenticate(email, password) : renvoie l'utilisateur ou None. Même résultat pour un email inconnu et un mauvais mot de passe.
+- POST /auth/login : lit un formulaire OAuth2PasswordRequestForm (username porte l'email), renvoie TokenRead (access_token, token_type "bearer", expires_in en secondes), ou un 401 avec l'en-tête WWW-Authenticate: Bearer et le même message dans les deux cas d'échec.
+- Tests : connexion réussie (jeton décodable, sub = id de l'utilisateur), et un test paramétré qui vérifie que mauvais mot de passe et email inexistant donnent le même 401, le même corps et l'en-tête WWW-Authenticate.
+
+Ne protège encore aucune route (étape 4). Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 3 : connexion et JWT ».
+```

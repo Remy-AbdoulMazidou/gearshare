@@ -1,7 +1,16 @@
 import hashlib
 import secrets
 
-from app.core.security import ALGORITHM, verify_password, hash_password
+import jwt
+
+from app.core.config import settings
+from app.core.security import (
+    ALGORITHM,
+    create_access_token,
+    decode_access_token,
+    hash_password,
+    verify_password,
+)
 
 
 def test_deux_hachages_du_meme_mot_de_passe_sont_differents() -> None:
@@ -28,3 +37,14 @@ def test_un_condensat_avec_un_autre_nombre_d_iterations_reste_verifiable() -> No
     stored = f"{ALGORITHM}${iterations}${salt.hex()}${digest.hex()}"
 
     assert verify_password("mot-de-passe", stored)
+
+
+def test_jeton_contient_l_identifiant_et_les_dates() -> None:
+    token = create_access_token(42)
+    payload = jwt.decode(
+        token, settings.jwt_secret, algorithms=["HS256"]
+    )
+
+    assert payload["sub"] == "42"
+    assert set(payload) == {"sub", "iat", "exp"}
+    assert decode_access_token(token) == payload

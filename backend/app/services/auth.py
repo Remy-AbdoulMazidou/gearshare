@@ -1,5 +1,5 @@
 from app.core.exceptions import EmailDejaUtilise
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.models.user import User
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
@@ -19,3 +19,9 @@ class AuthService:
             display_name=payload.display_name,
         )
         return self.repository.add(user)
+
+    def authenticate(self, email: str, password: str) -> User | None:
+        user = self.repository.get_by_email(email)
+        if user is None or not verify_password(password, user.password_hash):
+            return None
+        return user

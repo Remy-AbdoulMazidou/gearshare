@@ -455,3 +455,15 @@ Une entrée par session de travail, la plus récente en bas.
   les validations d'email et de mot de passe.
 - Vérifié : `docker compose run --rm backend pytest` donne 71 tests verts.
 - Vérifié par Rémy avec curl : inscription valide 201 (ni password ni password_hash dans la réponse), même email 409, email invalide 422, mot de passe de 4 et de 200 caractères 422, comptes alice@esiee.fr et bob@esiee.fr créés, condensats pbkdf2 en base. Remarque : les réponses 422 renvoient la valeur saisie dans « input », mot de passe compris.
+
+## 2026-10-30 · Séance 5, étape 3
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de la création et du décodage de JWT HS256, de l'authentification dans `AuthService`
+  et de la route `POST /auth/login`.
+- Ajout des tests de connexion réussie et d'identité d'erreur pour un mauvais mot de passe ou
+  un email inexistant.
+- Vérifié : `docker compose run --rm backend pytest` donne 75 tests verts. Le jeton décodé
+  contient `sub`, `iat` et `exp`, et les deux échecs de connexion renvoient le même `401`,
+  le même corps et `WWW-Authenticate: Bearer`.
+- Vérifié par Rémy avec curl : connexion d'Alice 200 (expires_in 3600), payload lu sans clé limité à sub, iat et exp, expiration une heure après la connexion (date -r), mauvais mot de passe et email inexistant donnent le même 401 avec WWW-Authenticate: Bearer.
