@@ -542,3 +542,4 @@ Une entrée par session de travail, la plus récente en bas.
 ## 2026-10-30 · Séance 5, étape 8
 
 - Fait par Rémy : 8.1 avec JWT_SECRET=secret, jeton forgé à la main (sub de Bob, signé avec « secret ») accepté par /auth/me, qui répond Bob. Avec le vrai secret remis, le même jeton donne 401. 8.2 avec JWT_EXPIRE_MINUTES=1, /auth/me répond 200 puis 401 après 70 secondes, et le cookie expire en même temps dans le navigateur (max_age = expires_in). 8.3 compte carol@esiee.fr supprimé en base, son ancien jeton donne 401. Secret et expiration remis à leur valeur, .env sauvegardé hors du dépôt pendant les expériences.
+- Fait par Rémy : relecture finale avec la liste du prof (21 points OK) et recherche de secrets oubliés, lignes restantes expliquées dans docs/tp/seance-5/relecture-finale.md (mis en forme avec l'aide de Claude). .env absent de l'historique.

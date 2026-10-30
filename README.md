@@ -23,12 +23,13 @@ Au démarrage, le service `migrate` applique les migrations Alembic avant le lan
 docker compose run --rm migrate
 ```
 
-En attendant l'authentification (séance 5), le frontend crée les objets et les réservations pour un
-utilisateur de démonstration d'id 1, à insérer une fois :
+Pour publier un objet ou réserver, créez un compte sur http://localhost:8080/inscription, puis
+connectez-vous. La consultation de la liste et du détail des objets reste publique.
+
+Dans `.env`, remplacez la valeur factice de `JWT_SECRET` par un secret aléatoire :
 
 ```bash
-docker compose exec db psql -U gearshare -d gearshare \
-  -c "INSERT INTO users (email, display_name, password_hash) VALUES ('demo@esiee.fr', 'Démo', 'x');"
+openssl rand -hex 32
 ```
 
 
@@ -73,6 +74,7 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 | 2 · Tests | Terminé | `backend/tests/` (48 tests, couverture 100 %), `docs/tp/seance-2/` (mutations, prompts) |
 | 3 · PostgreSQL | Terminé | `tp-db/` (schéma, requêtes, `MESURES.md`, schéma v2, `REVIEW-schema.md`, tests de contraintes), `docs/tp/seance-3/` (prompts Copilot) |
 | 4 · Webapp | Terminé (TP 1 et TP 2) | `frontend/`, backend en couches sur PostgreSQL, `backend/alembic/`, 62 tests, `docs/review-migrations.md`, `docs/choix-migrations.md`, `docs/review-couches.md`, `docs/cas-tests-chevauchement.md`, `docs/tp/seance-4/` (prompts Copilot) |
+| 5 · Authentification | Terminé | Inscription, connexion JWT, routes protégées, propriété (403), 100 tests, connexion dans le frontend, `docs/tp/seance-5/` (prompts Copilot, relecture finale) |
 
 Le détail de l'avancement et des décisions est dans `docs/suivi/SUIVI.md`, et l'historique des
 sessions dans `docs/suivi/journal.md`.
@@ -96,5 +98,5 @@ sessions dans `docs/suivi/journal.md`.
 
 ## Stack
 
-FastAPI, Pydantic, pytest, Jinja2, httpx, SQLAlchemy 2.0, Alembic, Docker Compose, PostgreSQL 16.
-JWT arrive en séance 5.
+FastAPI, Pydantic, pytest, Jinja2, httpx, SQLAlchemy 2.0, Alembic, Docker Compose, PostgreSQL 16,
+PyJWT (HS256), mots de passe hachés en PBKDF2-HMAC-SHA256.

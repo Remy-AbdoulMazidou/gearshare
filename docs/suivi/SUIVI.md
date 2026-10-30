@@ -4,12 +4,9 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Étapes 1 à 7 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
-protection des routes, vérification de propriété, matrice de tests d'autorisation et connexion
-côté frontend.
-TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
-`reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
-service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
+Séance 5 terminée : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT, routes protégées,
+propriété vérifiée dans les services (403), 100 tests verts, connexion côté frontend, failles
+exploitées (étape 8) et relecture finale (`docs/tp/seance-5/relecture-finale.md`).
 
 ## Prochaine étape
 
@@ -25,8 +22,9 @@ Séance 6 : fondations agentic (support à venir).
 - [x] Séance 4 · Application en couches, Compose 3 services
   - [x] TP 1 frontend : liste, détail, création, réservation et annulation (PRG, 422, 409)
   - [x] TP 2 backend : couches `items` et `reservations` sur PostgreSQL, Alembic, piège du renommage,
-    N+1 (22 → 2 requêtes), service `migrate`, 66 tests sur `gearshare_test`, docs de review
-- [ ] Séance 5 · Authentification JWT
+    N+1 (22 → 2 requêtes), service `migrate`, 62 tests sur `gearshare_test`, docs de review
+- [x] Séance 5 · Authentification JWT
+  - [x] Étape 0 : dépendances, `JWT_SECRET` et `COOKIE_SECURE`
   - [x] Étape 1 : hachage des mots de passe
   - [x] Étape 2 : inscription
   - [x] Étape 3 : connexion et émission d'un JWT
@@ -34,6 +32,7 @@ Séance 6 : fondations agentic (support à venir).
   - [x] Étape 5 : propriété des items et annulation des réservations en 403
   - [x] Étape 6 : matrice de tests d'authentification
   - [x] Étape 7 : connexion, inscription, déconnexion et transmission du JWT côté frontend
+  - [x] Étapes 8 et 9 : failles exploitées (secret faible, expiration, compte supprimé), relecture finale
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final
