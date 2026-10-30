@@ -47,6 +47,7 @@ services:
     build: ./frontend
     environment:
       API_BASE_URL: http://backend:8000
+      COOKIE_SECURE: "false"
     depends_on:
       - backend
     ports:

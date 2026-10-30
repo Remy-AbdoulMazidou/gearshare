@@ -430,3 +430,8 @@ Une entrée par session de travail, la plus récente en bas.
   jointif accepté. Cas de chevauchement rejoués avec `curl` (`docs/cas-tests-chevauchement.md`),
   review de la verticale avec la grille du prof (`docs/review-couches.md`), avec l'aide de Claude
   pour la mise en forme.
+
+## 2026-10-30 · Séance 5, étape 0
+
+- Fait par Rémy : PyJWT, pydantic[email] et python-multipart ajoutés au backend, JWT_SECRET (factice) et JWT_EXPIRE_MINUTES dans .env.example, vrai secret généré avec openssl rand -hex 32 dans mon .env, jwt_secret obligatoire dans Settings, COOKIE_SECURE dans le service frontend.
+- Vérifié : aucune variable JWT dans le conteneur frontend, .env absent de git status.
