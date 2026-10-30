@@ -52,13 +52,30 @@ def raw_client(db: Session) -> Iterator[TestClient]:
 
 
 @pytest.fixture
-def client(
-    db: Session, alice: User, raw_client: TestClient
-) -> Iterator[TestClient]:
-    raw_client.headers.update(
-        {"Authorization": f"Bearer {create_access_token(alice.id)}"}
-    )
-    yield raw_client
+def client_alice(db: Session, alice: User) -> Iterator[TestClient]:
+    app.dependency_overrides[get_db] = lambda: db
+    with TestClient(app) as test_client:
+        test_client.headers.update(
+            {"Authorization": f"Bearer {create_access_token(alice.id)}"}
+        )
+        yield test_client
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def client_bob(db: Session, bob: User) -> Iterator[TestClient]:
+    app.dependency_overrides[get_db] = lambda: db
+    with TestClient(app) as test_client:
+        test_client.headers.update(
+            {"Authorization": f"Bearer {create_access_token(bob.id)}"}
+        )
+        yield test_client
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def client(client_alice: TestClient) -> TestClient:
+    return client_alice
 
 
 @pytest.fixture
@@ -74,7 +91,7 @@ def alice(db: Session) -> User:
 
 
 @pytest.fixture
-def borrower(db: Session) -> User:
+def bob(db: Session) -> User:
     user = User(
         email="bob@esiee.fr",
         display_name="Bob",

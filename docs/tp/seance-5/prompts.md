@@ -66,3 +66,16 @@ Aujourd'hui, Bob peut supprimer l'item d'Alice (DELETE /items/{id} renvoie 204).
 
 Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 5 : propriété et 403 ».
 ```
+
+## Étape 6 : tests de la matrice
+
+```text
+Étape 6 du TP ../cours/seances/seance-5-authentification/tp/README.md, en suivant le cours ../cours/seances/seance-5-authentification/cours/README.md.
+
+- conftest.py : une fixture bob sur le modèle d'alice, et deux fixtures client_alice et client_bob qui sont des instances distinctes de TestClient, chacune avec son propre jeton dans ses en-têtes. Ne modifie plus le jeton d'un client partagé dans les tests : remplace ce mécanisme par ces fixtures.
+- Pour chaque ligne de la matrice (POST /items, PUT/PATCH/DELETE /items/{id}, POST /reservations, annulation d'une réservation, GET /auth/me), trois tests : anonyme (401), propriétaire (succès), autre utilisateur (403, ou succès quand la règle l'autorise). Utilise parametrize quand c'est lisible.
+- Un test qui envoie l'owner_id de Bob dans le corps de POST /items avec le jeton d'Alice. Comme ItemCreate a extra="forbid", vérifie le 422 sur le champ owner_id et qu'aucun item n'a été créé pour Bob.
+- Garde le test paramétré du login (mauvais mot de passe et email inexistant, même 401 et même corps) et le test du service qui vérifie AccesRefuse sur la suppression de l'item d'un autre. Ne duplique pas ce qui existe déjà.
+
+Lance docker compose run --rm backend pytest -v. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 6 : tests de la matrice ».
+```

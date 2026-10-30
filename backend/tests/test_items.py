@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import AccesRefuse
-from app.core.security import create_access_token
 from app.models import Item, User
 from app.repositories.item import ItemRepository
 from app.services.item import ItemService
@@ -32,6 +31,23 @@ def test_creer_item_renvoie_201_avec_un_id(client: TestClient) -> None:
     assert corps["id"] == 1
     assert corps["titre"] == "Tente 2 places"
     assert corps["disponible"] is True
+
+
+@pytest.mark.parametrize(
+    ("client_fixture", "status_code"),
+    [("raw_client", 401), ("client_alice", 201), ("client_bob", 201)],
+)
+def test_matrice_creation_item(
+    request: pytest.FixtureRequest,
+    client_fixture: str,
+    status_code: int,
+) -> None:
+    test_client = request.getfixturevalue(client_fixture)
+    response = test_client.post("/items", json={
+        "titre": "Tente 2 places", "tarif_jour": 12,
+    })
+
+    assert response.status_code == status_code
 
 
 def test_lire_item_existant_renvoie_200(
@@ -81,36 +97,38 @@ def test_supprimer_item_renvoie_204_sans_corps(
 
 
 @pytest.mark.parametrize(
-    "method",
-    ["put", "patch", "delete"],
+    ("client_fixture", "status_code"),
+    [("raw_client", 401), ("client_alice", 200), ("client_bob", 403)],
 )
-def test_bob_ne_peut_pas_modifier_ou_supprimer_item_alice(
-    raw_client: TestClient,
+@pytest.mark.parametrize("method", ["put", "patch", "delete"])
+def test_matrice_modification_item(
+    request: pytest.FixtureRequest,
     item_velo: dict[str, Any],
-    borrower: User,
+    client_fixture: str,
+    status_code: int,
     method: str,
 ) -> None:
-    raw_client.headers.update(
-        {"Authorization": f"Bearer {create_access_token(borrower.id)}"}
-    )
+    test_client = request.getfixturevalue(client_fixture)
     payload = {"titre": "Item de Bob", "tarif_jour": 99}
-    response = getattr(raw_client, method)(
+    response = getattr(test_client, method)(
         f"/items/{item_velo['id']}", **({"json": payload} if method != "delete" else {})
     )
 
-    assert response.status_code == 403
-    assert raw_client.get(f"/items/{item_velo['id']}").json() == item_velo
+    expected_status = 204 if method == "delete" and status_code == 200 else status_code
+    assert response.status_code == expected_status
+    if status_code == 403:
+        assert test_client.get(f"/items/{item_velo['id']}").json() == item_velo
 
 
 def test_service_refuse_la_suppression_de_l_item_d_un_autre(
     db: Session,
     item_velo: dict[str, Any],
-    borrower: User,
+    bob: User,
 ) -> None:
     service = ItemService(ItemRepository(db))
 
     with pytest.raises(AccesRefuse):
-        service.delete(item_velo["id"], borrower)
+        service.delete(item_velo["id"], bob)
 
     item = db.get(Item, item_velo["id"])
     assert item is not None
@@ -142,13 +160,16 @@ def test_creer_item_invalide_renvoie_422(
     assert champ_en_erreur in champs
 
 
-def test_creer_item_avec_owner_id_renvoie_422(client: TestClient) -> None:
-    response = client.post("/items", json={
-        "owner_id": 999, "titre": "Tente 2 places", "tarif_jour": 12,
+def test_alice_ne_peut_pas_imposer_owner_id_de_bob(
+    client_alice: TestClient, bob: User, db: Session
+) -> None:
+    response = client_alice.post("/items", json={
+        "owner_id": bob.id, "titre": "Tente 2 places", "tarif_jour": 12,
     })
 
     assert response.status_code == 422
     assert response.json()["detail"][0]["loc"][-1] == "owner_id"
+    assert db.query(Item).filter_by(owner_id=bob.id).count() == 0
 
 
 @pytest.mark.parametrize(

@@ -4,15 +4,15 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Étapes 1 à 5 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
-protection des routes et vérification de propriété.
+Étapes 1 à 6 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
+protection des routes, vérification de propriété et matrice de tests d'autorisation.
 TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
 `reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
 service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-Séance 5, étape 6 : compléter la matrice de tests d'authentification.
+Séance 6 : fondations agentic (support à venir).
 
 ## Avancement des séances
 
@@ -31,6 +31,7 @@ Séance 5, étape 6 : compléter la matrice de tests d'authentification.
   - [x] Étape 3 : connexion et émission d'un JWT
   - [x] Étape 4 : `get_current_user`, `/auth/me` et routes protégées
   - [x] Étape 5 : propriété des items et annulation des réservations en 403
+  - [x] Étape 6 : matrice de tests d'authentification
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final
@@ -59,6 +60,8 @@ Séance 5, étape 6 : compléter la matrice de tests d'authentification.
   les vérifications de propriété sont reportées à l'étape 5.
 - 2026-10-30 : `ItemService` vérifie la propriété avant PUT, PATCH et DELETE ; `ReservationService`
   autorise l'annulation à l'emprunteur ou au propriétaire de l'item, dans l'ordre 404, 403, 409.
+- 2026-10-30 : les fixtures `client_alice` et `client_bob` utilisent des instances distinctes
+  de `TestClient` ; la matrice couvre les accès anonymes, propriétaires et autres utilisateurs.
 - 2026-10-30 : `get_current_user` utilise `OAuth2PasswordBearer`, relit l'utilisateur par
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
 - 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;

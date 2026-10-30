@@ -20,6 +20,21 @@ def test_me_avec_un_jeton_renvoie_l_utilisateur_connecte(
     assert response.json()["display_name"] == alice.display_name
 
 
+@pytest.mark.parametrize(
+    ("client_fixture", "status_code"),
+    [("raw_client", 401), ("client_alice", 200), ("client_bob", 200)],
+)
+def test_matrice_auth_me(
+    request: pytest.FixtureRequest,
+    client_fixture: str,
+    status_code: int,
+) -> None:
+    test_client = request.getfixturevalue(client_fixture)
+    response = test_client.get("/auth/me")
+
+    assert response.status_code == status_code
+
+
 @pytest.mark.parametrize("authorization", [None, "Bearer jeton-bidon"])
 def test_me_sans_jeton_ou_avec_un_jeton_bidon_renvoie_401(
     raw_client: TestClient, authorization: str | None

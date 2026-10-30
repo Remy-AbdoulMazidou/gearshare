@@ -512,3 +512,15 @@ Une entrée par session de travail, la plus récente en bas.
   dépréciation `anyio` déjà présent persiste, sans échec de test.
 - Vérifié par Rémy avec curl : avant correction, Bob supprimait l'item d'Alice (204). Après correction, Bob reçoit 403 en suppression et en modification, Alice supprime son item (204).
 - Note sur l'historique : le commit 2c68216 porte par erreur le message de l'étape 3 (commande lancée deux fois), il contient en réalité le code de l'étape 4.
+
+## 2026-10-30 · Séance 5, étape 6
+
+- Fait par : GitHub Copilot (mode Agent).
+- `tests/conftest.py` : ajout de `bob`, `client_alice` et `client_bob` avec des instances distinctes
+  de `TestClient`, chacune portant le jeton de son utilisateur.
+- `tests/test_items.py`, `tests/test_reservations.py` et `tests/test_auth.py` : matrice paramétrée
+  pour les accès anonymes, du propriétaire et d'un autre utilisateur sur les routes concernées.
+  Le test `owner_id` interdit vérifie aussi qu'aucun item de Bob n'est créé.
+- Le test paramétré du login et le test de service `AccesRefuse` ont été conservés sans duplication.
+- Vérifié : `docker compose run --rm backend pytest -v` donne 100 tests verts. Un avertissement de
+  dépréciation `anyio` déjà présent persiste, sans échec de test.
