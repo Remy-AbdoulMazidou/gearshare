@@ -538,3 +538,7 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : compilation Python, contrôle d'espaces et recherche d'adresses backend en dur.
 - Vérifié par Rémy dans le navigateur : cookie access_token HttpOnly et SameSite=Lax, réservation déconnecté renvoyée vers la connexion, /connexion?suivant=https://example.com reste sur le site, Alice (fenêtre normale) et Bob (navigation privée) créent chacun un item avec le bon owner_id en base.
 - Corrigé par Rémy : la page de détail d'un item ne charge les réservations que si l'utilisateur est connecté (GET /items/{id} reste public), et après un 401 sur un formulaire POST, suivant pointe vers la page d'origine (en-tête Referer) au lieu de la route POST, qui donnait une 405 après connexion.
+
+## 2026-10-30 · Séance 5, étape 8
+
+- Fait par Rémy : 8.1 avec JWT_SECRET=secret, jeton forgé à la main (sub de Bob, signé avec « secret ») accepté par /auth/me, qui répond Bob. Avec le vrai secret remis, le même jeton donne 401. 8.2 avec JWT_EXPIRE_MINUTES=1, /auth/me répond 200 puis 401 après 70 secondes, et le cookie expire en même temps dans le navigateur (max_age = expires_in). 8.3 compte carol@esiee.fr supprimé en base, son ancien jeton donne 401. Secret et expiration remis à leur valeur, .env sauvegardé hors du dépôt pendant les expériences.
