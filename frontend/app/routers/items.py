@@ -2,6 +2,7 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 
 from app.api_client import ApiError, api_client
+from app.auth import Token
 from app.templating import templates
 
 router = APIRouter()
@@ -25,6 +26,7 @@ def list_items_page(request: Request) -> HTMLResponse:
 @router.post("/items")
 def create_item(
     request: Request,
+    token: Token,
     titre: str = Form(),
     description: str = Form(""),
     tarif_jour: float = Form(),
@@ -37,14 +39,13 @@ def create_item(
         "disponible": disponible,
     }
     payload = {
-        "owner_id": 1,  # TODO séance 5 : remplacé par l'utilisateur connecté, déduit du jeton
         "titre": titre,
         "description": description or None,
         "tarif_jour": tarif_jour,
         "disponible": disponible,
     }
     try:
-        item = api_client.create_item(payload)
+        item = api_client.create_item(payload, token=token)
     except ApiError as exc:
         if exc.status_code != 422:
             raise
@@ -58,9 +59,9 @@ def create_item(
 
 
 @router.get("/items/{item_id}", response_class=HTMLResponse)
-def item_detail_page(request: Request, item_id: int) -> HTMLResponse:
+def item_detail_page(request: Request, item_id: int, token: Token) -> HTMLResponse:
     item = api_client.get_item(item_id)
-    reservations = api_client.list_reservations(item_id)
+    reservations = api_client.list_reservations(token, item_id)
     return templates.TemplateResponse(
         request,
         "items/detail.html",

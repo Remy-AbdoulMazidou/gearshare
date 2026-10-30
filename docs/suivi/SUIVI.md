@@ -4,8 +4,9 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Étapes 1 à 6 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
-protection des routes, vérification de propriété et matrice de tests d'autorisation.
+Étapes 1 à 7 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
+protection des routes, vérification de propriété, matrice de tests d'autorisation et connexion
+côté frontend.
 TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
 `reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
 service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
@@ -32,6 +33,7 @@ Séance 6 : fondations agentic (support à venir).
   - [x] Étape 4 : `get_current_user`, `/auth/me` et routes protégées
   - [x] Étape 5 : propriété des items et annulation des réservations en 403
   - [x] Étape 6 : matrice de tests d'authentification
+  - [x] Étape 7 : connexion, inscription, déconnexion et transmission du JWT côté frontend
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final
@@ -62,6 +64,8 @@ Séance 6 : fondations agentic (support à venir).
   autorise l'annulation à l'emprunteur ou au propriétaire de l'item, dans l'ordre 404, 403, 409.
 - 2026-10-30 : les fixtures `client_alice` et `client_bob` utilisent des instances distinctes
   de `TestClient` ; la matrice couvre les accès anonymes, propriétaires et autres utilisateurs.
+- 2026-10-30 : le frontend lit le JWT dans le cookie `access_token`, le transmet en paramètre à
+  `ApiClient`, et redirige les `401` vers `/connexion` sans stocker le jeton dans le client partagé.
 - 2026-10-30 : `get_current_user` utilise `OAuth2PasswordBearer`, relit l'utilisateur par
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
 - 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;
@@ -69,7 +73,6 @@ Séance 6 : fondations agentic (support à venir).
 
 ## Questions ouvertes
 
-- `owner_id` et `borrower_id` fixés à 1 (utilisateur de démo) dans le frontend, `# TODO séance 5`.
 - Chevauchement vérifié par le service mais pas encore par la base : ajouter la contrainte
   `EXCLUDE` de la séance 3 dans une migration (`docs/review-couches.md`).
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).

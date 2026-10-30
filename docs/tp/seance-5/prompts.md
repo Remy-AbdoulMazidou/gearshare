@@ -79,3 +79,20 @@ Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de 
 
 Lance docker compose run --rm backend pytest -v. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 6 : tests de la matrice ».
 ```
+
+## Étape 7 : connexion côté frontend
+
+```text
+Étape 7 du TP ../cours/seances/seance-5-authentification/tp/README.md, en suivant la section « Côté frontend » du cours ../cours/seances/seance-5-authentification/cours/README.md. Seul le frontend change.
+
+1. ApiClient : ajoute login (formulaire OAuth2, username = email) et register. Le jeton est passé en paramètre à chaque méthode qui en a besoin (en-tête Authorization: Bearer), jamais stocké dans l'instance.
+2. Une petite dépendance qui lit le cookie access_token de la requête et le fournit aux routes.
+3. Pages /connexion et /inscription : formulaires, routes GET et POST, Post/Redirect/Get. En cas de succès, la connexion pose le cookie access_token avec HttpOnly, SameSite=Lax, Secure selon la variable d'environnement COOKIE_SECURE, et max_age égal à expires_in. En cas d'échec, réaffiche le formulaire avec l'email saisi, jamais le mot de passe.
+4. Déconnexion : un bouton dans un formulaire POST /deconnexion qui supprime le cookie, pas un lien.
+5. La page de connexion accepte un paramètre suivant, et ne redirige que s'il désigne une page du site (chemin relatif qui commence par un seul /).
+6. Le gestionnaire d'ApiError renvoie vers /connexion?suivant=<page demandée> quand le backend répond 401, et supprime le cookie au passage.
+7. La création d'un item et la réservation transmettent le jeton. Supprime les owner_id et borrower_id provisoires marqués « TODO séance 5 », et adapte l'annulation.
+8. base.html affiche « Se connecter » ou un bouton « Se déconnecter » selon la présence du cookie.
+
+Contraintes du TP 1 toujours valables : aucun httpx hors de api_client.py, pas de JavaScript, pas de |safe, aucune adresse de backend en dur, aucune modification par GET. Ne touche pas au backend. Vérifie que le frontend démarre. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 7 : connexion côté frontend ».
+```

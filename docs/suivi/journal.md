@@ -525,3 +525,14 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : `docker compose run --rm backend pytest -v` donne 100 tests verts. Un avertissement de
   dépréciation `anyio` déjà présent persiste, sans échec de test.
 - Expérience de Rémy pour juger la suite : route DELETE /items/{id} rendue temporairement non protégée (plus de CurrentUser), 2 tests échouent (anonyme attendu 401, Bob attendu 403), le cas du propriétaire passe. Route remise avec git checkout, 100 tests verts.
+
+## 2026-10-30 · TP séance 5, étape 7
+
+- Fait par : GitHub Copilot (mode Agent).
+- Le frontend transmet le JWT en paramètre de l'`ApiClient`, sans le stocker dans l'instance.
+- Ajout des pages d'inscription, de connexion et de déconnexion avec cookie `HttpOnly`,
+  `SameSite=Lax`, `Secure` configurable et durée alignée sur `expires_in`.
+- Les `401` suppriment le cookie et redirigent vers la connexion avec un retour local sécurisé.
+- Les créations d'items, réservations, lectures de réservations et annulations transmettent le
+  jeton ; les identifiants provisoires ont été supprimés.
+- Vérifié : compilation Python, contrôle d'espaces et recherche d'adresses backend en dur.

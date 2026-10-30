@@ -33,9 +33,12 @@ class ApiClient:
     def __init__(self, base_url: str, timeout: float = 10) -> None:
         self._http = httpx.Client(base_url=base_url, timeout=timeout)
 
-    def _send(self, method: str, url: str, **kwargs: Any) -> Any:
+    def _send(
+        self, method: str, url: str, *, token: str | None = None, **kwargs: Any
+    ) -> Any:
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
         try:
-            response = self._http.request(method, url, **kwargs)
+            response = self._http.request(method, url, headers=headers, **kwargs)
         except httpx.RequestError as exc:
             raise ApiError(503, "Le service est momentanément indisponible.") from exc
         if response.is_error:
@@ -52,32 +55,62 @@ class ApiClient:
     def get_item(self, item_id: int) -> dict[str, Any]:
         return self._send("GET", f"/items/{item_id}")
 
-    def create_item(self, payload: dict[str, Any]) -> dict[str, Any]:
-        return self._send("POST", "/items", json=payload)
+    def login(self, email: str, password: str) -> dict[str, Any]:
+        return self._send(
+            "POST",
+            "/auth/login",
+            data={"username": email, "password": password},
+        )
 
-    def list_reservations(self, item_id: int) -> list[dict[str, Any]]:
-        return self._send("GET", "/reservations", params={"item_id": item_id})
+    def register(
+        self, email: str, password: str, display_name: str
+    ) -> dict[str, Any]:
+        return self._send(
+            "POST",
+            "/auth/register",
+            json={
+                "email": email,
+                "password": password,
+                "display_name": display_name,
+            },
+        )
+
+    def create_item(
+        self, payload: dict[str, Any], token: str | None
+    ) -> dict[str, Any]:
+        return self._send("POST", "/items", token=token, json=payload)
+
+    def list_reservations(
+        self, token: str | None, item_id: int
+    ) -> list[dict[str, Any]]:
+        return self._send(
+            "GET",
+            "/reservations",
+            token=token,
+            params={"item_id": item_id},
+        )
 
     def create_reservation(
-        self, item_id: int, borrower_id: int, date_debut: date, date_fin: date
+        self, token: str | None, item_id: int, date_debut: date, date_fin: date
     ) -> dict[str, Any]:
         return self._send(
             "POST",
             "/reservations",
+            token=token,
             json={
                 "item_id": item_id,
-                "borrower_id": borrower_id,
                 "date_debut": date_debut.isoformat(),
                 "date_fin": date_fin.isoformat(),
             },
         )
 
     def update_reservation_statut(
-        self, reservation_id: int, statut: str
+        self, token: str | None, reservation_id: int, statut: str
     ) -> dict[str, Any]:
         return self._send(
             "PATCH",
             f"/reservations/{reservation_id}",
+            token=token,
             json={"statut": statut},
         )
 

@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi.responses import HTMLResponse
@@ -5,18 +7,31 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api_client import ApiError
+from app.auth import COOKIE_JETON
+from app.routers import auth
 from app.routers import items
 from app.routers import reservations
 from app.templating import BASE_DIR, templates
 
 app = FastAPI(title="GearShare — frontend")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(reservations.router)
 
 
 @app.exception_handler(ApiError)
 def api_error_page(request: Request, exc: ApiError) -> HTMLResponse:
+    if exc.status_code == 401:
+        cible = request.url.path
+        if request.url.query:
+            cible = f"{cible}?{request.url.query}"
+        response = RedirectResponse(
+            f"/connexion?{urlencode({'suivant': cible})}",
+            status_code=303,
+        )
+        response.delete_cookie(COOKIE_JETON)
+        return response
     messages = {
         404: "Cette page n'existe pas ou plus.",
         503: "Le service est momentanément indisponible. Réessayez dans un instant.",
