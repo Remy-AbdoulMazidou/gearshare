@@ -5,17 +5,20 @@ from app.core.exceptions import (
     AccesRefuse,
     ConflitMetier,
     DomainError,
+    EmailDejaUtilise,
     RessourceIntrouvable,
 )
-from app.routers import items, reservations
+from app.routers import auth, items, reservations
 
 app = FastAPI(title="GearShare API", version="0.1.0")
+app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(reservations.router)
 
 STATUS_PAR_EXCEPTION: dict[type[DomainError], int] = {
     RessourceIntrouvable: 404,
     ConflitMetier: 409,
+    EmailDejaUtilise: 409,
     AccesRefuse: 403,
 }
 

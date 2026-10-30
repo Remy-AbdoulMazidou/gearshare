@@ -12,5 +12,9 @@ class ConflitMetier(DomainError):
     pass
 
 
+class EmailDejaUtilise(ConflitMetier):
+    pass
+
+
 class AccesRefuse(DomainError):
     pass

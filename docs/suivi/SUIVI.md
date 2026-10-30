@@ -4,14 +4,14 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Étape 1 de la séance 5 terminée : hachage des mots de passe avec PBKDF2-HMAC-SHA256.
+Étapes 1 et 2 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256 et inscription.
 TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
 `reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
 service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-Séance 5, étape 2 : inscription et lecture des utilisateurs. `owner_id` et
+Séance 5, étape 3 : connexion et émission d'un JWT. `owner_id` et
 `borrower_id` fixés à 1 dans le frontend disparaîtront.
 
 ## Avancement des séances
@@ -27,6 +27,7 @@ Séance 5, étape 2 : inscription et lecture des utilisateurs. `owner_id` et
     N+1 (22 → 2 requêtes), service `migrate`, 66 tests sur `gearshare_test`, docs de review
 - [ ] Séance 5 · Authentification JWT
   - [x] Étape 1 : hachage des mots de passe
+  - [x] Étape 2 : inscription
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final
@@ -65,6 +66,8 @@ Séance 5, étape 2 : inscription et lecture des utilisateurs. `owner_id` et
   `selectinload(Item.owner)` : `GET /items` passe de 22 à 2 requêtes.
 - 2026-10-30 : choix de l'option 2 pour les migrations : service Compose `migrate` dédié, attendu
   par le backend après la disponibilité de PostgreSQL.
+- 2026-10-30 : l'inscription vérifie l'email dans `AuthService`, hache le mot de passe avec
+  PBKDF2 avant ajout, et renvoie `409` pour un email déjà utilisé.
 - 2026-10-30 : la verticale `reservations` utilise `borrower_id` jusqu'à l'authentification,
   vérifie l'item, l'emprunteur, la disponibilité et les chevauchements dans le service.
 

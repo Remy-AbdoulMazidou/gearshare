@@ -445,3 +445,13 @@ Une entrée par session de travail, la plus récente en bas.
   `docs/tp/seance-5/prompts.md`.
 - Vérifié : les tests ciblés et les 66 tests de la suite backend passent.
 - Fait par Rémy : questions de compréhension de l'étape 1 vérifiées dans le conteneur. Un hachage prend 0,050 s sur mon Mac (coût voulu contre la force brute), deux hachages du même mot de passe diffèrent grâce au sel stocké dans la chaîne pbkdf2_sha256$600000$sel$condensat.
+
+## 2026-10-30 · Séance 5, étape 2
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de l'inscription en couches : schémas utilisateur, repository, exception métier, service
+  de hachage et route `POST /auth/register`.
+- Ajout de tests pour l'inscription valide, le condensat PBKDF2 en base, l'email déjà utilisé et
+  les validations d'email et de mot de passe.
+- Vérifié : `docker compose run --rm backend pytest` donne 71 tests verts.
+- Vérifié par Rémy avec curl : inscription valide 201 (ni password ni password_hash dans la réponse), même email 409, email invalide 422, mot de passe de 4 et de 200 caractères 422, comptes alice@esiee.fr et bob@esiee.fr créés, condensats pbkdf2 en base. Remarque : les réponses 422 renvoient la valeur saisie dans « input », mot de passe compris.
