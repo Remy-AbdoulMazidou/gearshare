@@ -4,15 +4,15 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-Étapes 1 à 4 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT
-et protection des routes.
+Étapes 1 à 5 de la séance 5 terminées : hachage PBKDF2-HMAC-SHA256, inscription, connexion JWT,
+protection des routes et vérification de propriété.
 TP 2 de la séance 4, étapes 0 à 7 terminées : backend en couches pour `items` et
 `reservations` sur PostgreSQL, tests sur `gearshare_test` (66 tests verts), N+1 corrigé,
 service `migrate` (`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-Séance 5, étape 5 : vérification de propriété sur les écritures d'items et réservations.
+Séance 5, étape 6 : compléter la matrice de tests d'authentification.
 
 ## Avancement des séances
 
@@ -30,6 +30,7 @@ Séance 5, étape 5 : vérification de propriété sur les écritures d'items et
   - [x] Étape 2 : inscription
   - [x] Étape 3 : connexion et émission d'un JWT
   - [x] Étape 4 : `get_current_user`, `/auth/me` et routes protégées
+  - [x] Étape 5 : propriété des items et annulation des réservations en 403
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
 
 ## Rendu final
@@ -56,6 +57,8 @@ Séance 5, étape 5 : vérification de propriété sur les écritures d'items et
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
 - 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;
   les vérifications de propriété sont reportées à l'étape 5.
+- 2026-10-30 : `ItemService` vérifie la propriété avant PUT, PATCH et DELETE ; `ReservationService`
+  autorise l'annulation à l'emprunteur ou au propriétaire de l'item, dans l'ordre 404, 403, 409.
 - 2026-10-30 : `get_current_user` utilise `OAuth2PasswordBearer`, relit l'utilisateur par
   `UserRepository` et uniformise les erreurs d'authentification en 401 avec `Bearer`.
 - 2026-10-30 : les identités `owner_id` et `borrower_id` des créations viennent du jeton ;

@@ -86,6 +86,18 @@ def borrower(db: Session) -> User:
 
 
 @pytest.fixture
+def third_user(db: Session) -> User:
+    user = User(
+        email="charlie@esiee.fr",
+        display_name="Charlie",
+        password_hash="x",
+    )
+    db.add(user)
+    db.flush()
+    return user
+
+
+@pytest.fixture
 def item_velo(client: TestClient, alice: User) -> dict[str, Any]:
     """Un item déjà créé, renvoyé tel que l'API l'expose."""
     response = client.post("/items", json={

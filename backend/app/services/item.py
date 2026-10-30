@@ -1,4 +1,4 @@
-from app.core.exceptions import RessourceIntrouvable
+from app.core.exceptions import AccesRefuse, RessourceIntrouvable
 from app.models.item import Item
 from app.models.user import User
 from app.repositories.item import ItemRepository
@@ -36,6 +36,8 @@ class ItemService:
         self, item_id: int, payload: ItemCreate, current_user: User
     ) -> Item:
         item = self.get(item_id)
+        if item.owner_id != current_user.id:
+            raise AccesRefuse(f"Accès refusé pour l'item {item_id}")
         for field, value in payload.model_dump().items():
             setattr(item, field, value)
         return item
@@ -44,6 +46,8 @@ class ItemService:
         self, item_id: int, payload: ItemUpdate, current_user: User
     ) -> Item:
         item = self.get(item_id)
+        if item.owner_id != current_user.id:
+            raise AccesRefuse(f"Accès refusé pour l'item {item_id}")
         values = payload.model_dump(exclude_unset=True)
         for field, value in values.items():
             setattr(item, field, value)
@@ -51,4 +55,6 @@ class ItemService:
 
     def delete(self, item_id: int, current_user: User) -> None:
         item = self.get(item_id)
+        if item.owner_id != current_user.id:
+            raise AccesRefuse(f"Accès refusé pour l'item {item_id}")
         self.repository.delete(item)

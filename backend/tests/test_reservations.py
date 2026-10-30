@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ConflitMetier, RessourceIntrouvable
+from app.core.security import create_access_token
 from app.models import Item, User
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
@@ -148,6 +149,70 @@ def test_annuler_reservation_active_renvoie_200_avec_statut_annulee(
     client: TestClient, reservation_active: dict[str, Any]
 ) -> None:
     response = client.post(f"/reservations/{reservation_active['id']}/annuler")
+
+    assert response.status_code == 200
+    assert response.json()["statut"] == "annulee"
+
+
+def test_un_tiers_ne_peut_pas_annuler_une_reservation(
+    raw_client: TestClient,
+    item_velo: dict[str, Any],
+    borrower: User,
+    third_user: User,
+) -> None:
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(borrower.id)}"}
+    )
+    reservation = raw_client.post("/reservations", json={
+        "item_id": item_velo["id"],
+        "date_debut": "2026-10-01", "date_fin": "2026-10-05",
+    }).json()
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(third_user.id)}"}
+    )
+
+    response = raw_client.post(f"/reservations/{reservation['id']}/annuler")
+
+    assert response.status_code == 403
+    assert raw_client.get(f"/reservations/{reservation['id']}").json()["statut"] == "active"
+
+
+def test_emprunteur_et_proprietaire_peuvent_annuler_une_reservation(
+    raw_client: TestClient,
+    item_velo: dict[str, Any],
+    alice: User,
+    borrower: User,
+) -> None:
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(borrower.id)}"}
+    )
+    reservation = raw_client.post("/reservations", json={
+        "item_id": item_velo["id"],
+        "date_debut": "2026-10-01", "date_fin": "2026-10-05",
+    }).json()
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(alice.id)}"}
+    )
+
+    response = raw_client.post(f"/reservations/{reservation['id']}/annuler")
+
+    assert response.status_code == 200
+    assert response.json()["statut"] == "annulee"
+
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(borrower.id)}"}
+    )
+    second_reservation = raw_client.post("/reservations", json={
+        "item_id": item_velo["id"],
+        "date_debut": "2026-10-10", "date_fin": "2026-10-15",
+    }).json()
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(alice.id)}"}
+    )
+
+    response = raw_client.post(
+        f"/reservations/{second_reservation['id']}/annuler"
+    )
 
     assert response.status_code == 200
     assert response.json()["statut"] == "annulee"
@@ -328,7 +393,7 @@ def test_service_refuse_annulation_d_une_reservation_non_active(
         item_id=item_velo["id"],
         date_debut=date(2026, 12, 1), date_fin=date(2026, 12, 5),
     ), borrower)
-    service.cancel(reservation.id)
+    service.cancel(reservation.id, borrower)
 
     with pytest.raises(ConflitMetier, match="non active"):
-        service.cancel(reservation.id)
+        service.cancel(reservation.id, borrower)

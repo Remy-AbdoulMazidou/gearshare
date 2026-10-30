@@ -58,7 +58,7 @@ def update_reservation(
     current_user: CurrentUser,
     reservation_id: int = Path(ge=1),
 ):
-    return service.cancel(reservation_id)
+    return service.cancel(reservation_id, current_user)
 
 
 @router.post("/{reservation_id}/annuler", response_model=ReservationRead)
@@ -67,4 +67,4 @@ def annuler_reservation(
     current_user: CurrentUser,
     reservation_id: int = Path(ge=1),
 ):
-    return service.cancel(reservation_id)
+    return service.cancel(reservation_id, current_user)

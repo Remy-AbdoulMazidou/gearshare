@@ -1,6 +1,6 @@
 import logging
 
-from app.core.exceptions import ConflitMetier, RessourceIntrouvable
+from app.core.exceptions import AccesRefuse, ConflitMetier, RessourceIntrouvable
 from app.models.reservation import Reservation
 from app.models.user import User
 from app.repositories.item import ItemRepository
@@ -61,8 +61,14 @@ class ReservationService:
             )
         )
 
-    def cancel(self, reservation_id: int) -> Reservation:
+    def cancel(self, reservation_id: int, current_user: User) -> Reservation:
         reservation = self.get(reservation_id)
+        item = self.item_repository.get(reservation.item_id)
+        if (
+            reservation.borrower_id != current_user.id
+            and (item is None or item.owner_id != current_user.id)
+        ):
+            raise AccesRefuse(f"Accès refusé pour la réservation {reservation_id}")
         if reservation.statut != "active":
             raise ConflitMetier(
                 f"Réservation {reservation_id} non active"

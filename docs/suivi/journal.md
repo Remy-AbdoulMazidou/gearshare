@@ -495,3 +495,20 @@ Une entrée par session de travail, la plus récente en bas.
   dépréciation `anyio` déjà présent persiste, sans échec de test.
 - Vérifié par Rémy avec curl : connexion d'Alice 200 (expires_in 3600), payload lu sans clé limité à sub, iat et exp, expiration une heure après la connexion (date -r), mauvais mot de passe et email inexistant donnent le même 401 avec WWW-Authenticate: Bearer.
 - Vérifié par Rémy avec curl : POST /items sans jeton et avec un jeton bidon donnent le même 401 avec WWW-Authenticate: Bearer, avec le jeton d'Alice 201 et owner_id 2 venu du jeton, GET /auth/me renvoie Alice.
+
+## 2026-10-30 · Séance 5, étape 5
+
+- Fait par : GitHub Copilot (mode Agent).
+- `ItemService` refuse le remplacement, la modification et la suppression d'un item si
+  l'utilisateur connecté n'en est pas le propriétaire, avec `AccesRefuse`.
+- `ReservationService` vérifie que l'utilisateur est l'emprunteur ou le propriétaire de
+  l'item avant de vérifier que la réservation est active. L'ordre reste 404, 403 puis 409.
+- Les routers transmettent seulement l'utilisateur connecté au service. Les contrôles de
+  propriété restent dans les services.
+- Tests ajoutés : Bob reçoit 403 pour PUT, PATCH et DELETE sur l'item d'Alice, sans modification ;
+  un tiers ne peut pas annuler une réservation ; l'emprunteur et le propriétaire le peuvent ;
+  le service refuse directement la suppression d'un item appartenant à un autre utilisateur.
+- Vérifié : `docker compose run --rm backend pytest` donne 83 tests verts. Un avertissement de
+  dépréciation `anyio` déjà présent persiste, sans échec de test.
+- Vérifié par Rémy avec curl : avant correction, Bob supprimait l'item d'Alice (204). Après correction, Bob reçoit 403 en suppression et en modification, Alice supprime son item (204).
+- Note sur l'historique : le commit 2c68216 porte par erreur le message de l'étape 3 (commande lancée deux fois), il contient en réalité le code de l'étape 4.

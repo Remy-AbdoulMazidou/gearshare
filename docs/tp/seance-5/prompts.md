@@ -52,3 +52,17 @@ Ne protège encore aucune route (étape 4). Lance docker compose run --rm backen
 
 Ne touche pas au frontend (étape 7). Lance docker compose run --rm backend pytest. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 4 : get_current_user et routes protégées ».
 ```
+
+## Étape 5 : propriété et 403
+
+```text
+Étape 5 du TP ../cours/seances/seance-5-authentification/tp/README.md, en suivant le cours ../cours/seances/seance-5-authentification/cours/README.md.
+
+Aujourd'hui, Bob peut supprimer l'item d'Alice (DELETE /items/{id} renvoie 204). Ajoute la vérification de propriété dans les services, avec l'exception métier AccesRefuse de la séance 4 (déjà traduite en 403 par le gestionnaire global) :
+- ItemService : remplacer, modifier et supprimer un item seulement si l'utilisateur connecté en est le propriétaire, sinon AccesRefuse.
+- ReservationService : annuler une réservation seulement si l'utilisateur connecté est l'emprunteur ou le propriétaire de l'item, sinon AccesRefuse. Garde l'ordre : 404 si la réservation n'existe pas, puis 403, puis 409 si elle n'est pas active.
+- Aucune vérification dans les routers.
+- Tests : Bob qui supprime, remplace ou modifie l'item d'Alice reçoit 403 et l'item est inchangé. Un tiers qui annule une réservation reçoit 403, l'emprunteur et le propriétaire de l'item peuvent annuler. Un test du service sans HTTP qui vérifie que supprimer l'item d'un autre lève AccesRefuse.
+
+Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 5 : propriété et 403 ».
+```

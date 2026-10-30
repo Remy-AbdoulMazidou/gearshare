@@ -4,7 +4,11 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import AccesRefuse
+from app.core.security import create_access_token
 from app.models import Item, User
+from app.repositories.item import ItemRepository
+from app.services.item import ItemService
 
 
 def _insert_items(db: Session, alice: User, count: int) -> None:
@@ -74,6 +78,43 @@ def test_supprimer_item_renvoie_204_sans_corps(
 
     assert response.status_code == 204
     assert response.content == b""
+
+
+@pytest.mark.parametrize(
+    "method",
+    ["put", "patch", "delete"],
+)
+def test_bob_ne_peut_pas_modifier_ou_supprimer_item_alice(
+    raw_client: TestClient,
+    item_velo: dict[str, Any],
+    borrower: User,
+    method: str,
+) -> None:
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(borrower.id)}"}
+    )
+    payload = {"titre": "Item de Bob", "tarif_jour": 99}
+    response = getattr(raw_client, method)(
+        f"/items/{item_velo['id']}", **({"json": payload} if method != "delete" else {})
+    )
+
+    assert response.status_code == 403
+    assert raw_client.get(f"/items/{item_velo['id']}").json() == item_velo
+
+
+def test_service_refuse_la_suppression_de_l_item_d_un_autre(
+    db: Session,
+    item_velo: dict[str, Any],
+    borrower: User,
+) -> None:
+    service = ItemService(ItemRepository(db))
+
+    with pytest.raises(AccesRefuse):
+        service.delete(item_velo["id"], borrower)
+
+    item = db.get(Item, item_velo["id"])
+    assert item is not None
+    assert item.titre == item_velo["titre"]
 
 
 # Validation
