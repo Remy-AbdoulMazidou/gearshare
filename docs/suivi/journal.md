@@ -494,3 +494,4 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : `docker compose run --rm backend pytest` donne 77 tests verts. Un avertissement de
   dépréciation `anyio` déjà présent persiste, sans échec de test.
 - Vérifié par Rémy avec curl : connexion d'Alice 200 (expires_in 3600), payload lu sans clé limité à sub, iat et exp, expiration une heure après la connexion (date -r), mauvais mot de passe et email inexistant donnent le même 401 avec WWW-Authenticate: Bearer.
+- Vérifié par Rémy avec curl : POST /items sans jeton et avec un jeton bidon donnent le même 401 avec WWW-Authenticate: Bearer, avec le jeton d'Alice 201 et owner_id 2 venu du jeton, GET /auth/me renvoie Alice.
