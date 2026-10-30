@@ -524,3 +524,4 @@ Une entrée par session de travail, la plus récente en bas.
 - Le test paramétré du login et le test de service `AccesRefuse` ont été conservés sans duplication.
 - Vérifié : `docker compose run --rm backend pytest -v` donne 100 tests verts. Un avertissement de
   dépréciation `anyio` déjà présent persiste, sans échec de test.
+- Expérience de Rémy pour juger la suite : route DELETE /items/{id} rendue temporairement non protégée (plus de CurrentUser), 2 tests échouent (anonyme attendu 401, Bob attendu 403), le cas du propriétaire passe. Route remise avec git checkout, 100 tests verts.
