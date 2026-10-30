@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.api.deps import get_db
 from app.core.config import settings
+from app.core.security import create_access_token
 from app.main import app
 from app.models import Base, User
 
@@ -43,11 +44,21 @@ def db(engine: Engine) -> Iterator[Session]:
 
 
 @pytest.fixture
-def client(db: Session) -> Iterator[TestClient]:
+def raw_client(db: Session) -> Iterator[TestClient]:
     app.dependency_overrides[get_db] = lambda: db
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def client(
+    db: Session, alice: User, raw_client: TestClient
+) -> Iterator[TestClient]:
+    raw_client.headers.update(
+        {"Authorization": f"Bearer {create_access_token(alice.id)}"}
+    )
+    yield raw_client
 
 
 @pytest.fixture
@@ -78,7 +89,6 @@ def borrower(db: Session) -> User:
 def item_velo(client: TestClient, alice: User) -> dict[str, Any]:
     """Un item déjà créé, renvoyé tel que l'API l'expose."""
     response = client.post("/items", json={
-        "owner_id": alice.id,
         "titre": "Vélo de ville",
         "description": "Trois vitesses",
         "tarif_jour": 8.5,
@@ -89,11 +99,11 @@ def item_velo(client: TestClient, alice: User) -> dict[str, Any]:
 
 @pytest.fixture
 def reservation_active(
-    client: TestClient, item_velo: dict[str, Any], borrower: User
+    client: TestClient, item_velo: dict[str, Any]
 ) -> dict[str, Any]:
     """Une réservation active sur item_velo, renvoyée telle que l'API l'expose."""
     response = client.post("/reservations", json={
-        "item_id": item_velo["id"], "borrower_id": borrower.id,
+        "item_id": item_velo["id"],
         "date_debut": "2026-10-01", "date_fin": "2026-10-05",
     })
     assert response.status_code == 201

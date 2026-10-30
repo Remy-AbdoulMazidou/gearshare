@@ -9,10 +9,33 @@ from app.core.config import settings
 from app.models import User
 
 
-def test_inscription_valide_renvoie_utilisateur_sans_mots_de_passe(
-    client: TestClient, db: Session
+def test_me_avec_un_jeton_renvoie_l_utilisateur_connecte(
+    client: TestClient, alice: User
 ) -> None:
-    response = client.post(
+    response = client.get("/auth/me")
+
+    assert response.status_code == 200
+    assert response.json()["id"] == alice.id
+    assert response.json()["email"] == alice.email
+    assert response.json()["display_name"] == alice.display_name
+
+
+@pytest.mark.parametrize("authorization", [None, "Bearer jeton-bidon"])
+def test_me_sans_jeton_ou_avec_un_jeton_bidon_renvoie_401(
+    raw_client: TestClient, authorization: str | None
+) -> None:
+    headers = {} if authorization is None else {"Authorization": authorization}
+    response = raw_client.get("/auth/me", headers=headers)
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Authentification invalide"}
+    assert response.headers["WWW-Authenticate"] == "Bearer"
+
+
+def test_inscription_valide_renvoie_utilisateur_sans_mots_de_passe(
+    raw_client: TestClient, db: Session
+) -> None:
+    response = raw_client.post(
         "/auth/register",
         json={
             "email": "alice@esiee.fr",
@@ -36,7 +59,7 @@ def test_inscription_valide_renvoie_utilisateur_sans_mots_de_passe(
 
 
 def test_inscription_deux_fois_avec_le_meme_email_renvoie_409(
-    client: TestClient,
+    raw_client: TestClient,
 ) -> None:
     payload = {
         "email": "alice@esiee.fr",
@@ -44,16 +67,16 @@ def test_inscription_deux_fois_avec_le_meme_email_renvoie_409(
         "display_name": "Alice",
     }
 
-    assert client.post("/auth/register", json=payload).status_code == 201
-    response = client.post("/auth/register", json=payload)
+    assert raw_client.post("/auth/register", json=payload).status_code == 201
+    response = raw_client.post("/auth/register", json=payload)
 
     assert response.status_code == 409
 
 
 def test_connexion_valide_renvoie_un_jeton_avec_l_id_utilisateur(
-    client: TestClient, db: Session
+    raw_client: TestClient, db: Session
 ) -> None:
-    response = client.post(
+    response = raw_client.post(
         "/auth/register",
         json={
             "email": "alice@esiee.fr",
@@ -63,7 +86,7 @@ def test_connexion_valide_renvoie_un_jeton_avec_l_id_utilisateur(
     )
     assert response.status_code == 201
     user = db.query(User).filter_by(email="alice@esiee.fr").one()
-    response = client.post(
+    response = raw_client.post(
         "/auth/login",
         data={"username": user.email, "password": "motdepasse-alice"},
     )
@@ -86,9 +109,9 @@ def test_connexion_valide_renvoie_un_jeton_avec_l_id_utilisateur(
     ],
 )
 def test_connexion_invalide_renvoie_la_meme_erreur(
-    client: TestClient, credentials: dict[str, str]
+    raw_client: TestClient, credentials: dict[str, str]
 ) -> None:
-    client.post(
+    raw_client.post(
         "/auth/register",
         json={
             "email": "alice@esiee.fr",
@@ -97,7 +120,7 @@ def test_connexion_invalide_renvoie_la_meme_erreur(
         },
     )
 
-    response = client.post("/auth/login", data=credentials)
+    response = raw_client.post("/auth/login", data=credentials)
 
     assert response.status_code == 401
     assert response.json() == {"detail": "Email ou mot de passe incorrect"}
@@ -113,7 +136,7 @@ def test_connexion_invalide_renvoie_la_meme_erreur(
     ],
 )
 def test_inscription_invalide_renvoie_422(
-    client: TestClient, field: str, value: str
+    raw_client: TestClient, field: str, value: str
 ) -> None:
     payload = {
         "email": "alice@esiee.fr",
@@ -122,7 +145,7 @@ def test_inscription_invalide_renvoie_422(
     }
     payload[field] = value
 
-    response = client.post("/auth/register", json=payload)
+    response = raw_client.post("/auth/register", json=payload)
 
     assert response.status_code == 422
     assert field in [error["loc"][-1] for error in response.json()["detail"]]

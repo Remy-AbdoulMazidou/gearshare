@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.deps import DbSession
+from app.api.deps import CurrentUser, DbSession
 from app.core.config import settings
 from app.core.security import create_access_token
 from app.repositories.user import UserRepository
@@ -43,3 +43,8 @@ def login(
         token_type="bearer",
         expires_in=settings.jwt_expire_minutes * 60,
     )
+
+
+@router.get("/me", response_model=UserRead)
+def me(current_user: CurrentUser) -> UserRead:
+    return current_user

@@ -9,7 +9,7 @@ from app.schemas.reservation import ReservationCreate
 
 def test_reservation_valide_est_acceptee() -> None:
     reservation = ReservationCreate(
-        item_id=1, borrower_id=2,
+        item_id=1,
         date_debut=date(2026, 10, 1), date_fin=date(2026, 10, 5)
     )
 
@@ -19,7 +19,7 @@ def test_reservation_valide_est_acceptee() -> None:
 def test_dates_inversees_sont_refusees_par_le_schema() -> None:
     with pytest.raises(ValidationError, match="date_fin"):
         ReservationCreate(
-            item_id=1, borrower_id=2,
+            item_id=1,
             date_debut=date(2026, 10, 5), date_fin=date(2026, 10, 1)
         )
 

@@ -467,3 +467,30 @@ Une entrée par session de travail, la plus récente en bas.
   contient `sub`, `iat` et `exp`, et les deux échecs de connexion renvoient le même `401`,
   le même corps et `WWW-Authenticate: Bearer`.
 - Vérifié par Rémy avec curl : connexion d'Alice 200 (expires_in 3600), payload lu sans clé limité à sub, iat et exp, expiration une heure après la connexion (date -r), mauvais mot de passe et email inexistant donnent le même 401 avec WWW-Authenticate: Bearer.
+
+## 2026-10-30 · Séance 5, étape 4
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout de `get_current_user` et de l'alias `CurrentUser` dans `backend/app/api/deps.py`.
+  Le jeton est décodé par `decode_access_token`, puis l'utilisateur est relu par
+  `UserRepository`. L'absence de jeton, un jeton bidon et un utilisateur absent donnent le
+  même 401 avec `WWW-Authenticate: Bearer`.
+- Ajout de `GET /auth/me`. Les lectures d'items restent publiques. Les écritures d'items et
+  toutes les routes de réservations exigent un jeton. L'owner et l'emprunteur sont pris dans
+  l'utilisateur connecté.
+- `ItemCreate`, `ItemUpdate` et `ReservationCreate` ne déclarent plus les identifiants
+  d'identité. Les services reçoivent l'utilisateur connecté.
+- Tests modifiés :
+  - `tests/conftest.py` : ajout d'un client authentifié et d'un client brut ; les fixtures
+    `item_velo` et `reservation_active` n'envoient plus les identifiants retirés.
+  - `tests/test_auth.py` : les tests d'inscription et de connexion utilisent le client brut,
+    car le client par défaut est désormais authentifié ; ajout des cas `/auth/me` avec et sans
+    jeton.
+  - `tests/test_items.py` : les créations et le remplacement n'envoient plus `owner_id`, et
+    le cas d'un `owner_id` fourni vérifie maintenant `422` pour champ interdit.
+  - `tests/test_reservations.py` : les requêtes et les constructions de schéma n'envoient plus
+    `borrower_id`; les tests de service passent l'utilisateur connecté explicitement.
+  - `tests/test_schemas.py` : les créations de réservation n'envoient plus `borrower_id`.
+- Vérifié : `docker compose run --rm backend pytest` donne 77 tests verts. Un avertissement de
+  dépréciation `anyio` déjà présent persiste, sans échec de test.
+- Vérifié par Rémy avec curl : connexion d'Alice 200 (expires_in 3600), payload lu sans clé limité à sub, iat et exp, expiration une heure après la connexion (date -r), mauvais mot de passe et email inexistant donnent le même 401 avec WWW-Authenticate: Bearer.

@@ -10,7 +10,6 @@ from app.core.exceptions import ConflitMetier, RessourceIntrouvable
 from app.models import Item, User
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
-from app.repositories.user import UserRepository
 from app.schemas.reservation import ReservationCreate
 from app.services.reservation import ReservationService
 
@@ -21,10 +20,10 @@ from app.services import reservation as reservation_service
 
 
 def test_creer_reservation_renvoie_201_avec_statut_active(
-    client: TestClient, item_velo: dict[str, Any], borrower: User
+    client: TestClient, item_velo: dict[str, Any], alice: User
 ) -> None:
     response = client.post("/reservations", json={
-        "item_id": item_velo["id"], "borrower_id": borrower.id,
+        "item_id": item_velo["id"],
         "date_debut": "2026-10-01", "date_fin": "2026-10-05",
     })
 
@@ -32,7 +31,7 @@ def test_creer_reservation_renvoie_201_avec_statut_active(
     corps = response.json()
     assert corps["id"] == 1
     assert corps["item_id"] == item_velo["id"]
-    assert corps["borrower_id"] == borrower.id
+    assert corps["borrower_id"] == alice.id
     assert corps["statut"] == "active"
 
 
@@ -56,11 +55,11 @@ def test_lire_reservation_existante_renvoie_200(
     ],
 )
 def test_creer_reservation_avec_dates_invalides_renvoie_422(
-    client: TestClient, item_velo: dict[str, Any], borrower: User,
+    client: TestClient, item_velo: dict[str, Any],
     date_debut: str, date_fin: str
 ) -> None:
     response = client.post("/reservations", json={
-        "item_id": item_velo["id"], "borrower_id": borrower.id,
+        "item_id": item_velo["id"],
         "date_debut": date_debut, "date_fin": date_fin,
     })
 
@@ -76,9 +75,9 @@ def test_creer_reservation_avec_dates_invalides_renvoie_422(
 @pytest.mark.parametrize(
     ("payload", "champ_en_erreur"),
     [
-        ({"item_id": 0, "borrower_id": 2, "date_debut": "2026-10-01", "date_fin": "2026-10-05"}, "item_id"),
+        ({"item_id": 0, "date_debut": "2026-10-01", "date_fin": "2026-10-05"}, "item_id"),
         (
-            {"item_id": 1, "borrower_id": 2, "date_debut": "2026-10-01", "date_fin": "2026-10-05",
+            {"item_id": 1, "date_debut": "2026-10-01", "date_fin": "2026-10-05",
              "statut": "annulee"},
             "statut",
         ),
@@ -112,10 +111,10 @@ def test_filtre_item_id_ne_garde_que_les_reservations_de_cet_item(
 ) -> None:
     # Given : une réservation sur le vélo (fixture) et une sur un second item.
     tente = client.post("/items", json={
-        "owner_id": alice.id, "titre": "Tente 2 places", "tarif_jour": 12,
+        "titre": "Tente 2 places", "tarif_jour": 12,
     }).json()
     client.post("/reservations", json={
-        "item_id": tente["id"], "borrower_id": borrower.id,
+        "item_id": tente["id"],
         "date_debut": "2026-10-01", "date_fin": "2026-10-05",
     })
 
@@ -273,27 +272,27 @@ def test_service_refuse_les_chevauchements_et_accepte_les_autres(
     conflit: bool,
 ) -> None:
     service = ReservationService(
-        ReservationRepository(db), ItemRepository(db), UserRepository(db)
+        ReservationRepository(db), ItemRepository(db)
     )
     service.create(ReservationCreate(
-        item_id=item_velo["id"], borrower_id=borrower.id,
+        item_id=item_velo["id"],
         date_debut=date(2026, 10, 10), date_fin=date(2026, 10, 20),
-    ))
+    ), borrower)
 
     payload = ReservationCreate(
-        item_id=item_velo["id"], borrower_id=borrower.id,
+        item_id=item_velo["id"],
         date_debut=date_debut, date_fin=date_fin,
     )
     if conflit:
         with pytest.raises(ConflitMetier):
-            service.create(payload)
+            service.create(payload, borrower)
     else:
-        assert service.create(payload).date_debut == date_debut
+        assert service.create(payload, borrower).date_debut == date_debut
 
 
 def _reservation_service(db: Session) -> ReservationService:
     return ReservationService(
-        ReservationRepository(db), ItemRepository(db), UserRepository(db)
+        ReservationRepository(db), ItemRepository(db)
     )
 
 
@@ -302,19 +301,9 @@ def test_service_refuse_un_item_inexistant(
 ) -> None:
     with pytest.raises(RessourceIntrouvable, match="Item 999 introuvable"):
         _reservation_service(db).create(ReservationCreate(
-            item_id=999, borrower_id=borrower.id,
+            item_id=999,
             date_debut=date(2026, 12, 1), date_fin=date(2026, 12, 5),
-        ))
-
-
-def test_service_refuse_un_emprunteur_inexistant(
-    db: Session, item_velo: dict[str, Any]
-) -> None:
-    with pytest.raises(RessourceIntrouvable, match="Utilisateur 999 introuvable"):
-        _reservation_service(db).create(ReservationCreate(
-            item_id=item_velo["id"], borrower_id=999,
-            date_debut=date(2026, 12, 1), date_fin=date(2026, 12, 5),
-        ))
+        ), borrower)
 
 
 def test_service_refuse_un_item_indisponible(
@@ -326,9 +315,9 @@ def test_service_refuse_un_item_indisponible(
 
     with pytest.raises(ConflitMetier, match="indisponible"):
         _reservation_service(db).create(ReservationCreate(
-            item_id=item.id, borrower_id=borrower.id,
+            item_id=item.id,
             date_debut=date(2026, 12, 1), date_fin=date(2026, 12, 5),
-        ))
+        ), borrower)
 
 
 def test_service_refuse_annulation_d_une_reservation_non_active(
@@ -336,9 +325,9 @@ def test_service_refuse_annulation_d_une_reservation_non_active(
 ) -> None:
     service = _reservation_service(db)
     reservation = service.create(ReservationCreate(
-        item_id=item_velo["id"], borrower_id=borrower.id,
+        item_id=item_velo["id"],
         date_debut=date(2026, 12, 1), date_fin=date(2026, 12, 5),
-    ))
+    ), borrower)
     service.cancel(reservation.id)
 
     with pytest.raises(ConflitMetier, match="non active"):

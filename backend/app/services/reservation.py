@@ -2,9 +2,9 @@ import logging
 
 from app.core.exceptions import ConflitMetier, RessourceIntrouvable
 from app.models.reservation import Reservation
+from app.models.user import User
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
-from app.repositories.user import UserRepository
 from app.schemas.reservation import ReservationCreate
 
 logger = logging.getLogger(__name__)
@@ -19,11 +19,9 @@ class ReservationService:
         self,
         repository: ReservationRepository,
         item_repository: ItemRepository,
-        user_repository: UserRepository,
     ) -> None:
         self.repository = repository
         self.item_repository = item_repository
-        self.user_repository = user_repository
 
     def list(
         self,
@@ -42,21 +40,26 @@ class ReservationService:
             )
         return reservation
 
-    def create(self, payload: ReservationCreate) -> Reservation:
+    def create(
+        self, payload: ReservationCreate, current_user: User
+    ) -> Reservation:
         item = self.item_repository.get(payload.item_id)
         if item is None:
             raise RessourceIntrouvable(f"Item {payload.item_id} introuvable")
         if not item.disponible:
             raise ConflitMetier(f"Item {payload.item_id} indisponible")
-        if self.user_repository.get(payload.borrower_id) is None:
-            raise RessourceIntrouvable(
-                f"Utilisateur {payload.borrower_id} introuvable"
-            )
         if self.repository.has_active_overlap(
             payload.item_id, payload.date_debut, payload.date_fin
         ):
             raise ConflitMetier("Le créneau demandé est déjà réservé")
-        return self.repository.add(Reservation(**payload.model_dump()))
+        return self.repository.add(
+            Reservation(
+                item_id=payload.item_id,
+                borrower_id=current_user.id,
+                date_debut=payload.date_debut,
+                date_fin=payload.date_fin,
+            )
+        )
 
     def cancel(self, reservation_id: int) -> Reservation:
         reservation = self.get(reservation_id)

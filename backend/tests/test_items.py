@@ -18,9 +18,9 @@ def _insert_items(db: Session, alice: User, count: int) -> None:
 # Cas nominaux
 
 
-def test_creer_item_renvoie_201_avec_un_id(client: TestClient, alice: User) -> None:
+def test_creer_item_renvoie_201_avec_un_id(client: TestClient) -> None:
     response = client.post("/items", json={
-        "owner_id": alice.id, "titre": "Tente 2 places", "tarif_jour": 12,
+        "titre": "Tente 2 places", "tarif_jour": 12,
     })
 
     assert response.status_code == 201
@@ -56,7 +56,7 @@ def test_remplacer_item_remplace_tous_les_champs(
     # When : PUT sans description, alors que l'item en avait une.
     response = client.put(
         f"/items/{item_velo['id']}", json={
-            "owner_id": item_velo["owner_id"], "titre": "Vélo pliant", "tarif_jour": 10,
+            "titre": "Vélo pliant", "tarif_jour": 10,
         }
     )
 
@@ -82,13 +82,13 @@ def test_supprimer_item_renvoie_204_sans_corps(
 @pytest.mark.parametrize(
     ("payload", "champ_en_erreur"),
     [
-        ({"owner_id": 1, "titre": "ab", "tarif_jour": 8.5}, "titre"),  # trop court
-        ({"owner_id": 1, "titre": "a" * 121, "tarif_jour": 8.5}, "titre"),  # trop long
-        ({"owner_id": 1, "titre": "Vélo", "description": "a" * 1001, "tarif_jour": 8.5}, "description"),
-        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": 0}, "tarif_jour"),  # nul
-        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": -3}, "tarif_jour"),  # négatif
-        ({"owner_id": 1, "titre": "Vélo de ville"}, "tarif_jour"),  # manquant
-        ({"owner_id": 1, "titre": "Vélo de ville", "tarif_jour": 8.5, "couleur": "rouge"}, "couleur"),
+        ({"titre": "ab", "tarif_jour": 8.5}, "titre"),  # trop court
+        ({"titre": "a" * 121, "tarif_jour": 8.5}, "titre"),  # trop long
+        ({"titre": "Vélo", "description": "a" * 1001, "tarif_jour": 8.5}, "description"),
+        ({"titre": "Vélo de ville", "tarif_jour": 0}, "tarif_jour"),  # nul
+        ({"titre": "Vélo de ville", "tarif_jour": -3}, "tarif_jour"),  # négatif
+        ({"titre": "Vélo de ville"}, "tarif_jour"),  # manquant
+        ({"titre": "Vélo de ville", "tarif_jour": 8.5, "couleur": "rouge"}, "couleur"),
     ],
 )
 def test_creer_item_invalide_renvoie_422(
@@ -101,13 +101,13 @@ def test_creer_item_invalide_renvoie_422(
     assert champ_en_erreur in champs
 
 
-def test_creer_item_avec_owner_id_inexistant_renvoie_404(client: TestClient) -> None:
+def test_creer_item_avec_owner_id_renvoie_422(client: TestClient) -> None:
     response = client.post("/items", json={
         "owner_id": 999, "titre": "Tente 2 places", "tarif_jour": 12,
     })
 
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Utilisateur 999 introuvable"
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"][-1] == "owner_id"
 
 
 @pytest.mark.parametrize(
@@ -163,7 +163,7 @@ def test_lire_item_inexistant_renvoie_404(client: TestClient) -> None:
 
 def test_remplacer_item_inexistant_renvoie_404(client: TestClient) -> None:
     response = client.put("/items/999", json={
-        "owner_id": 1, "titre": "Vélo pliant", "tarif_jour": 10,
+        "titre": "Vélo pliant", "tarif_jour": 10,
     })
 
     assert response.status_code == 404

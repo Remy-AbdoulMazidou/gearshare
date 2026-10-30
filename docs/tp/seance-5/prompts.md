@@ -38,3 +38,17 @@ Ne protège encore aucune route (étape 4). Lance docker compose run --rm backen
 
 Ne protège encore aucune route (étape 4). Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 3 : connexion et JWT ».
 ```
+
+## Étape 4 : get_current_user et routes protégées
+
+```text
+Étape 4 du TP ../cours/seances/seance-5-authentification/tp/README.md, en suivant le cours ../cours/seances/seance-5-authentification/cours/README.md.
+
+- backend/app/api/deps.py : get_current_user avec OAuth2PasswordBearer(tokenUrl="/auth/login"), qui réutilise decode_access_token (sans réécrire jwt.decode) et relit l'utilisateur en base par UserRepository. Quelle que soit la cause (pas de jeton, jeton malformé, expiré, utilisateur disparu), le même 401 avec WWW-Authenticate: Bearer. Ajoute l'alias CurrentUser.
+- GET /auth/me, authentifié, response_model=UserRead.
+- Protection : GET /items et GET /items/{id} restent publiques. POST /items authentifié, le propriétaire vient du jeton. PUT, PATCH et DELETE /items/{id} authentifiés (la vérification de propriété sera faite à l'étape 5, ne l'ajoute pas encore). Toutes les routes /reservations authentifiées, l'emprunteur vient du jeton.
+- Retire owner_id de ItemCreate et ItemUpdate, et borrower_id de ReservationCreate. Les services reçoivent l'utilisateur connecté.
+- Tests : adapte les fixtures pour que les tests existants s'exécutent avec un client authentifié, sans changer leurs assertions sauf ce qu'impose la disparition de owner_id et borrower_id. Ajoute les tests de GET /auth/me (200 avec jeton, 401 sans jeton et avec un jeton bidon). Liste dans le journal chaque test modifié et pourquoi.
+
+Ne touche pas au frontend (étape 7). Lance docker compose run --rm backend pytest. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 4 : get_current_user et routes protégées ».
+```
