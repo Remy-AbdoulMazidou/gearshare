@@ -127,3 +127,27 @@ stmt = select(Item).options(selectinload(Item.owner))
 ```
 
 `SQL_ECHO` remis à `false` après la mesure.
+
+## 5. Le frontend sur la vraie base (étape 6.4)
+
+Parcours du TP 1 refait sur `http://localhost:8080` après le passage du backend sur PostgreSQL.
+
+- Liste et détail : aucune modification du frontend. Le contrat de lecture n'a pas changé. Le
+  champ `owner` ajouté à `ItemRead` est simplement ignoré par les templates. `tarif_jour` reste
+  un `float` dans `ItemRead`, il s'affiche donc comme avant (`20.0 €`).
+- Création : refusée avec « owner_id : Field required ». Changement de contrat, un item a
+  désormais un propriétaire obligatoire. Le frontend a affiché proprement l'erreur 422 du backend
+  au-dessus du formulaire, comme prévu au TP 1.
+
+Seule modification du frontend, dans `frontend/app/routers/items.py`, route `POST /items` :
+
+```python
+"owner_id": 1,  # TODO séance 5 : remplacé par l'utilisateur connecté, déduit du jeton
+```
+
+avec l'utilisateur de démonstration inséré par `psql` (`demo@esiee.fr`, id 1). Correction
+provisoire : en séance 5, le backend déduira le propriétaire du jeton et ce champ disparaîtra.
+
+Vérifié : création de deux objets depuis le frontend, puis `docker compose restart`. Les objets
+sont toujours dans la liste, contrairement à l'étape 6 du TP 1 où le stockage en mémoire était
+vidé au redémarrage.

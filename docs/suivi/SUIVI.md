@@ -4,13 +4,13 @@ Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-TP 2 de la séance 4, étapes 0 à 5 et 6.1-6.2 terminées : backend en couches pour `items`,
-PostgreSQL et Alembic, tests sur une base PostgreSQL de test (53 tests verts), N+1 corrigé,
-service `migrate` et création automatique de `gearshare_test`.
+TP 2 de la séance 4, étapes 0 à 6 terminées : backend en couches pour `items` sur PostgreSQL,
+tests sur `gearshare_test` (53 tests verts), N+1 corrigé, service `migrate`
+(`docs/choix-migrations.md`), frontend branché sur la vraie base.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 6.3 : vérification depuis zéro avec Compose.
+TP 2 de la séance 4, étape 7 : verticale `reservations` en couches, chevauchement, review.
 
 ## Avancement des séances
 
@@ -32,7 +32,7 @@ TP 2 de la séance 4, étape 6.3 : vérification depuis zéro avec Compose.
   - [x] TP backend, étape 4 : verticale `items` en couches, propriétaire vérifié par le service
   - [x] TP backend, tests : base `gearshare_test`, 53 tests verts
   - [x] TP backend, étape 5 : N+1 mesuré (22 requêtes) et corrigé avec `selectinload` (2 requêtes)
-  - [x] TP backend, étapes 6.1-6.2 : Compose à trois services et migrations au démarrage
+  - [x] TP backend, étape 6 : service `migrate`, vérification depuis zéro, frontend sur la vraie base
   - [ ] TP backend, étape 7 : verticale `reservations`
 - [ ] Séance 5 · Authentification JWT
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
@@ -75,7 +75,7 @@ TP 2 de la séance 4, étape 6.3 : vérification depuis zéro avec Compose.
 
 ## Questions ouvertes
 
-- Création d'un objet depuis le frontend refusée (422, `owner_id` obligatoire) : correction
-  provisoire prévue à l'étape 6.4 du TP 2.
+- `owner_id` fixé à 1 (utilisateur de démo) dans le frontend, `# TODO séance 5` : remplacé par
+  l'utilisateur connecté en séance 5.
 - `POST /reservations` accepte un `item_id` inexistant (201) et deux réservations actives sur le même créneau. Réglé à l'étape 7 du TP 2 (verticale `reservations` en couches).
 - Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).

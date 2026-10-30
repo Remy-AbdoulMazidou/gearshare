@@ -37,6 +37,7 @@ def create_item(
         "disponible": disponible,
     }
     payload = {
+        "owner_id": 1,  # TODO séance 5 : remplacé par l'utilisateur connecté, déduit du jeton
         "titre": titre,
         "description": description or None,
         "tarif_jour": tarif_jour,

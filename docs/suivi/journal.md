@@ -389,3 +389,4 @@ Une entrée par session de travail, la plus récente en bas.
 - Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
 - Vérifié : `docker compose config`.
 - Fait par Rémy : vérification depuis zéro (down -v puis un seul up : migrate en Exited (0), backend démarré après, gearshare_test créée), puis expériences pour docs/choix-migrations.md : second up sans nouvelle migration, migration cassée volontairement (migrate en Exited (1), backend jamais démarré, base intacte), --reload toujours actif et docker compose run --rm migrate.
+- Fait par Rémy : étape 6.4. Erreur « owner_id : Field required » observée dans le frontend, utilisateur de démo inséré, owner_id fixé à 1 dans frontend/app/routers/items.py avec un TODO séance 5, deux objets créés depuis le frontend et toujours présents après docker compose restart.

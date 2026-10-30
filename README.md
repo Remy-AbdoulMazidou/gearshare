@@ -16,20 +16,29 @@ docker compose up --build
 - API : http://localhost:8000
 - Documentation interactive de l'API : http://localhost:8000/docs
 
-TP 2 de la séance 4 en cours : `items` est stocké dans PostgreSQL, `reservations` encore en
-mémoire (étape 7). Tant que l'étape 6 n'est pas faite, les migrations s'appliquent à la main :
+Au démarrage, le service `migrate` applique les migrations Alembic avant le lancement de l'API
+(voir `docs/choix-migrations.md`). Pour appliquer une nouvelle migration pendant le développement :
 
 ```bash
-docker compose run --rm backend alembic upgrade head
+docker compose run --rm migrate
 ```
+
+En attendant l'authentification (séance 5), le frontend crée les objets pour un utilisateur de
+démonstration d'id 1, à insérer une fois :
+
+```bash
+docker compose exec db psql -U gearshare -d gearshare \
+  -c "INSERT INTO users (email, display_name, password_hash) VALUES ('demo@esiee.fr', 'Démo', 'x');"
+```
+
+`reservations` est encore stocké en mémoire (étape 7 du TP 2).
 
 ### Lancer les tests
 
-Depuis la racine du dépôt. Les tests tournent sur une base PostgreSQL dédiée (`TEST_DATABASE_URL`),
-à créer une fois :
+Depuis la racine du dépôt. Les tests tournent sur la base PostgreSQL `gearshare_test`
+(`TEST_DATABASE_URL`), créée automatiquement au premier démarrage par `db/init/` :
 
 ```bash
-docker compose exec db createdb -U gearshare gearshare_test
 docker compose run --rm backend pytest
 docker compose run --rm backend pytest --cov=app --cov-report=term-missing
 ```
@@ -64,7 +73,7 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 | 1 · API FastAPI | Terminé | `backend/`, `docs/tp/seance-1/` (spec, review, prompts, plan de l'agent, review Copilot) |
 | 2 · Tests | Terminé | `backend/tests/` (48 tests, couverture 100 %), `docs/tp/seance-2/` (mutations, prompts) |
 | 3 · PostgreSQL | Terminé | `tp-db/` (schéma, requêtes, `MESURES.md`, schéma v2, `REVIEW-schema.md`, tests de contraintes), `docs/tp/seance-3/` (prompts Copilot) |
-| 4 · Webapp | TP 1 terminé, TP 2 en cours (étapes 0 à 5) | `frontend/`, backend en couches sur PostgreSQL, `backend/alembic/`, 53 tests, `docs/review-migrations.md`, `docs/tp/seance-4/` (prompts Copilot) |
+| 4 · Webapp | TP 1 terminé, TP 2 en cours (étapes 0 à 6) | `frontend/`, backend en couches sur PostgreSQL, `backend/alembic/`, 53 tests, `docs/review-migrations.md`, `docs/choix-migrations.md`, `docs/tp/seance-4/` (prompts Copilot) |
 
 Le détail de l'avancement et des décisions est dans `docs/suivi/SUIVI.md`, et l'historique des
 sessions dans `docs/suivi/journal.md`.
