@@ -1,16 +1,16 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-10-27
+Dernière mise à jour : 2026-10-30
 
 ## En cours
 
-TP 2 de la séance 4, étapes 0 à 5 terminées : backend en couches pour `items`, PostgreSQL et
-Alembic, tests sur une base PostgreSQL de test (53 tests verts), N+1 corrigé.
+TP 2 de la séance 4, étapes 0 à 5 et 6.1-6.2 terminées : backend en couches pour `items`,
+PostgreSQL et Alembic, tests sur une base PostgreSQL de test (53 tests verts), N+1 corrigé,
+service `migrate` et création automatique de `gearshare_test`.
 
 ## Prochaine étape
 
-TP 2 de la séance 4, étape 6 : Compose à trois services, migrations appliquées au démarrage
-(`docs/choix-migrations.md`), frontend branché sur la vraie base.
+TP 2 de la séance 4, étape 6.3 : vérification depuis zéro avec Compose.
 
 ## Avancement des séances
 
@@ -32,7 +32,7 @@ TP 2 de la séance 4, étape 6 : Compose à trois services, migrations appliqué
   - [x] TP backend, étape 4 : verticale `items` en couches, propriétaire vérifié par le service
   - [x] TP backend, tests : base `gearshare_test`, 53 tests verts
   - [x] TP backend, étape 5 : N+1 mesuré (22 requêtes) et corrigé avec `selectinload` (2 requêtes)
-  - [ ] TP backend, étape 6 : Compose à trois services et migrations au démarrage
+  - [x] TP backend, étapes 6.1-6.2 : Compose à trois services et migrations au démarrage
   - [ ] TP backend, étape 7 : verticale `reservations`
 - [ ] Séance 5 · Authentification JWT
 - [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
@@ -70,6 +70,8 @@ TP 2 de la séance 4, étape 6 : Compose à trois services, migrations appliqué
   jusqu'à l'étape 7.
 - 2026-10-27 (Rémy) : `OwnerRead` (`id`, `display_name`) dans `ItemRead`, chargé avec
   `selectinload(Item.owner)` : `GET /items` passe de 22 à 2 requêtes.
+- 2026-10-30 : choix de l'option 2 pour les migrations : service Compose `migrate` dédié, attendu
+  par le backend après la disponibilité de PostgreSQL.
 
 ## Questions ouvertes
 

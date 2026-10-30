@@ -379,3 +379,13 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié : `docker compose run --rm backend pytest` donne 53 tests verts.
 - Fait par Rémy : mesure du N+1 avec SQL_ECHO=true (22 requêtes SELECT pour une page de 23 items, 20 propriétaires différents insérés avec generate_series), correction avec selectinload(Item.owner) dans ItemRepository.list, puis 2 requêtes. SQL_ECHO remis à false.
 - Relecture du dépôt par Rémy avec l'aide de Claude : URL de test masquée dans .env.example, blocs de code non fermés dans prompts.md, code inutile retiré (alias, imports), SUIVI, README et backend/README.md mis à jour.
+
+## 2026-10-30 · TP séance 4, étapes 6.1 et 6.2
+
+- Fait par : GitHub Copilot (mode Agent).
+- Ajout du service Compose `migrate`, construit depuis `backend`, qui applique `alembic upgrade head`
+  après la disponibilité de PostgreSQL ; le backend attend sa réussite.
+- Ajout du script d'initialisation PostgreSQL qui crée `gearshare_test` au premier démarrage du volume.
+- Prompt ajouté dans `docs/tp/seance-4/prompts.md`.
+- Vérifié : `docker compose config`.
+- Fait par Rémy : vérification depuis zéro (down -v puis un seul up : migrate en Exited (0), backend démarré après, gearshare_test créée), puis expériences pour docs/choix-migrations.md : second up sans nouvelle migration, migration cassée volontairement (migrate en Exited (1), backend jamais démarré, base intacte), --reload toujours actif et docker compose run --rm migrate.

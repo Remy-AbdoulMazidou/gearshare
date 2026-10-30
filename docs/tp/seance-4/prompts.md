@@ -209,3 +209,13 @@ Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de 
 
 Lance docker compose run --rm backend pytest. Ne touche pas au frontend. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 5 : propriétaire dans les items ».
 ```
+
+## TP 2, étape 6 : service migrate
+
+Étapes 6.1 et 6.2 du TP ../cours/seances/seance-4-webapp/tp/tp2-backend-db.md, avec l'option 2 (service migrate) de la section 8 du cours ../cours/seances/seance-4-webapp/cours/cours2-backend-db.md.
+
+- docker-compose.yml : ajoute un service migrate construit depuis ./backend, avec env_file: .env, qui dépend de db (condition service_healthy), lance alembic upgrade head, et monte ./backend/alembic et ./backend/alembic.ini comme le backend. Le backend dépend de migrate avec la condition service_completed_successfully (et garde db service_healthy). Le frontend ne change pas : pas d'env_file.
+- La base gearshare_test doit être créée automatiquement au premier démarrage du volume : ajoute un script SQL dans un dossier db/init/ à la racine, monté en lecture seule sur /docker-entrypoint-initdb.d du service db.
+- Vérifie seulement avec docker compose config. Je lance moi-même la vérification depuis zéro (étape 6.3).
+
+Ne modifie pas le frontend (c'est l'étape 6.4) et n'écris pas docs/choix-migrations.md, c'est moi qui l'écris. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-4/prompts.md, sous le titre « TP 2, étape 6 : service migrate ».
