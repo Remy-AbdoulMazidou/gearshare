@@ -29,6 +29,8 @@ Aucune correction dans le code. Je pense que c'est en partie parce que mon `CLAU
 - On peut réserver un `item_id` qui n'existe pas, puisque la spec interdit d'accéder au stockage de `items`. Ça devrait se régler avec une clé étrangère quand on passera sur PostgreSQL.
 - Rien n'empêche deux réservations actives sur le même item et le même créneau.
 - Le 404 et le 409 n'apparaissent pas dans `/docs`. Il faudrait ajouter `responses=` sur les routes.
+  Corrigé le 07/11/2026 (PR #2) : schéma `ErreurRead` et `responses=` sur toutes les routes, vérifié
+  par un test paramétré sur `/openapi.json`.
 - L'erreur de dates renvoie `loc: ["body"]` sans le nom du champ, parce que le validateur porte sur tout le modèle. À prendre en compte pour les tests de la séance 2.
 
 ## Ce que je retiens du travail avec l'agent

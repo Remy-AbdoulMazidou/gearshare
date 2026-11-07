@@ -7,6 +7,7 @@ from app.api.deps import CurrentUser, DbSession
 from app.core.config import settings
 from app.core.security import create_access_token
 from app.repositories.user import UserRepository
+from app.schemas.error import ERREUR_401, ERREUR_409
 from app.schemas.user import TokenRead, UserCreate, UserRead
 from app.services.auth import AuthService
 
@@ -20,12 +21,21 @@ def get_auth_service(db: DbSession) -> AuthService:
 AuthServiceDependency = Annotated[AuthService, Depends(get_auth_service)]
 
 
-@router.post("/register", response_model=UserRead, status_code=201)
+@router.post(
+    "/register",
+    response_model=UserRead,
+    status_code=201,
+    responses={**ERREUR_409},
+)
 def register(payload: UserCreate, service: AuthServiceDependency):
     return service.register(payload)
 
 
-@router.post("/login", response_model=TokenRead)
+@router.post(
+    "/login",
+    response_model=TokenRead,
+    responses={**ERREUR_401},
+)
 def login(
     form: Annotated[OAuth2PasswordRequestForm, Depends()],
     service: AuthServiceDependency,
@@ -45,6 +55,6 @@ def login(
     )
 
 
-@router.get("/me", response_model=UserRead)
+@router.get("/me", response_model=UserRead, responses={**ERREUR_401})
 def me(current_user: CurrentUser) -> UserRead:
     return current_user
