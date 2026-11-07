@@ -34,4 +34,6 @@ def test_openapi_documente_les_erreurs(method, path, error_codes):
     documented_responses = openapi["paths"][path][method]["responses"]
 
     for error_code in error_codes:
-        assert str(error_code) in documented_responses
+        response = documented_responses[str(error_code)]
+        schema = response["content"]["application/json"]["schema"]
+        assert schema["$ref"] == "#/components/schemas/ErreurRead"

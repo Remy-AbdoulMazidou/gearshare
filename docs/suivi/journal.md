@@ -565,3 +565,4 @@ Une entrée par session de travail, la plus récente en bas.
 - Fait par Rémy : tableau route → codes demandé avant toute modification, comparé au code réel avec Claude (14 lignes justes), puis validé. Review : `responses={}` vide sur GET /items retiré.
 - Vérifié par Rémy : 119 tests verts. Mutation (404 retiré de GET /items/{item_id}), le cas paramétré correspondant échoue, puis 119 tests verts.
 - Remarques de Rémy notées dans le SUIVI : PATCH /reservations/{id} ignore le contenu du corps, toutes les réservations sont lisibles par un utilisateur connecté.
+- Review Copilot (Lite) sur la PR #2 : le test vérifiait seulement la présence des codes. Remarque acceptée en partie par Rémy, le test vérifie maintenant que chaque erreur référence ErreurRead (mutation : modèle retiré du 404, 8 cas échouent). Vérification de la description refusée, texte d'affichage qui rendrait le test fragile.
