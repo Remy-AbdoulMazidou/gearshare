@@ -1,8 +1,13 @@
+import secrets
+
 from app.core.exceptions import EmailDejaUtilise
 from app.core.security import hash_password, verify_password
 from app.models.user import User
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate
+
+
+DUMMY_PASSWORD_HASH = hash_password(secrets.token_urlsafe())
 
 
 class AuthService:
@@ -22,6 +27,9 @@ class AuthService:
 
     def authenticate(self, email: str, password: str) -> User | None:
         user = self.repository.get_by_email(email)
-        if user is None or not verify_password(password, user.password_hash):
+        if user is None:
+            verify_password(password, DUMMY_PASSWORD_HASH)
+            return None
+        if not verify_password(password, user.password_hash):
             return None
         return user

@@ -551,3 +551,10 @@ Une entrée par session de travail, la plus récente en bas.
 - Fait par GitHub Copilot (mode Agent), prompt dans docs/features/01-pas-de-double-reservation/prompts.md : btree_gist dans la fixture engine, traduction de la contrainte en ConflitMetier (409) dans un savepoint du repository, 4 tests (chevauchement direct refusé, accepté si l'autre est annulée, jointif accepté, course simulée qui renvoie 409).
 - Fait par Rémy : review du code de Copilot, condition sur `constraint_name` simplifiée. Mutation avec un faux nom de contrainte, test_course_sur_la_contrainte_exclude_renvoie_409 en échec, puis 104 tests verts.
 - Fait par Rémy : vraie course entre deux sessions psql. B reste bloqué tant que A n'a pas validé, puis il est refusé par reservations_active_no_overlap. Détails dans docs/features/01-pas-de-double-reservation/contrainte-exclude.md (mis en forme avec l'aide de Claude).
+
+## 2026-11-07 · Attaque temporelle sur le login
+
+- Fait par Rémy : branche `fix/login-temps-constant`. Mesure avec curl, email inconnu environ 0,006 s contre environ 0,052 s pour un mauvais mot de passe.
+- Fait par GitHub Copilot (mode Agent), prompt à la fin de docs/tp/seance-5/prompts.md : condensat factice calculé au chargement de app/services/auth.py et vérifié quand l'email n'existe pas, test espion sur verify_password.
+- Vérifié par Rémy : même mesure après correction, environ 0,051 s dans les deux cas. 105 tests verts. Mutation (appel au condensat factice supprimé), le test espion échoue, puis 105 tests verts.
+- Remarque de Rémy : l'inscription révèle toujours si un email existe (409), limite gardée et expliquée dans docs/tp/seance-5/attaque-temporelle.md (mis en forme avec l'aide de Claude).
