@@ -96,3 +96,24 @@ Lance docker compose run --rm backend pytest -v. Ne touche pas au frontend. Pas 
 
 Contraintes du TP 1 toujours valables : aucun httpx hors de api_client.py, pas de JavaScript, pas de |safe, aucune adresse de backend en dur, aucune modification par GET. Ne touche pas au backend. Vérifie que le frontend démarre. Pas de commentaires inutiles, ne fais pas de commit. Respecte .github/copilot-instructions.md pour le journal. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous le titre « Étape 7 : connexion côté frontend ».
 ```
+
+## Pour aller plus loin : attaque temporelle sur le login
+
+```text
+Contexte : séance 5, « Pour aller plus loin », attaque temporelle sur le login. J'ai mesuré avec curl : email inconnu environ 0,006 s, mauvais mot de passe environ 0,052 s. AuthService.authenticate s'arrête sans hacher quand l'email n'existe pas, donc le temps de réponse révèle si un compte existe.
+
+Objectif : le même coût de hachage dans les deux cas.
+
+1. backend/app/services/auth.py :
+   - une constante de module avec un condensat factice, calculé une seule fois au chargement avec hash_password sur une valeur aléatoire (secrets) ;
+   - dans authenticate, si l'utilisateur n'existe pas, appeler verify_password(password, <condensat factice>) puis renvoyer None ;
+   - garder le même comportement pour l'appelant (None dans les deux cas, même 401 « Email ou mot de passe incorrect »).
+
+2. backend/tests/test_auth.py, ajouter un test sans modifier les existants : remplacer verify_password dans app.services.auth par un espion (monkeypatch) qui compte les appels et délègue à la vraie fonction, faire un POST /auth/login avec un email inconnu, vérifier le 401 et que verify_password a été appelé exactement une fois. Pas de test basé sur le chronomètre (trop instable).
+
+3. Lance docker compose exec backend pytest -q et donne-moi le résultat.
+
+4. Ajoute ce prompt tel quel à la fin de docs/tp/seance-5/prompts.md, sous un titre « Pour aller plus loin : attaque temporelle sur le login ».
+
+Pas de commentaire inutile. Ne modifie pas docs/suivi/. Pas de commit.
+```

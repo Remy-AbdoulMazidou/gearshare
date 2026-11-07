@@ -1,16 +1,19 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-10-30
+Dernière mise à jour : 2026-11-07
 
 ## En cours
 
 Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
-dans une migration Alembic, l'API répond 409 en cas de course, 104 tests verts.
+dans une migration Alembic, l'API répond 409 en cas de course. Attaque temporelle sur le login
+corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe), 105 tests verts.
+À partir de maintenant, chaque changement passe par une branche et une pull request.
 
 ## Prochaine étape
 
-Séance 6 : fondations agentic (support à venir). En attendant : attaque temporelle sur le login,
-fiches des fonctionnalités 02 et 03, `docs/retour-experience.md`.
+Séance 6 : fondations agentic (support à venir). En attendant : `responses=` sur les routes pour
+documenter les 404 et 409 dans `/docs`, fiches des fonctionnalités 02 et 03,
+`docs/retour-experience.md`.
 
 ## Avancement des séances
 
@@ -70,4 +73,5 @@ fiches des fonctionnalités 02 et 03, `docs/retour-experience.md`.
 
 ## Questions ouvertes
 
-- Binôme ou seul : à préciser. Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
+- Binôme ou seul, et PostgreSQL 16 au lieu de 17 : à demander à l'enseignant par mail.
+- Date de rendu : à confirmer (synthèse annoncée par l'enseignant).

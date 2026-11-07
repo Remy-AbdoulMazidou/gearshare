@@ -6,6 +6,7 @@ import jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.security import verify_password as real_verify_password
 from app.models import User
 
 
@@ -140,6 +141,29 @@ def test_connexion_invalide_renvoie_la_meme_erreur(
     assert response.status_code == 401
     assert response.json() == {"detail": "Email ou mot de passe incorrect"}
     assert response.headers["WWW-Authenticate"] == "Bearer"
+
+
+def test_connexion_avec_email_inconnu_verifie_le_mot_de_passe(
+    raw_client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = 0
+
+    def spy_verify_password(plain: str, stored: str) -> bool:
+        nonlocal calls
+        calls += 1
+        return real_verify_password(plain, stored)
+
+    monkeypatch.setattr(
+        "app.services.auth.verify_password", spy_verify_password
+    )
+
+    response = raw_client.post(
+        "/auth/login",
+        data={"username": "inconnu@esiee.fr", "password": "motdepasse"},
+    )
+
+    assert response.status_code == 401
+    assert calls == 1
 
 
 @pytest.mark.parametrize(

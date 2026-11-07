@@ -56,5 +56,5 @@ La seconde commande n'affiche rien. La première affiche des lignes, toutes expl
   journalisés.
 - `authenticate` répond plus vite pour un email inconnu (pas de hachage) que pour un mauvais mot de
   passe. Le message est identique, mais le temps de réponse peut révéler si un compte existe.
-  Correction possible (« Pour aller plus loin ») : hacher un mot de passe factice quand
-  l'utilisateur n'existe pas.
+  Corrigé ensuite en hachant un mot de passe factice quand l'utilisateur n'existe pas, mesures
+  avant et après dans `attaque-temporelle.md`.
