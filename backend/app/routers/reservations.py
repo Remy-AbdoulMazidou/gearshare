@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Path, Query
 from app.api.deps import CurrentUser, DbSession
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
+from app.schemas.error import ERREUR_401, ERREUR_403, ERREUR_404, ERREUR_409
 from app.schemas.reservation import ReservationCreate, ReservationRead, ReservationUpdate
 from app.services.reservation import ReservationService
 
@@ -22,7 +23,11 @@ ReservationServiceDependency = Annotated[
 ]
 
 
-@router.get("", response_model=list[ReservationRead])
+@router.get(
+    "",
+    response_model=list[ReservationRead],
+    responses={**ERREUR_401},
+)
 def list_reservations(
     service: ReservationServiceDependency,
     current_user: CurrentUser,
@@ -33,7 +38,12 @@ def list_reservations(
     return service.list(item_id=item_id, skip=skip, limit=limit)
 
 
-@router.post("", response_model=ReservationRead, status_code=201)
+@router.post(
+    "",
+    response_model=ReservationRead,
+    status_code=201,
+    responses={**ERREUR_401, **ERREUR_404, **ERREUR_409},
+)
 def create_reservation(
     payload: ReservationCreate,
     service: ReservationServiceDependency,
@@ -42,7 +52,11 @@ def create_reservation(
     return service.create(payload, current_user)
 
 
-@router.get("/{reservation_id}", response_model=ReservationRead)
+@router.get(
+    "/{reservation_id}",
+    response_model=ReservationRead,
+    responses={**ERREUR_401, **ERREUR_404},
+)
 def get_reservation(
     service: ReservationServiceDependency,
     current_user: CurrentUser,
@@ -51,7 +65,11 @@ def get_reservation(
     return service.get(reservation_id)
 
 
-@router.patch("/{reservation_id}", response_model=ReservationRead)
+@router.patch(
+    "/{reservation_id}",
+    response_model=ReservationRead,
+    responses={**ERREUR_401, **ERREUR_403, **ERREUR_404, **ERREUR_409},
+)
 def update_reservation(
     payload: ReservationUpdate,
     service: ReservationServiceDependency,
@@ -61,7 +79,11 @@ def update_reservation(
     return service.cancel(reservation_id, current_user)
 
 
-@router.post("/{reservation_id}/annuler", response_model=ReservationRead)
+@router.post(
+    "/{reservation_id}/annuler",
+    response_model=ReservationRead,
+    responses={**ERREUR_401, **ERREUR_403, **ERREUR_404, **ERREUR_409},
+)
 def annuler_reservation(
     service: ReservationServiceDependency,
     current_user: CurrentUser,

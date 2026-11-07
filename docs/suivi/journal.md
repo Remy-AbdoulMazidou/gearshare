@@ -558,3 +558,10 @@ Une entrée par session de travail, la plus récente en bas.
 - Fait par GitHub Copilot (mode Agent), prompt à la fin de docs/tp/seance-5/prompts.md : condensat factice calculé au chargement de app/services/auth.py et vérifié quand l'email n'existe pas, test espion sur verify_password.
 - Vérifié par Rémy : même mesure après correction, environ 0,051 s dans les deux cas. 105 tests verts. Mutation (appel au condensat factice supprimé), le test espion échoue, puis 105 tests verts.
 - Remarque de Rémy : l'inscription révèle toujours si un email existe (409), limite gardée et expliquée dans docs/tp/seance-5/attaque-temporelle.md (mis en forme avec l'aide de Claude).
+
+## 2026-11-07 · Erreurs documentées dans OpenAPI
+
+- Fait par GitHub Copilot (mode Agent), prompt à la fin de docs/tp/seance-1/prompts.md : schéma ErreurRead, réponses communes ERREUR_401 à ERREUR_409, responses= sur les 14 routes concernées, test paramétré sur /openapi.json.
+- Fait par Rémy : tableau route → codes demandé avant toute modification, comparé au code réel avec Claude (14 lignes justes), puis validé. Review : `responses={}` vide sur GET /items retiré.
+- Vérifié par Rémy : 119 tests verts. Mutation (404 retiré de GET /items/{item_id}), le cas paramétré correspondant échoue, puis 119 tests verts.
+- Remarques de Rémy notées dans le SUIVI : PATCH /reservations/{id} ignore le contenu du corps, toutes les réservations sont lisibles par un utilisateur connecté.

@@ -6,14 +6,14 @@ Dernière mise à jour : 2026-11-07
 
 Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
 dans une migration Alembic, l'API répond 409 en cas de course. Attaque temporelle sur le login
-corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe), 105 tests verts.
+corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe). Erreurs 401,
+403, 404 et 409 documentées dans OpenAPI, 119 tests verts.
 À partir de maintenant, chaque changement passe par une branche et une pull request.
 
 ## Prochaine étape
 
-Séance 6 : fondations agentic (support à venir). En attendant : `responses=` sur les routes pour
-documenter les 404 et 409 dans `/docs`, fiches des fonctionnalités 02 et 03,
-`docs/retour-experience.md`.
+Séance 6 : fondations agentic (support à venir). En attendant : fiches des fonctionnalités 02 et
+03, `docs/retour-experience.md`, lint et CI.
 
 ## Avancement des séances
 
@@ -74,4 +74,8 @@ documenter les 404 et 409 dans `/docs`, fiches des fonctionnalités 02 et 03,
 ## Questions ouvertes
 
 - Binôme ou seul, et PostgreSQL 16 au lieu de 17 : à demander à l'enseignant par mail.
+- `PATCH /reservations/{id}` n'accepte que `statut: "annulee"` et appelle toujours `cancel`. À
+  revoir si une réservation doit un jour passer en `terminee` par l'API.
+- Tout utilisateur connecté peut lire toutes les réservations (nécessaire pour la page d'un objet).
+  Cela révèle qui emprunte quoi : choix à confirmer ou à restreindre.
 - Date de rendu : à confirmer (synthèse annoncée par l'enseignant).
