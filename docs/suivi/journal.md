@@ -566,3 +566,9 @@ Une entrée par session de travail, la plus récente en bas.
 - Vérifié par Rémy : 119 tests verts. Mutation (404 retiré de GET /items/{item_id}), le cas paramétré correspondant échoue, puis 119 tests verts.
 - Remarques de Rémy notées dans le SUIVI : PATCH /reservations/{id} ignore le contenu du corps, toutes les réservations sont lisibles par un utilisateur connecté.
 - Review Copilot (Lite) sur la PR #2 : le test vérifiait seulement la présence des codes. Remarque acceptée en partie par Rémy, le test vérifie maintenant que chaque erreur référence ErreurRead (mutation : modèle retiré du 404, 8 cas échouent). Vérification de la description refusée, texte d'affichage qui rendrait le test fragile.
+
+## 2026-11-12 · Lint et CI
+
+- Fait par GitHub Copilot (mode Agent), prompt dans docs/qualite/prompts.md : ruff.toml, workflow .github/workflows/ci.yml (jobs lint, tests sur postgres:16 avec alembic upgrade head et alembic check, build avec docker compose build), section Qualité du README.
+- Fait par Rémy : workflow relu avant le push. Lint lancé en local dans un conteneur python:3.12-slim, 10 erreurs (9 imports mal triés, 1 timezone.utc). Premier push volontairement sans correction : sur la PR, lint en échec, tests et build verts.
+- Fait par Rémy : `ruff check --fix`, diff relu (imports regroupés, `timezone.utc` remplacé par `UTC`, aucune logique modifiée), 119 tests verts, frontend toujours démarré, puis CI verte sur la PR.
