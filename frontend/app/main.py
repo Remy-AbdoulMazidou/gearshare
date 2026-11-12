@@ -1,16 +1,12 @@
 from urllib.parse import urlencode, urlsplit
 
-from fastapi import FastAPI
-from fastapi import Request
-from fastapi.responses import HTMLResponse
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api_client import ApiError
 from app.auth import COOKIE_JETON
-from app.routers import auth
-from app.routers import items
-from app.routers import reservations
+from app.routers import auth, items, reservations
 from app.templating import BASE_DIR, templates
 
 app = FastAPI(title="GearShare — frontend")

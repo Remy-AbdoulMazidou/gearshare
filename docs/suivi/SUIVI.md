@@ -1,19 +1,20 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-11-07
+Dernière mise à jour : 2026-11-12
 
 ## En cours
 
 Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
 dans une migration Alembic, l'API répond 409 en cas de course. Attaque temporelle sur le login
 corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe). Erreurs 401,
-403, 404 et 409 documentées dans OpenAPI, 119 tests verts.
+403, 404 et 409 documentées dans OpenAPI, 119 tests verts. CI GitHub Actions (lint ruff, tests sur
+PostgreSQL 16, build Docker) sur chaque PR.
 À partir de maintenant, chaque changement passe par une branche et une pull request.
 
 ## Prochaine étape
 
 Séance 6 : fondations agentic (support à venir). En attendant : fiches des fonctionnalités 02 et
-03, `docs/retour-experience.md`, lint et CI.
+03, `docs/retour-experience.md`.
 
 ## Avancement des séances
 
