@@ -1,13 +1,12 @@
 import hashlib
 import hmac
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import jwt
 
 from app.core.config import settings
-
 
 ALGORITHM = "pbkdf2_sha256"
 ITERATIONS = 600_000
@@ -49,7 +48,7 @@ def verify_password(plain: str, stored: str) -> bool:
 
 
 def create_access_token(user_id: int) -> str:
-    issued_at = datetime.now(timezone.utc)
+    issued_at = datetime.now(UTC)
     expires_at = issued_at + timedelta(minutes=settings.jwt_expire_minutes)
     payload = {
         "sub": str(user_id),
