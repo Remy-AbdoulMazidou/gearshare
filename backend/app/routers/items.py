@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Path, Query, Response
 
 from app.api.deps import CurrentUser, DbSession
+from app.repositories.avis import AvisRepository
 from app.repositories.item import ItemRepository
 from app.schemas.error import ERREUR_401, ERREUR_403, ERREUR_404
-from app.repositories.avis import AvisRepository
 from app.schemas.item import ItemCreate, ItemDetail, ItemRead, ItemUpdate
 from app.services.item import ItemService
 

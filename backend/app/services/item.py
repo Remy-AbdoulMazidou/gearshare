@@ -1,4 +1,4 @@
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 
 from app.core.exceptions import AccesRefuse, RessourceIntrouvable
 from app.models.item import Item
