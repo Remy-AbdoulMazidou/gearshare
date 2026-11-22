@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import ConflitMetier
 from app.models.reservation import Reservation
 
-
 EXCLUDE_CONSTRAINT_NAME = "reservations_active_no_overlap"
 
 

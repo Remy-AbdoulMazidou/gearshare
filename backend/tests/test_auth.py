@@ -1,8 +1,8 @@
 import re
 
+import jwt
 import pytest
 from fastapi.testclient import TestClient
-import jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import settings

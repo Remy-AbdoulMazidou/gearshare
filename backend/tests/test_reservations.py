@@ -12,10 +12,8 @@ from app.models import Item, Reservation, User
 from app.repositories.item import ItemRepository
 from app.repositories.reservation import ReservationRepository
 from app.schemas.reservation import ReservationCreate
-from app.services.reservation import ReservationService
-
 from app.services import reservation as reservation_service
-
+from app.services.reservation import ReservationService
 
 # Cas nominaux
 

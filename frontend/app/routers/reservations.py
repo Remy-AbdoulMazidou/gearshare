@@ -2,7 +2,7 @@ from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Form, Request
-from fastapi.responses import Response, RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 
 from app.api_client import ApiError, api_client
 from app.auth import Token

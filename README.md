@@ -42,6 +42,15 @@ docker compose run --rm backend pytest
 docker compose run --rm backend pytest --cov=app --cov-report=term-missing
 ```
 
+### Qualité
+
+La CI vérifie le lint avec Ruff, exécute les migrations et les tests sur PostgreSQL, puis vérifie
+que les images Docker se construisent. Pour lancer Ruff en local sans l'installer :
+
+```bash
+docker run --rm -v "$PWD":/src -w /src python:3.12-slim sh -c "pip install -q ruff==0.17.3 && ruff check backend frontend"
+```
+
 ### Base de données du TP séance 3
 
 ```bash
