@@ -90,3 +90,16 @@ def annuler_reservation(
     reservation_id: int = Path(ge=1),
 ):
     return service.cancel(reservation_id, current_user)
+
+
+@router.post(
+    "/{reservation_id}/cloturer",
+    response_model=ReservationRead,
+    responses={**ERREUR_401, **ERREUR_403, **ERREUR_404, **ERREUR_409},
+)
+def cloturer_reservation(
+    service: ReservationServiceDependency,
+    current_user: CurrentUser,
+    reservation_id: int = Path(ge=1),
+):
+    return service.complete(reservation_id, current_user)

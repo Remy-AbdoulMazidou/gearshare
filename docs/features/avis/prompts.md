@@ -52,3 +52,15 @@ Relecture du plan par Rémy. Corrige docs/features/avis/plan.md avec ces remarqu
 9. Noms de tests : corrige « aviss » en « avis » et retire l'accent de « entière ».
 10. Remplace la ligne sous le titre par : « Rédigé avec GitHub Copilot (mode Plan) en suivant .github/agents/planificateur.agent.md, relu et corrigé par Rémy. »
 ```
+
+## Implémentation, étape 1 du plan : clôture d'une réservation
+
+```text
+Implémente uniquement l'étape 1 de docs/features/avis/plan.md (clôture d'une réservation), en respectant AGENTS.md.
+
+- Ne modifie que les fichiers listés dans cette étape. Si tu as besoin d'en toucher un autre, demande-moi avant.
+- Écris les tests prévus par l'étape, avec exactement les noms du plan.
+- Lance la vérification de l'étape, puis la suite complète : docker compose run --rm backend pytest -q.
+- Ne modifie pas docs/suivi/. Pas de commit.
+- Termine par les points « À savoir expliquer ».
+```

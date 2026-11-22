@@ -490,3 +490,74 @@ def test_course_sur_la_contrainte_exclude_renvoie_409(
     )
     assert reservations.status_code == 200
     assert len(reservations.json()) == 1
+
+
+def test_ac_01_1_cloture_reservation_active_terminee(
+    client_alice: TestClient,
+    client_bob: TestClient,
+    item_velo: dict[str, Any],
+) -> None:
+    reservation = client_bob.post("/reservations", json={
+        "item_id": item_velo["id"],
+        "date_debut": "2026-12-01",
+        "date_fin": "2026-12-05",
+    }).json()
+
+    response = client_alice.post(
+        f"/reservations/{reservation['id']}/cloturer"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["statut"] == "terminee"
+
+
+def test_ac_01_2_cloture_sans_authentification_renvoie_401(
+    raw_client: TestClient,
+    reservation_active: dict[str, Any],
+) -> None:
+    response = raw_client.post(
+        f"/reservations/{reservation_active['id']}/cloturer"
+    )
+
+    assert response.status_code == 401
+
+
+def test_ac_01_3_cloture_par_un_non_proprietaire_renvoie_403(
+    client_bob: TestClient,
+    reservation_active: dict[str, Any],
+) -> None:
+    response = client_bob.post(
+        f"/reservations/{reservation_active['id']}/cloturer"
+    )
+
+    assert response.status_code == 403
+    assert client_bob.get(
+        f"/reservations/{reservation_active['id']}"
+    ).json()["statut"] == "active"
+
+
+def test_ac_01_4_cloture_reservation_inexistante_renvoie_404(
+    client_alice: TestClient,
+) -> None:
+    response = client_alice.post("/reservations/999/cloturer")
+
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize("statut", ["terminee", "annulee"])
+def test_ac_01_5_cloture_reservation_terminee_ou_annulee_renvoie_409(
+    client_alice: TestClient,
+    reservation_active: dict[str, Any],
+    db: Session,
+    statut: str,
+) -> None:
+    reservation = db.get(Reservation, reservation_active["id"])
+    assert reservation is not None
+    reservation.statut = statut
+    db.flush()
+
+    response = client_alice.post(
+        f"/reservations/{reservation_active['id']}/cloturer"
+    )
+
+    assert response.status_code == 409

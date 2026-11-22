@@ -82,3 +82,17 @@ class ReservationService:
                 reservation_id,
             )
         return reservation
+
+    def complete(
+        self, reservation_id: int, current_user: User
+    ) -> Reservation:
+        reservation = self.get(reservation_id)
+        if reservation.item.owner_id != current_user.id:
+            raise AccesRefuse(
+                f"Accès refusé pour la réservation {reservation_id}"
+            )
+        if reservation.statut != "active":
+            raise ConflitMetier(
+                f"Réservation {reservation_id} non active"
+            )
+        return self.repository.update_status(reservation, "terminee")
