@@ -55,6 +55,9 @@ class ApiClient:
     def get_item(self, item_id: int) -> dict[str, Any]:
         return self._send("GET", f"/items/{item_id}")
 
+    def get_current_user(self, token: str | None) -> dict[str, Any]:
+        return self._send("GET", "/auth/me", token=token)
+
     def login(self, email: str, password: str) -> dict[str, Any]:
         return self._send(
             "POST",
@@ -112,6 +115,29 @@ class ApiClient:
             f"/reservations/{reservation_id}",
             token=token,
             json={"statut": statut},
+        )
+
+    def complete_reservation(
+        self, token: str | None, reservation_id: int
+    ) -> dict[str, Any]:
+        return self._send(
+            "POST",
+            f"/reservations/{reservation_id}/cloturer",
+            token=token,
+        )
+
+    def create_review(
+        self,
+        token: str | None,
+        reservation_id: int,
+        note: int,
+        commentaire: str | None,
+    ) -> dict[str, Any]:
+        return self._send(
+            "POST",
+            f"/reservations/{reservation_id}/avis",
+            token=token,
+            json={"note": note, "commentaire": commentaire},
         )
 
 

@@ -140,3 +140,16 @@ Lance la suite complète. Ne modifie pas docs/suivi/. Pas de commit.
 ```
 
 Réponse de Copilot au point 1 : « Je ne t'ai pas demandé parce que j'ai interprété la nécessité du response_model comme une conséquence directe de l'implémentation, sans réaliser que cela dépassait la liste initiale. »
+
+## Implémentation, étape 5 du plan : frontend
+
+```text
+Implémente uniquement l'étape 5 de docs/features/avis/plan.md (frontend), en respectant AGENTS.md.
+
+- Ne modifie que les fichiers listés dans cette étape. Si tu as besoin d'en toucher un autre, demande-moi AVANT de le modifier, pas après.
+- Le frontend affiche reputation_moyenne et reputation_nombre tels que l'API les renvoie, sans recalculer ni arrondir : « 4.3/5 (12 avis) », ou « Aucun avis » si reputation_nombre vaut 0.
+- L'identité de l'utilisateur courant vient de GET /auth/me avec le jeton du cookie, jamais d'un champ de formulaire.
+- Les erreurs de l'API (401, 403, 404, 409, 422) s'affichent comme les autres erreurs du frontend.
+- Vérifie que le frontend démarre (curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/items) et que la suite backend reste verte. Ne modifie pas docs/suivi/. Pas de commit.
+- Termine par les points « À savoir expliquer ».
+```
