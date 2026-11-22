@@ -1,15 +1,16 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-11-12
+Dernière mise à jour : 2026-11-22
 
 ## En cours
 
 Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
 dans une migration Alembic, l'API répond 409 en cas de course. Attaque temporelle sur le login
-corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe). Erreurs 401,
-403, 404 et 409 documentées dans OpenAPI, 119 tests verts. CI GitHub Actions (lint ruff, tests sur
-PostgreSQL 16, build Docker) sur chaque PR.
-À partir de maintenant, chaque changement passe par une branche et une pull request.
+corrigée. Erreurs 401, 403, 404 et 409 documentées dans OpenAPI, 119 tests verts. CI GitHub Actions
+(lint ruff, tests sur PostgreSQL 16, build Docker) sur chaque PR.
+Chaque changement passe par une branche et une pull request.
+Séance 6 en cours sur la branche `feature/avis` : étape 0 faite (`AGENTS.md` commun à tous les
+agents, `CLAUDE.md` réduit à `@AGENTS.md`, `.github/copilot-instructions.md` fusionné puis supprimé).
 
 ## Prochaine étape
 

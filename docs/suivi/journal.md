@@ -572,3 +572,11 @@ Une entrée par session de travail, la plus récente en bas.
 - Fait par GitHub Copilot (mode Agent), prompt dans docs/qualite/prompts.md : ruff.toml, workflow .github/workflows/ci.yml (jobs lint, tests sur postgres:16 avec alembic upgrade head et alembic check, build avec docker compose build), section Qualité du README.
 - Fait par Rémy : workflow relu avant le push. Lint lancé en local dans un conteneur python:3.12-slim, 10 erreurs (9 imports mal triés, 1 timezone.utc). Premier push volontairement sans correction : sur la PR, lint en échec, tests et build verts.
 - Fait par Rémy : `ruff check --fix`, diff relu (imports regroupés, `timezone.utc` remplacé par `UTC`, aucune logique modifiée), 119 tests verts, frontend toujours démarré, puis CI verte sur la PR.
+
+## 2026-11-22 · Séance 6, étape 0
+
+- Fait par GitHub Copilot (mode Agent), prompt dans docs/tp/seance-6/prompts.md : création de AGENTS.md avec les conventions communes, remplacement de CLAUDE.md par @AGENTS.md, suppression de .github/copilot-instructions.md.
+- Fait par GitHub Copilot (mode Agent) : création de docs/tp/seance-6/prompts.md avec le titre, la ligne d'en-tête et le prompt complet sous « Étape 0 : AGENTS.md ».
+- Vérifié par GitHub Copilot (mode Agent) : AGENTS.md compte 52 lignes et les quatre fichiers demandés correspondent au contenu attendu.
+- Fait par Rémy : review de AGENTS.md. Ajouts (le nom de l'agent dans le journal n'est plus figé sur Copilot, conventions de tests, emplacement des features et des templates, points « À savoir expliquer »), points-virgules retirés, 57 lignes au final.
+- Corrigé par Rémy : Copilot avait remplacé tout le résumé « En cours » de SUIVI.md par une seule ligne sur l'étape 0. Résumé restauré.
