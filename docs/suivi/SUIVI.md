@@ -1,20 +1,21 @@
 # Suivi du projet
 
-Dernière mise à jour : 2026-11-12
+Dernière mise à jour : 2026-11-22
 
 ## En cours
 
 Séance 5 terminée (100 tests). Fonctionnalité 01 : la contrainte `EXCLUDE` des réservations est
 dans une migration Alembic, l'API répond 409 en cas de course. Attaque temporelle sur le login
-corrigée (même temps de réponse pour un email inconnu et un mauvais mot de passe). Erreurs 401,
-403, 404 et 409 documentées dans OpenAPI, 119 tests verts. CI GitHub Actions (lint ruff, tests sur
-PostgreSQL 16, build Docker) sur chaque PR.
-À partir de maintenant, chaque changement passe par une branche et une pull request.
+corrigée. Erreurs 401, 403, 404 et 409 documentées dans OpenAPI, 119 tests verts. CI GitHub Actions
+(lint ruff, tests sur PostgreSQL 16, build Docker) sur chaque PR.
+Chaque changement passe par une branche et une pull request.
+Séance 6 terminée sur la branche `feature/avis` : `AGENTS.md`, skill `fiche-feature`, agents
+planificateur et relecteur, feature avis (fiche et plan validés, 6 étapes, revue, 150 tests).
 
 ## Prochaine étape
 
-Séance 6 : fondations agentic (support à venir). En attendant : fiches des fonctionnalités 02 et
-03, `docs/retour-experience.md`.
+Fusionner la PR `feature/avis`. Puis les features évaluées du projet, avec le même flow (fiche,
+plan validé, implémentation par étapes, revue, PR), et `docs/retour-experience.md`.
 
 ## Avancement des séances
 
@@ -37,7 +38,7 @@ Séance 6 : fondations agentic (support à venir). En attendant : fiches des fon
   - [x] Étape 6 : matrice de tests d'authentification
   - [x] Étape 7 : connexion, inscription, déconnexion et transmission du JWT côté frontend
   - [x] Étapes 8 et 9 : failles exploitées (secret faible, expiration, compte supprimé), relecture finale
-- [ ] Séances 6 et 7 · Fondations agentic, flow complet d'une feature (pas encore publiées)
+- [x] Séance 6 · Feature avec un agent : `AGENTS.md`, skill, agents, feature avis de la fiche à la PR
 
 ## Rendu final
 

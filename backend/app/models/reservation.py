@@ -15,6 +15,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
 
 if TYPE_CHECKING:
+    from app.models.avis import Avis
     from app.models.item import Item
     from app.models.user import User
 
@@ -50,3 +51,8 @@ class Reservation(Base):
 
     item: Mapped["Item"] = relationship(back_populates="reservations")
     borrower: Mapped["User"] = relationship(back_populates="reservations")
+    avis: Mapped["Avis | None"] = relationship(
+        back_populates="reservation",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )

@@ -5,7 +5,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import AccesRefuse
-from app.models import Item, User
+from app.models import Avis, Item, Reservation, User
+from app.repositories.avis import AvisRepository
 from app.repositories.item import ItemRepository
 from app.services.item import ItemService
 
@@ -56,8 +57,12 @@ def test_lire_item_existant_renvoie_200(
     response = client.get(f"/items/{item_velo['id']}")
 
     assert response.status_code == 200
-    assert response.json() == item_velo
-    assert response.json()["owner"] == {
+    corps = response.json()
+    assert corps["id"] == item_velo["id"]
+    assert corps["titre"] == item_velo["titre"]
+    assert corps["reputation_moyenne"] is None
+    assert corps["reputation_nombre"] == 0
+    assert corps["owner"] == {
         "id": alice.id,
         "display_name": "Alice",
     }
@@ -117,7 +122,8 @@ def test_matrice_modification_item(
     expected_status = 204 if method == "delete" and status_code == 200 else status_code
     assert response.status_code == expected_status
     if status_code == 403:
-        assert test_client.get(f"/items/{item_velo['id']}").json() == item_velo
+        corps = test_client.get(f"/items/{item_velo['id']}").json()
+        assert corps["id"] == item_velo["id"]
 
 
 def test_service_refuse_la_suppression_de_l_item_d_un_autre(
@@ -125,7 +131,7 @@ def test_service_refuse_la_suppression_de_l_item_d_un_autre(
     item_velo: dict[str, Any],
     bob: User,
 ) -> None:
-    service = ItemService(ItemRepository(db))
+    service = ItemService(ItemRepository(db), AvisRepository(db))
 
     with pytest.raises(AccesRefuse):
         service.delete(item_velo["id"], bob)
@@ -320,3 +326,78 @@ def test_lister_sans_limit_renvoie_20_items_au_plus(
     response = client.get("/items")
 
     assert [item["id"] for item in response.json()] == list(range(1, 21))
+
+
+def _ajouter_avis_termine(
+    db: Session,
+    item: Item,
+    borrower: User,
+    note: int,
+    date_debut: str,
+) -> None:
+    reservation = Reservation(
+        item_id=item.id,
+        borrower_id=borrower.id,
+        date_debut=date_debut,
+        date_fin="2026-12-31",
+        statut="terminee",
+    )
+    db.add(reservation)
+    db.flush()
+    db.add(Avis(reservation_id=reservation.id, note=note))
+    db.flush()
+
+
+def test_ac_03_1_detail_public_affiche_moyenne_et_nombre_d_avis(
+    db: Session,
+    raw_client: TestClient,
+    alice: User,
+    bob: User,
+    item_velo: dict[str, Any],
+) -> None:
+    item = db.get(Item, item_velo["id"])
+    assert item is not None
+    _ajouter_avis_termine(db, item, bob, 4, "2026-10-01")
+    _ajouter_avis_termine(db, item, bob, 5, "2026-11-01")
+
+    response = raw_client.get(f"/items/{item.id}")
+
+    assert response.status_code == 200
+    assert response.json()["reputation_moyenne"] == 4.5
+    assert response.json()["reputation_nombre"] == 2
+
+
+def test_ac_03_2_detail_public_sans_avis_affiche_aucune_reputation(
+    raw_client: TestClient,
+    item_velo: dict[str, Any],
+) -> None:
+    response = raw_client.get(f"/items/{item_velo['id']}")
+
+    assert response.status_code == 200
+    assert response.json()["reputation_moyenne"] is None
+    assert response.json()["reputation_nombre"] == 0
+
+
+def test_ac_03_3_moyenne_calculee_sur_tous_les_avis_du_preteur(
+    db: Session,
+    raw_client: TestClient,
+    alice: User,
+    bob: User,
+    item_velo: dict[str, Any],
+) -> None:
+    premier_item = db.get(Item, item_velo["id"])
+    assert premier_item is not None
+    second_item = Item(owner_id=alice.id, titre="Tente 2 places", tarif_jour=12)
+    item_bob = Item(owner_id=bob.id, titre="Casque", tarif_jour=3)
+    db.add_all([second_item, item_bob])
+    db.flush()
+
+    _ajouter_avis_termine(db, premier_item, bob, 5, "2026-10-01")
+    _ajouter_avis_termine(db, second_item, bob, 4, "2026-11-01")
+    _ajouter_avis_termine(db, item_bob, alice, 1, "2026-10-01")
+
+    response = raw_client.get(f"/items/{premier_item.id}")
+
+    assert response.status_code == 200
+    assert response.json()["reputation_moyenne"] == 4.5
+    assert response.json()["reputation_nombre"] == 2

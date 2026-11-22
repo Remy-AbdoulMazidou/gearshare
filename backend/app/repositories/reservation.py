@@ -17,6 +17,13 @@ class ReservationRepository:
     def get(self, reservation_id: int) -> Reservation | None:
         return self.db.get(Reservation, reservation_id)
 
+    def update_status(
+        self, reservation: Reservation, statut: str
+    ) -> Reservation:
+        reservation.statut = statut
+        self.db.flush()
+        return reservation
+
     def list(
         self,
         *,

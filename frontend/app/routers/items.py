@@ -62,8 +62,15 @@ def create_item(
 def item_detail_page(request: Request, item_id: int, token: Token) -> HTMLResponse:
     item = api_client.get_item(item_id)
     reservations = api_client.list_reservations(token, item_id) if token else []
+    current_user = api_client.get_current_user(token) if token else None
     return templates.TemplateResponse(
         request,
         "items/detail.html",
-        {"item": item, "reservations": reservations, "messages": [], "saisie": {}},
+        {
+            "item": item,
+            "reservations": reservations,
+            "current_user": current_user,
+            "messages": [],
+            "saisie": {},
+        },
     )

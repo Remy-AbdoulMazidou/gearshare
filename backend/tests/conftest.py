@@ -32,7 +32,7 @@ def db(engine: Engine) -> Iterator[Session]:
     """Une session par test, dans une transaction annulée à la fin."""
     with engine.begin() as connection:
         connection.execute(
-            text("TRUNCATE TABLE reservations, items, users RESTART IDENTITY CASCADE")
+            text("TRUNCATE TABLE avis, reservations, items, users RESTART IDENTITY CASCADE")
         )
     connection = engine.connect()
     transaction = connection.begin()

@@ -36,3 +36,8 @@ class ItemRead(BaseModel):
     description: str | None
     tarif_jour: float
     disponible: bool
+
+
+class ItemDetail(ItemRead):
+    reputation_moyenne: float | None
+    reputation_nombre: int

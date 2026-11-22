@@ -72,8 +72,8 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 | `db/init/` | Création de la base de test `gearshare_test` au premier démarrage |
 | `tp-db/` | TP séance 3 : PostgreSQL, schéma, données, requêtes |
 | `docs/` | Livrables des TP, fonctionnalités ajoutées, suivi du projet (index dans `docs/README.md`) |
-| `CLAUDE.md`, `.claude/` | Instructions projet pour l'agent de code |
-| `.github/copilot-instructions.md` | Instructions pour GitHub Copilot |
+| `AGENTS.md` | Instructions projet communes à tous les agents (`CLAUDE.md` pointe vers lui) |
+| `.github/skills/`, `.github/agents/` | Skill `fiche-feature`, agents planificateur et relecteur (séance 6) |
 
 ## Avancement
 
@@ -84,9 +84,11 @@ Les scripts de `tp-db/sql/init/` créent le schéma et le jeu de données au pre
 | 3 · PostgreSQL | Terminé | `tp-db/` (schéma, requêtes, `MESURES.md`, schéma v2, `REVIEW-schema.md`, tests de contraintes), `docs/tp/seance-3/` (prompts Copilot) |
 | 4 · Webapp | Terminé (TP 1 et TP 2) | `frontend/`, backend en couches sur PostgreSQL, `backend/alembic/`, 62 tests, `docs/review-migrations.md`, `docs/choix-migrations.md`, `docs/review-couches.md`, `docs/cas-tests-chevauchement.md`, `docs/tp/seance-4/` (prompts Copilot) |
 | 5 · Authentification | Terminé | Inscription, connexion JWT, routes protégées, propriété (403), 100 tests, connexion dans le frontend, `docs/tp/seance-5/` (prompts Copilot, relecture finale) |
+| 6 · Feature avec un agent | Terminé | `AGENTS.md`, skill et agents, `docs/templates/`, feature avis (fiche, plan, 6 étapes, revue), 150 tests, `docs/features/avis/` |
 
 | Fonctionnalité ajoutée | État | Livrables |
 |---|---|---|
+| Avis sur les prêts terminés | Fait (séance 6) | Clôture d'un prêt, avis de l'emprunteur, réputation du prêteur, `docs/features/avis/` (fiche, plan, prompts, review) |
 | 01 · Pas de double réservation | Contrainte en base faite | Vérification dans le service (séance 4) et contrainte `EXCLUDE` en migration Alembic, 104 tests, course testée entre deux sessions `psql`, `docs/features/01-pas-de-double-reservation/` |
 
 Le détail de l'avancement et des décisions est dans `docs/suivi/SUIVI.md`, et l'historique des
