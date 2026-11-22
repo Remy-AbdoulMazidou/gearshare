@@ -64,3 +64,26 @@ Implémente uniquement l'étape 1 de docs/features/avis/plan.md (clôture d'une 
 - Ne modifie pas docs/suivi/. Pas de commit.
 - Termine par les points « À savoir expliquer ».
 ```
+
+## Implémentation, étape 2 du plan : modèle Avis et migration
+
+```text
+Implémente uniquement l'étape 2 de docs/features/avis/plan.md (modèle Avis et migration), en respectant AGENTS.md.
+
+- Ne modifie que les fichiers listés dans cette étape. Si tu as besoin d'en toucher un autre, demande-moi avant.
+- Génère la migration avec docker compose run --rm backend alembic revision --autogenerate -m "avis", puis montre-moi son upgrade et son downgrade complets avant de l'appliquer : je dois les relire.
+- Écris les tests prévus par l'étape, avec exactement les noms du plan.
+- Ne modifie pas docs/suivi/. Pas de commit.
+- Termine par les points « À savoir expliquer ».
+```
+
+Itération après ma relecture :
+
+```text
+Remarque de review de Rémy sur l'étape 2 :
+
+1. avis.created_at est nullable et sans valeur par défaut, donc toujours NULL. Aligne-le sur items et users : Mapped[datetime], DateTime(timezone=True), server_default à now() comme dans backend/app/models/item.py, nullable=False.
+2. La migration cf49f5158107 n'est appliquée qu'en local et n'est pas commitée. Fais d'abord docker compose run --rm backend alembic downgrade -1, puis corrige à la main le modèle et cette migration (n'en génère pas une nouvelle), puis docker compose run --rm migrate et docker compose run --rm backend alembic check.
+3. Si l'étape 2 du plan prévoit test_ac_02_1_base_accepte_une_note_valide et qu'il manque dans tests/test_avis.py, ajoute-le.
+4. Lance la suite complète. Ne modifie pas docs/suivi/. Pas de commit.
+```
