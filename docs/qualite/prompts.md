@@ -1,5 +1,8 @@
 # Prompts, lint et CI
 
+Prompt donné à GitHub Copilot (mode Agent), copié tel quel. Préparé avec l'aide de Claude.
+
+```text
 Contexte : le prof attend « lint, tests et build vérifiés avant chaque PR ». Le dépôt n'a ni linter configuré ni CI.
 
 1. Crée ruff.toml à la racine : line-length = 100, target-version = "py312", extend-exclude = ["backend/alembic/versions"], règles E, F, W, I, B, UP, et known-first-party = ["app"] pour isort. Ne corrige pas le code existant, je le ferai moi-même.
@@ -15,3 +18,4 @@ Contexte : le prof attend « lint, tests et build vérifiés avant chaque PR ».
 4. Ajoute ce prompt tel quel dans docs/qualite/prompts.md (crée le fichier, titre « Prompts, lint et CI »).
 
 Pas de commentaire inutile dans le YAML. Ne modifie pas docs/suivi/. Pas de commit.
+```
