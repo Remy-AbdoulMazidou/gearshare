@@ -30,6 +30,8 @@ Tout se fait en français.
 - La logique métier vit dans les services.
 - Les routers n'accèdent jamais aux données, ils passent par les services.
 - Erreurs métier traduites par le gestionnaire d'erreurs de backend/app/main.py.
+- Erreur de contrainte en base : lire exc.orig.diag.constraint_name et lever ConflitMetier dans le
+  repository (voir backend/app/repositories/reservation.py). Pas de getattr en cascade.
 - La validation des entrées vit dans Pydantic.
 - PATCH utilise model_dump(exclude_unset=True).
 - Codes HTTP : 201, 204, 401, 403, 404, 409, 422. Aucun 500 volontaire.
