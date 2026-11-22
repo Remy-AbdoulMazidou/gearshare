@@ -87,3 +87,28 @@ Remarque de review de Rémy sur l'étape 2 :
 3. Si l'étape 2 du plan prévoit test_ac_02_1_base_accepte_une_note_valide et qu'il manque dans tests/test_avis.py, ajoute-le.
 4. Lance la suite complète. Ne modifie pas docs/suivi/. Pas de commit.
 ```
+
+## Implémentation, étape 3 du plan : publication d'un avis
+
+```text
+Implémente uniquement l'étape 3 de docs/features/avis/plan.md (publication d'un avis), en respectant AGENTS.md.
+
+- Ne modifie que les fichiers listés dans cette étape. Si tu as besoin d'en toucher un autre, demande-moi avant.
+- Écris les tests prévus par l'étape, avec exactement les noms du plan.
+- Lance la vérification de l'étape, puis la suite complète : docker compose run --rm backend pytest -q.
+- Ne modifie pas docs/suivi/. Pas de commit.
+- Termine par les points « À savoir expliquer ».
+```
+
+Itération après ma relecture :
+
+```text
+Remarque de review de Rémy sur l'étape 3 : aucun test ne protège la traduction de IntegrityError dans AvisRepository.add.
+
+Ajoute dans tests/test_avis.py un test test_ac_02_8_course_simulee_renvoie_409, sur le même principe que test_course_sur_la_contrainte_exclude_renvoie_409 dans tests/test_reservations.py :
+- une réservation terminée qui a déjà un avis ;
+- monkeypatch de AvisRepository.get_by_reservation pour qu'il renvoie None, comme si deux requêtes passaient la vérification en même temps ;
+- POST de l'avis par l'emprunteur : 409 avec le message « Un avis existe déjà pour cette réservation », et toujours un seul avis en base pour cette réservation.
+
+Ne modifie que tests/test_avis.py. Lance la suite complète. Pas de commit.
+```

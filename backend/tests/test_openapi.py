@@ -27,6 +27,11 @@ from app.main import app
             "/reservations/{reservation_id}/cloturer",
             [401, 403, 404, 409],
         ),
+        (
+            "post",
+            "/reservations/{reservation_id}/avis",
+            [401, 403, 404, 409],
+        ),
         ("post", "/auth/register", [409]),
         ("post", "/auth/login", [401]),
         ("get", "/auth/me", [401]),
