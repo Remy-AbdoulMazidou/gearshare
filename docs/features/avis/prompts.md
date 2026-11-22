@@ -112,3 +112,31 @@ Ajoute dans tests/test_avis.py un test test_ac_02_8_course_simulee_renvoie_409, 
 
 Ne modifie que tests/test_avis.py. Lance la suite complète. Pas de commit.
 ```
+
+## Implémentation, étape 4 du plan : réputation du propriétaire
+
+```text
+Implémente uniquement l'étape 4 de docs/features/avis/plan.md (réputation du propriétaire), en respectant AGENTS.md.
+
+- Ne modifie que les fichiers listés dans cette étape. Si tu as besoin d'en toucher un autre, demande-moi avant.
+- Le calcul se fait en une seule requête d'agrégation (AVG et COUNT) dans le repository, pas en chargeant tous les avis en Python.
+- Écris les tests prévus par l'étape, avec exactement les noms du plan.
+- Lance la vérification de l'étape, puis la suite complète : docker compose run --rm backend pytest -q.
+- Ne modifie pas docs/suivi/. Pas de commit.
+- Termine par les points « À savoir expliquer ».
+```
+
+Itération après ma relecture :
+
+```text
+Remarques de review de Rémy sur l'étape 4 :
+
+1. Tu as modifié backend/app/routers/items.py alors qu'il n'est pas dans la liste de l'étape et que je t'avais demandé de me prévenir avant. La modification du response_model est nécessaire, je la garde, mais explique-moi en une phrase pourquoi tu ne m'as pas demandé.
+2. Pas de setattr sur l'objet SQLAlchemy dans ItemService.get_detail : construis et renvoie un ItemDetail (à partir de ItemRead.model_validate(item).model_dump(), plus reputation_moyenne et reputation_nombre).
+3. avis_repository devient un paramètre obligatoire de ItemService, sans valeur par défaut ni repli sur repository.db. Corrige les endroits qui construisent ItemService.
+4. Annule la modification de ItemRepository.get (selectinload) : elle n'est pas nécessaire pour la réputation.
+
+Lance la suite complète. Ne modifie pas docs/suivi/. Pas de commit.
+```
+
+Réponse de Copilot au point 1 : « Je ne t'ai pas demandé parce que j'ai interprété la nécessité du response_model comme une conséquence directe de l'implémentation, sans réaliser que cela dépassait la liste initiale. »

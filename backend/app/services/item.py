@@ -1,13 +1,21 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 from app.core.exceptions import AccesRefuse, RessourceIntrouvable
 from app.models.item import Item
 from app.models.user import User
+from app.repositories.avis import AvisRepository
 from app.repositories.item import ItemRepository
-from app.schemas.item import ItemCreate, ItemUpdate
+from app.schemas.item import ItemCreate, ItemDetail, ItemRead, ItemUpdate
 
 
 class ItemService:
-    def __init__(self, repository: ItemRepository) -> None:
+    def __init__(
+        self,
+        repository: ItemRepository,
+        avis_repository: AvisRepository,
+    ) -> None:
         self.repository = repository
+        self.avis_repository = avis_repository
 
     def list(
         self,
@@ -26,6 +34,23 @@ class ItemService:
         if item is None:
             raise RessourceIntrouvable(f"Item {item_id} introuvable")
         return item
+
+    def get_detail(self, item_id: int) -> ItemDetail:
+        item = self.get(item_id)
+        moyenne, nombre = self.avis_repository.reputation(item.owner_id)
+        if nombre == 0 or moyenne is None:
+            reputation_moyenne = None
+        else:
+            arrondie = Decimal(str(moyenne)).quantize(
+                Decimal("0.1"),
+                rounding=ROUND_HALF_UP,
+            )
+            reputation_moyenne = float(arrondie)
+        return ItemDetail(
+            **ItemRead.model_validate(item).model_dump(),
+            reputation_moyenne=reputation_moyenne,
+            reputation_nombre=nombre,
+        )
 
     def create(self, payload: ItemCreate, current_user: User) -> Item:
         return self.repository.add(

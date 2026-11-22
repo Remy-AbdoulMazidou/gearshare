@@ -5,14 +5,15 @@ from fastapi import APIRouter, Depends, Path, Query, Response
 from app.api.deps import CurrentUser, DbSession
 from app.repositories.item import ItemRepository
 from app.schemas.error import ERREUR_401, ERREUR_403, ERREUR_404
-from app.schemas.item import ItemCreate, ItemRead, ItemUpdate
+from app.repositories.avis import AvisRepository
+from app.schemas.item import ItemCreate, ItemDetail, ItemRead, ItemUpdate
 from app.services.item import ItemService
 
 router = APIRouter(prefix="/items", tags=["items"])
 
 
 def get_item_service(db: DbSession) -> ItemService:
-    return ItemService(ItemRepository(db))
+    return ItemService(ItemRepository(db), AvisRepository(db))
 
 
 ItemServiceDependency = Annotated[ItemService, Depends(get_item_service)]
@@ -45,13 +46,13 @@ def create_item(
 
 @router.get(
     "/{item_id}",
-    response_model=ItemRead,
+    response_model=ItemDetail,
     responses={**ERREUR_404},
 )
 def get_item(
     service: ItemServiceDependency, item_id: int = Path(ge=1)
 ):
-    return service.get(item_id)
+    return service.get_detail(item_id)
 
 
 @router.put(
